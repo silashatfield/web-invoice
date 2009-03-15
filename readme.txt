@@ -1,0 +1,53 @@
+=== Web Invoice ===
+Contributors: mohanjith
+Donate link: http://mohanjith.com/wordpress
+Tags: bill, moneybookers, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
+Requires at least: 2.6
+Tested up to: 2.7.1
+Stable tag: 1.0.0
+
+Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
+
+== Description ==
+
+**This is a fork of [WP-Invoice](http://wordpress.org/extend/plugins/wp-invoice/)**
+
+Web Invoice lets WordPress blog owners send itemized invoices to their clients. Ideal for web developers, SEO consultants, general contractors, or anyone with a WordPress blog and clients to bill. The plugin ties into WP's user management database to keep track of your clients and their information.
+
+Once an invoice is created from the WP admin section, an email with a brief description and a unique link is sent to client. Clients follow the link to your blog's special invoice page, view their invoice, and pay their bill using Moneybookers or PayPal. The control panel is very user-friendly and intuitive.
+
+Credit card payments may be accepted via Authorize.net, MerchantPlus' NaviGate, Moneybookers, or PayPal account.  For recurring billing we have integrated Authorize.net's ARB API that will allow you to setup payment schedules along with invoices.
+
+Some features:
+
+* Create invoices from the WordPress control panel
+* Prefill customer information using the WordPress user list
+* Send invoice notifications to customers with a secured link back to the web invoice
+* Accept credit card payment via Authorize.net or MerchantPlus NaviGate
+* Moneybookers or PayPal available if you don't have a credit card processing account
+* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature
+* Force web invoice pages to be viewed in SSL mode
+* Archive old invoices
+* Easily use old invoices as templates for new ones
+* Dynamic and intuitive user interface
+
+
+== Installation ==
+
+1. Upload `web-invoice` to the `/wp-content/plugins/` directory
+1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Follow set-up steps on main 'Web Invoice' page
+1. To create your first invoice navigate to 'Web Invoice' -> 'New Invoice', and select the user who will be the recipient
+
+Please see the [Web Invoice plugin home page](http://mohanjith.com/wordpress/web-invoice.html) for details.
+
+== Frequently Asked Questions ==
+
+Please visit the [Web Invoice community page](http://web-invoice.uservoice.com/) for suggestions and help.
+
+== Screenshots ==
+
+1. Invoice Overview
+1. New Invoice Creation
+1. Client Email Preview
+1. Frontend Example
