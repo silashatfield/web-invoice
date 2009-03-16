@@ -43,7 +43,7 @@ Please see the [Web Invoice plugin home page](http://mohanjith.com/wordpress/web
 
 == Frequently Asked Questions ==
 
-Please visit the [Web Invoice community page](http://web-invoice.uservoice.com/) for suggestions and help.
+Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) for suggestions and help.
 
 == Screenshots ==
 
