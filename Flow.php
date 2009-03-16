@@ -89,6 +89,9 @@ class Web_Invoice_Decider {
 		if(isset($_POST['web_invoice_gateway_username'])) update_option('web_invoice_gateway_username', $_POST['web_invoice_gateway_username']);
 		if(isset($_POST['web_invoice_gateway_tran_key'])) update_option('web_invoice_gateway_tran_key', $_POST['web_invoice_gateway_tran_key']);
 		if(isset($_POST['web_invoice_gateway_merchant_email'])) update_option('web_invoice_gateway_merchant_email', $_POST['web_invoice_gateway_merchant_email']);
+		if(isset($_POST['web_invoice_moneybookers_merchant'])) update_option('web_invoice_moneybookers_merchant', $_POST['web_invoice_moneybookers_merchant']);
+		if(isset($_POST['web_invoice_moneybookers_secret'])) update_option('web_invoice_moneybookers_secret', $_POST['web_invoice_moneybookers_secret']);
+		if(isset($_POST['web_invoice_moneybookers_ip'])) update_option('web_invoice_moneybookers_ip', $_POST['web_invoice_moneybookers_ip']);
 		web_invoice_options_manageInvoice();
 		break;
 

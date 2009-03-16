@@ -4,7 +4,7 @@ Donate link: http://mohanjith.com/wordpress
 Tags: bill, moneybookers, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
 Tested up to: 2.7.1
-Stable tag: 1.1.1
+Stable tag: trunk
 
 Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
 
@@ -30,6 +30,7 @@ Some features:
 * Archive old invoices
 * Easily use old invoices as templates for new ones
 * Dynamic and intuitive user interface
+* Automatically mark invoices paid via Moneybookers as paid (Requires merchant status)
 
 
 == Installation ==
@@ -53,6 +54,14 @@ Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.2.0**
+
+* Support Moneybookers API (Similar to PayPal IPN)
+
+**Version 1.1.2**
+
+* Made compatible with PHP4
 
 **Version 1.1.1**
 

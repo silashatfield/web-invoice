@@ -209,10 +209,13 @@ function web_invoice_recurring_overview($message='')
 	<h2>Recurring Billing Overview</h2>
 
 	<?php if(web_invoice_is_not_merchant()) { ?>
-	<!-- <div class="web_invoice_rounded_box">
-		<p><b>You need a credit card processing account to use recurring billing. </b> You may get an ARB (Automated Recurring Billing) account from <a href="http://twincitiestech.com/links/MerchantPlus.php">MerchantPlus</a> (800-546-1997), <a href="http://twincitiestech.com/links/MerchantExpress.php">MerchantExpress.com</a> (888-845-9457) or <a href="http://twincitiestech.com/links/MerchantWarehouse.php">MerchantWarehouse</a> (866-345-5959).</p>
+	<div class="web_invoice_rounded_box">
+		<p><b>You need a credit card processing account to use recurring billing. </b>
+			You may get an ARB (Automated Recurring Billing) account from <a href="http://keti.ws/37281">MerchantPlus</a> (800-546-1997),
+			<a href="http://keti.ws/37282">MerchantExpress.com</a> (888-845-9457) or
+			<a href="http://keti.ws/36282">MerchantWarehouse</a> (866-400-9706).</p>
 		<p>	Once you have an account, enter in your username and transaction key into the <a href="admin.php?page=web_invoice_settings">settings page</a>.</p>
-	</div> -->
+	</div>
 	<?php } ?>
 
 	<div class="tablenav clearfix">
@@ -861,7 +864,22 @@ global $wpdb; ?>
 
 		<li class="paypal_info">Your PayPal username: <input id='web_invoice_paypal_address' name="web_invoice_paypal_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" /></li>
 
-		<li class="moneybookers_info">Your Moneybookers username: <input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" /></li>
+		<li class="moneybookers_info">
+			Your Moneybookers username: <input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
+		</li>
+		<li class="moneybookers_info">
+			Enable Moneybookers payment notifications:
+			<select id='web_invoice_moneybookers_merchant' name="web_invoice_moneybookers_merchant">
+			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> >Yes</option>
+			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> >No</option>
+			</select>
+		</li>
+		<li class="moneybookers_info moneybookers_info_merchant">
+			Moneybookers payment notification secret: <input id='web_invoice_moneybookers_secret' name="web_invoice_moneybookers_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_secret')); ?>" />
+		</li>
+		<li class="moneybookers_info moneybookers_info_merchant">
+			Moneybookers payment notification IP: <input id='web_invoice_moneybookers_ip' name="web_invoice_moneybookers_ip" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" />
+		</li>
 
 		<li class="gateway_info">
 		<a class="web_invoice_tooltip"  title="Your credit card processor will provide you with a gateway username.">Gateway Username</a>
@@ -1086,8 +1104,6 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 	</td>
 </tr>
 
-
-
 <tr class="paypal_info">
 	<th width="200">PayPal Username</th>
 	<td><input id='web_invoice_paypal_address' name="web_invoice_paypal_address" class="input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" />
@@ -1098,6 +1114,23 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 	<th width="200">Moneybookers Username</th>
 	<td><input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
 	</td>
+</tr>
+
+<tr class="moneybookers_info">
+	<th width="200">Enable Moneybookers payment notifications:</th>
+	<td><select id='web_invoice_moneybookers_merchant' name="web_invoice_moneybookers_merchant">
+			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> >Yes</option>
+			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> >No</option>
+		</select>
+	</td>
+</tr>
+<tr class="moneybookers_info moneybookers_info_merchant">
+	<th>Moneybookers payment notification secret:</th>
+	<td><input id='web_invoice_moneybookers_secret' name="web_invoice_moneybookers_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_secret')); ?>" /></td>
+</tr>
+<tr class="moneybookers_info moneybookers_info_merchant">
+	<th>Moneybookers payment notification IP:</th>
+	<td><input id='web_invoice_moneybookers_ip' name="web_invoice_moneybookers_ip" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" /></td>
 </tr>
 
 <tr>
@@ -1457,6 +1490,43 @@ function web_invoice_user_profile_fields()
 <?php
 }
 
+function web_invoice_show_moneybookers_api($invoice_id) {
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
+
+	if (!$invoice->id) {
+		return 'Invoice not found';
+	}
+
+	$pay_to_email = $_REQUEST['pay_to_email'];
+	$pay_from_email = $_REQUEST['pay_from_email'];
+	$merchant_id = $_REQUEST['merchant_id'];
+	$mb_transaction_id = $_REQUEST['mb_transaction_id'];
+	$transaction_id = $_REQUEST['transaction_id'];
+
+	$mb_amount = $_REQUEST['mb_amount'];
+	$mb_currency = $_REQUEST['mb_currency'];
+	$status = $_REQUEST['status'];
+	$md5sig = $_REQUEST['md5sig'];
+	$amount = $_REQUEST['amount'];
+	$currency = $_REQUEST['currency'];
+
+	if (($currency != web_invoice_meta($invoice_id, 'web_invoice_currency_code'))) return 'We were not expecting you. REF: MB0';
+	if (($amount != $invoice->display('amount'))) return 'We were not expecting you. REF: MB1';
+	if (($pay_to_email != get_option('web_invoice_moneybookers_address'))) return 'We were not expecting you. REF: MB2';
+	if (($status != 2)) return 'We were not expecting you. REF: MB3';
+
+	$secret_word = strtoupper(md5(get_option('web_invoice_moneybookers_secret')));
+	$our_signature =  strtoupper(md5("{$merchant_id}{$transaction_id}{$secret_word}{$mb_amount}{$mb_currency}{$status}"));
+
+	if ($md5sig != $our_signature) {
+		return 'Invalid request.';
+	}
+
+	web_invoice_mark_as_paid($invoice->id);
+
+	return 'Success';
+}
+
 function web_invoice_show_paypal_reciept($invoice_id) {
 
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
@@ -1540,6 +1610,7 @@ if(get_option('web_invoice_payment_method') == 'cc') { $cc = true;}
 <input type="hidden" name="no_shipping" value="1">
 <input type="hidden" name="pay_to_email" value="<?php echo get_option('web_invoice_moneybookers_address'); ?>" />
 <input type="hidden" name="return_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+<input type="hidden" name="status_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
 <input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
 <input type="hidden" name="transaction_id" id="invoice_num" value="<?php echo  $invoice->display('display_id'); ?>" />
 <?php

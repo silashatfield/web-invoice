@@ -4,7 +4,7 @@ Plugin Name: Web Invoice
 Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
 Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
 Author: S H Mohanjith
-Version: 1.1.1
+Version: 1.2.0
 Author URI: http://mohanjith.com/
 
 Copyright 2009  S H Mohanjith.   (email : moha@mohanjith.net)
@@ -179,7 +179,7 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'));
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'));
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery') );
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-1.0.0.js", array('jquery') );
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery') );
 		} else {
 
 			// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
@@ -319,6 +319,10 @@ class Web_Invoice {
 		add_option('web_invoice_gateway_relay_response','FALSE');
 		add_option('web_invoice_gateway_email_customer','FALSE');
 
+		// Moneybookers
+		add_option('web_invoice_moneybookers_merchant','False');
+		add_option('web_invoice_moneybookers_secret',uniqid());
+		add_option('web_invoice_moneybookers_ip', '213.129.75.203');
 	}
 
 }

@@ -207,10 +207,10 @@ else
 function web_invoice_mark_as_paid($invoice_id) {
 global $wpdb;
 
+$counter=0;
 // Check to see if array is passed or single.
 if(is_array($invoice_id))
 {
-	$counter=0;
 	foreach ($invoice_id as $single_invoice_id) {
 	$counter++;
 	web_invoice_update_invoice_meta($single_invoice_id,'paid_status','paid');
@@ -227,9 +227,10 @@ if(is_array($invoice_id))
 }
 else
 {
+	$counter++;
 	web_invoice_update_invoice_meta($invoice_id,'paid_status','paid');
  	web_invoice_update_log($invoice_id,'paid',"Invoice marked as paid");
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_reciept($single_invoice_id);
+	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_reciept($invoice_id);
 
 	if(get_option('web_invoice_send_thank_you_email') == 'yes') {
 	return $counter . " invoice marked as paid, and thank you email sent to customer.";
@@ -406,8 +407,6 @@ function web_invoice_send_email_reciept($invoice_id) {
 
 	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
 
-
-
 	$message = web_invoice_show_email($invoice_id);
 
 	$from = get_option("web_invoice_email_address");
@@ -482,6 +481,11 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_gateway_delim_data');
 	delete_option('web_invoice_gateway_relay_response');
 	delete_option('web_invoice_gateway_email_customer');
+
+	// Moneybookers
+	delete_option('web_invoice_moneybookers_merchant');
+	delete_option('web_invoice_moneybookers_secret');
+	delete_option('web_invoice_moneybookers_ip');
 
 	return "All settings and databased removed.";
 }
@@ -1208,7 +1212,10 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_gateway_relay_response'])) update_option('web_invoice_gateway_relay_response', $_POST['web_invoice_gateway_relay_response']);
 	if(isset($_POST['web_invoice_gateway_email_customer'])) update_option('web_invoice_gateway_email_customer', $_POST['web_invoice_gateway_email_customer']);
 
-
+	// Moneybookers
+	if(isset($_POST['web_invoice_moneybookers_merchant'])) update_option('web_invoice_moneybookers_merchant', $_POST['web_invoice_moneybookers_merchant']);
+	if(isset($_POST['web_invoice_moneybookers_secret'])) update_option('web_invoice_moneybookers_secret', $_POST['web_invoice_moneybookers_secret']);
+	if(isset($_POST['web_invoice_moneybookers_ip'])) update_option('web_invoice_moneybookers_ip', $_POST['web_invoice_moneybookers_ip']);
 }
 
 function web_invoice_is_not_merchant() {

@@ -38,7 +38,10 @@ function web_invoice_the_content($content) {
 	if(web_invoice_paid_status($invoice_id)) return web_invoice_show_already_paid($invoice_id).$content;
 
 	// Show reciept if coming back from PayPal
-	if(isset($_REQUEST['receipt_id'])) return web_invoice_show_paypal_reciept($invoice_id) ;
+	if(isset($_REQUEST['receipt_id'])) return web_invoice_show_paypal_reciept($invoice_id);
+
+	if((get_option('web_invoice_moneybookers_merchant') == 'True') && ($ip == get_option('web_invoice_moneybookers_ip')) && isset($_REQUEST['mb_transaction_id']) && isset($_REQUEST['status']))
+		return web_invoice_show_moneybookers_api($_REQUEST['transaction_id']) ;
 
 	// Invoice viewed, update log
 	web_invoice_update_log($invoice_id,'visited',"Viewed by $ip");

@@ -128,12 +128,28 @@ jQuery(document).ready(function(){
 
 	if(jQuery('#web_invoice_payment_method').val() == 'cc') { jQuery('.gateway_info').show();  }
 	if(jQuery('#web_invoice_payment_method').val() == 'paypal') {  jQuery('.paypal_info').show();  }
-	if(jQuery('#web_invoice_payment_method').val() == 'moneybookers') {  jQuery('.moneybookers_info').show();  }
+	if(jQuery('#web_invoice_payment_method').val() == 'moneybookers') {
+		jQuery('.moneybookers_info').show();
+
+		if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
+	}
 
 	jQuery('#web_invoice_payment_method').change(function(){
 		if(jQuery(this).val() == 'paypal') {  jQuery('.paypal_info').show(); jQuery('.moneybookers_info').hide(); jQuery('.gateway_info').hide();  }
-		if(jQuery(this).val() == 'moneybookers') {  jQuery('.moneybookers_info').show(); jQuery('.paypal_info').hide(); jQuery('.gateway_info').hide();  }
+		if(jQuery(this).val() == 'moneybookers') {
+			jQuery('.moneybookers_info').show(); jQuery('.paypal_info').hide(); jQuery('.gateway_info').hide();
+			if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
+		}
 		if(jQuery(this).val() == 'cc') {  jQuery('.gateway_info').show(); jQuery('.moneybookers_info').hide(); jQuery('.paypal_info').hide(); }
+	});
+
+	jQuery('#web_invoice_moneybookers_merchant').change(function(){
+		if(jQuery(this).val() == 'True') {
+			jQuery('.moneybookers_info_merchant').show();
+		}
+		if(jQuery(this).val() == 'False') {
+			jQuery('.moneybookers_info_merchant').hide();
+		}
 	});
 
 	if(jQuery('#first_name').val() == '') {jQuery('#first_name').addClass("error"); }
