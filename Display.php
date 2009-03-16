@@ -96,7 +96,7 @@ function web_invoice_default($message='')
 	$x_counter = 0;
 	foreach ($all_invoices as $invoice) {
 		// Stop if this is a recurring bill
-		if(!web_invoice_meta($invoice->invoice_num,'recurring_billing')) {
+		if(!web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
 		$x_counter++;
 		unset($class_settings);
 
@@ -152,8 +152,8 @@ function web_invoice_default($message='')
 
 		$output_row  = "<tr class='$class_settings'>\n";
 		$output_row .= "	<th class='check-column'><input type='checkbox' name='multiple_invoices[]' value='$invoice_id'/></th>\n";
-		$output_row .= "	<td><a href='admin.php?page=new_invoice&web_invoice_action=doInvoice&invoice_id=$invoice_id'>$display_id</a></td>\n";
-		$output_row .= "	<td><a href='admin.php?page=new_invoice&web_invoice_action=doInvoice&invoice_id=$invoice_id'>$subject</a></td>\n";
+		$output_row .= "	<td><a href='admin.php?page=new_web_invoice&web_invoice_action=doInvoice&invoice_id=$invoice_id'>$display_id</a></td>\n";
+		$output_row .= "	<td><a href='admin.php?page=new_web_invoice&web_invoice_action=doInvoice&invoice_id=$invoice_id'>$subject</a></td>\n";
 		$output_row .= "	<td>$show_money</td>\n";
 		$output_row .= "	<td>$days_since</td>\n";
 		$output_row .= "	<td> <a href='user-edit.php?user_id=$user_id'>$call_me_this</a></td>\n";
@@ -166,7 +166,7 @@ function web_invoice_default($message='')
 	if($x_counter == 0) {
 	// No result
 	?>
-<tr><td colspan="6" align="center"><div style="padding: 20px;">You have not created any invoices yet, <a href="admin.php?page=new_invoice">create one now.</a></div></td></tr>
+<tr><td colspan="6" align="center"><div style="padding: 20px;">You have not created any invoices yet, <a href="admin.php?page=new_web_invoice">create one now.</a></div></td></tr>
 	<?php
 
 	}
@@ -205,13 +205,13 @@ function web_invoice_recurring_overview($message='')
 
 
 	<form id="invoices-filter" action="" method="post" >
-	<input type="hidden" name="recurring_billing" value="true" />
+	<input type="hidden" name="web_invoice_recurring_billing" value="true" />
 	<h2>Recurring Billing Overview</h2>
 
 	<?php if(web_invoice_is_not_merchant()) { ?>
 	<!-- <div class="web_invoice_rounded_box">
 		<p><b>You need a credit card processing account to use recurring billing. </b> You may get an ARB (Automated Recurring Billing) account from <a href="http://twincitiestech.com/links/MerchantPlus.php">MerchantPlus</a> (800-546-1997), <a href="http://twincitiestech.com/links/MerchantExpress.php">MerchantExpress.com</a> (888-845-9457) or <a href="http://twincitiestech.com/links/MerchantWarehouse.php">MerchantWarehouse</a> (866-345-5959).</p>
-		<p>	Once you have an account, enter in your username and transaction key into the <a href="admin.php?page=invoice_settings">settings page</a>.</p>
+		<p>	Once you have an account, enter in your username and transaction key into the <a href="admin.php?page=web_invoice_settings">settings page</a>.</p>
 	</div> -->
 	<?php } ?>
 
@@ -223,7 +223,7 @@ function web_invoice_recurring_overview($message='')
 		<option value="send_invoice" name="sendit" >Send Invoice(s)</option>
 		<option value="archive_invoice" name="archive" >Archive Invoice(s)</option>
 		<option value="unrachive_invoice" name="unarchive" >Un-Archive Invoice(s)</option>
-		<option value="stop_recurring_billing" name="mark_as_sent" >Stop Recurring Billing</option>
+		<option value="stop_web_invoice_recurring_billing" name="mark_as_sent" >Stop Recurring Billing</option>
 		<option  value="delete_invoice" onClick="if(confirm('If you delete a recurring invoice, the subscription will be cancelled.')) {return true;} return false;">Delete</option>
 	</select>
 	<input type="submit" value="Apply" class="button-secondary action" />
@@ -259,7 +259,7 @@ function web_invoice_recurring_overview($message='')
 
 	$x_counter = 0;
 	foreach ($all_invoices as $invoice) {
-		if(web_invoice_meta($invoice->invoice_num,'recurring_billing')) {
+		if(web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
 		$x_counter++;
 
 		unset($class_settings);
@@ -314,8 +314,8 @@ function web_invoice_recurring_overview($message='')
 
 		$output_row  = "<tr class='$class_settings'>\n";
 		$output_row .= "	<th class='check-column'><input type='checkbox' name='multiple_invoices[]' value='$invoice_id'/></th>\n";
-		$output_row .= "	<td><a href='admin.php?page=new_invoice&web_invoice_action=doInvoice&invoice_id=$invoice_id'>$custom_id</a></td>\n";
-		$output_row .= "	<td><a href='admin.php?page=new_invoice&web_invoice_action=doInvoice&invoice_id=$invoice_id'>$subject</a></td>\n";
+		$output_row .= "	<td><a href='admin.php?page=new_web_invoice&web_invoice_action=doInvoice&invoice_id=$invoice_id'>$custom_id</a></td>\n";
+		$output_row .= "	<td><a href='admin.php?page=new_web_invoice&web_invoice_action=doInvoice&invoice_id=$invoice_id'>$subject</a></td>\n";
 		$output_row .= "	<td>$show_money</td>\n";
 		$output_row .= "	<td>$days_since</td>\n";
 		$output_row .= "	<td> <a href='user-edit.php?user_id=$user_id'>$call_me_this</a></td>\n";
@@ -328,7 +328,7 @@ function web_invoice_recurring_overview($message='')
 	if($x_counter == 0) {
 	// No result
 	?>
-<tr><td colspan="6" align="center"><div style="padding: 20px;">You have not created any recurring invoices yet, <a href="admin.php?page=new_invoice">create one now.</a></div></td></tr>
+<tr><td colspan="6" align="center"><div style="padding: 20px;">You have not created any recurring invoices yet, <a href="admin.php?page=new_web_invoice">create one now.</a></div></td></tr>
 	<?php
 
 	}
@@ -428,7 +428,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 		$web_invoice_subscription_start_year = web_invoice_meta($template_invoice_id,'web_invoice_subscription_start_year');
 		$web_invoice_subscription_total_occurances = web_invoice_meta($template_invoice_id,'web_invoice_subscription_total_occurances');
 
-		$recurring_billing = web_invoice_meta($template_invoice_id,'recurring_billing');
+		$web_invoice_recurring_billing = web_invoice_meta($template_invoice_id,'web_invoice_recurring_billing');
 
 	}
 
@@ -449,7 +449,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 		$web_invoice_due_date_month = web_invoice_meta($invoice_id,'web_invoice_due_date_month');
 		$web_invoice_due_date_year = web_invoice_meta($invoice_id,'web_invoice_due_date_year');
 		$web_invoice_currency_code = web_invoice_meta($invoice_id,'web_invoice_currency_code');
-		$recurring_billing = web_invoice_meta($invoice_id,'recurring_billing');
+		$web_invoice_recurring_billing = web_invoice_meta($invoice_id,'web_invoice_recurring_billing');
 
 		$web_invoice_subscription_name = web_invoice_meta($invoice_id,'web_invoice_subscription_name');
 		$web_invoice_subscription_unit = web_invoice_meta($invoice_id,'web_invoice_subscription_unit');
@@ -494,7 +494,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 	if(get_option("web_invoice_web_invoice_page") == '') { $warning_message .= "Invoice page not selected. "; }
 	if(get_option("web_invoice_payment_method") == '') { $warning_message .= "Payment method not set. "; }
-	if(get_option("web_invoice_payment_method") == '' || get_option("web_invoice_web_invoice_page") == '') { $warning_message .= "Visit <a href='admin.php?page=invoice_settings'>settings page</a> to configure."; }
+	if(get_option("web_invoice_payment_method") == '' || get_option("web_invoice_web_invoice_page") == '') { $warning_message .= "Visit <a href='admin.php?page=web_invoice_settings'>settings page</a> to configure."; }
 
 	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) { $warning_message = "The plugin database tables are gone, deactivate and reactivate plugin to re-create them."; }
 
@@ -544,7 +544,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 	<?php if(isset($user_id)) { ?>
 	<div id="poststuff" class="metabox-holder">
-	<form id='new_invoice_form' action="admin.php?page=new_invoice&web_invoice_action=save_and_preview" method='POST'>
+	<form id='new_web_invoice_form' action="admin.php?page=new_web_invoice&web_invoice_action=save_and_preview" method='POST'>
 
 	<input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
 	<input type="hidden" name="invoice_id" value="<?php if(isset($invoice_id)) { echo $invoice_id; } else { echo rand(10000000, 90000000);}  ?>" />
@@ -556,7 +556,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 <div class="inside">
 
 
-<table class="form-table" id="add_new_invoice">
+<table class="form-table" id="add_new_web_invoice">
 
 	<?php
 	if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">Your business name isn't set, go to Settings page to set it.</a></th></tr>\n"; 	?>
@@ -586,13 +586,13 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 <div class="postbox" id="web_invoice_client_info_div">
 <h3><label for="link_name">Recurring Billing</label></h3>
 
-<div id="web_invoice_enable_recurring_billing" class="web_invoice_click_me" <?php if($recurring_billing) { ?>style="display:none;"<?php } ?>>
+<div id="web_invoice_enable_recurring_billing" class="web_invoice_click_me" <?php if($web_invoice_recurring_billing) { ?>style="display:none;"<?php } ?>>
 	Create a recurring billing schedule for this invoice.
 </div>
 
-<div class="web_invoice_enable_recurring_billing" <?php if(!$recurring_billing) { ?>style="display:none;"<?php } ?>>
+<div class="web_invoice_enable_recurring_billing" <?php if(!$web_invoice_recurring_billing) { ?>style="display:none;"<?php } ?>>
 
-<table class="form-table" id="add_new_invoice">
+<table class="form-table" id="add_new_web_invoice">
 	<tr>
 		<th><a class="web_invoice_tooltip"  title="A name to identify this subscription by in addition to the invoice id. (ex: 'standard hosting')">Subscription Name</a></th>
 		<td><?php echo web_invoice_draw_inputfield('web_invoice_subscription_name',$web_invoice_subscription_name); ?></td>
@@ -804,7 +804,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 <?php if(web_invoice_get_invoice_status($invoice_id,'100')) { ?>
 	<div class="updated web_invoice_status">
-		<h2>This Invoice's History (<a href="admin.php?page=new_invoice&invoice_id=<?php echo $invoice_id; ?>&web_invoice_action=clear_log">Clear Log</a>)</h2>
+		<h2>This Invoice's History (<a href="admin.php?page=new_web_invoice&invoice_id=<?php echo $invoice_id; ?>&web_invoice_action=clear_log">Clear Log</a>)</h2>
 		<ul id="invoice_history_log">
 		<?php echo web_invoice_get_invoice_status($invoice_id,'100'); ?>
 		</ul>
@@ -833,7 +833,7 @@ global $wpdb; ?>
 	$web_invoice_payment_method = get_option("web_invoice_payment_method");
 
 ?>
-	<form action="admin.php?page=new_invoice" method='POST'>
+	<form action="admin.php?page=new_web_invoice" method='POST'>
 	<input type="hidden" name="web_invoice_action" value="first_setup" />
 <?php if(empty($web_invoice_web_invoice_page) ) { ?>
 	<li><a class="web_invoice_tooltip"  title="Your clients will have to follow their secure link to this page to see their invoice. Opening this page without following a link will result in the standard page content begin shown.">Select a page to display your web invoices</a>:
@@ -1234,7 +1234,7 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 
 <table class="form-table" >
 
-<td colspan="2"><a id="delete_all_web_invoice_databases" href="admin.php?page=new_invoice&web_invoice_action=complete_removal">Remove All Web Invoice Databases</a> - Only do this if you want to completely remove the plugin.  All invoices and logs will be gone... forever.</td>
+<td colspan="2"><a id="delete_all_web_invoice_databases" href="admin.php?page=new_web_invoice&web_invoice_action=complete_removal">Remove All Web Invoice Databases</a> - Only do this if you want to completely remove the plugin.  All invoices and logs will be gone... forever.</td>
 </table>
 </form>
 </div>
@@ -1291,15 +1291,14 @@ function web_invoice_show_email($invoice_id) {
 function web_invoice_draw_itemized_table($invoice_id) {
 	global $wpdb;
 
-
-	$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$invoice_id."'");
+	$_invoice = new Web_Invoice_GetInfo($invoice_id);
+	$invoice_info = $_invoice->_row_cache;
 	$itemized = $invoice_info->itemized;
 	$amount = $invoice_info->amount;
 	$tax_percent = web_invoice_meta($invoice_id,'tax_value');
 
 	// Determine currency. First we check invoice-specific, then default code, and then we settle on USD
 	$currency_code = web_invoice_determine_currency($invoice_id);
-
 
 	if($tax_percent) {
 		$tax_free_amount = $amount*(100/(100+(100*($tax_percent/100))));
@@ -1325,7 +1324,6 @@ function web_invoice_draw_itemized_table($invoice_id) {
 		if(get_option('web_invoice_show_quantities') == 'Show') $show_quantity = true;
 
 
-
 		if(!empty($itemized_item[name])) {
 		if(!strpos($itemized_item[price],'.')) $itemized_item[price] = $itemized_item[price] . ".00";
 
@@ -1345,7 +1343,6 @@ function web_invoice_draw_itemized_table($invoice_id) {
 		 } else {
 		 $response .= "<td style=\"width: 70px; text-align: right;\">". web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($itemized_item[price]) . "</td>";
 		 }
-
 
 		$response .="</tr>";
 		$i++;
@@ -1391,7 +1388,6 @@ function web_invoice_draw_itemized_table_plaintext($invoice_id) {
 
 		$response .= " $" . $item_cost . " \t - \t " . stripslashes($itemized_item[name]) . "\n";
 
-
 		}
 		}
 
@@ -1406,8 +1402,6 @@ function web_invoice_user_profile_fields()
 {
 	global $wpdb;
 	$user_id =  $_REQUEST['user_id'];
-
-
 
 	$profileuser = get_user_to_edit($user_id);
 	?>
@@ -1453,7 +1447,7 @@ function web_invoice_user_profile_fields()
 	<th></th>
 	<td>
 
-	<input type='button' onclick="window.location='admin.php?page=new_invoice&user_id=<?PHP echo $_REQUEST['user_id']; ?>';" class='button' value='Create New Invoice For This User' />
+	<input type='button' onclick="window.location='admin.php?page=new_web_invoice&user_id=<?PHP echo $_REQUEST['user_id']; ?>';" class='button' value='Create New Invoice For This User' />
 
 	</td>
 	</tr>
@@ -1526,7 +1520,7 @@ if(get_option('web_invoice_payment_method') == 'cc') { $cc = true;}
 
 ?>
 
-<div id="billing_overview" class="clearfix">
+<div id="billing_overview" class="clearfix noprint">
 
 <h2 class="invoice_page_subheading">Billing Information</h2>
 
@@ -1680,7 +1674,7 @@ if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemi
 	<input name="card_num" autocomplete="off" onkeyup="cc_card_pick();"  id="card_num" class="credit_card_number input_field"  type="text"  size="22"  maxlength="22" />
 	</li>
 
-	<li class="hide_after_success nocard"  id="cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/core/images/card_array.png) no-repeat;">
+	<li class="hide_after_success nocard"  id="cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/images/card_array.png) no-repeat;">
 	</li>
 
 	<li class="hide_after_success">
@@ -1756,9 +1750,9 @@ function web_invoice_show_recurring_info($invoice_id) {
 function web_invoice_draw_user_selection_form($user_id) {
 	global $wpdb; ?>
 
-<div class="postbox" id="wp_new_invoice_div">
+<div class="postbox" id="wp_new_web_invoice_div">
 <div class="inside">
-	<form action="admin.php?page=new_invoice" method='POST'>
+	<form action="admin.php?page=new_web_invoice" method='POST'>
 		<table class="form-table" id="get_user_info">
 			<tr class="invoice_main">
 				<th><?php if(isset($user_id)) { ?>Start New Invoice For: <?php } else { ?>Create New Invoice For:<?php } ?></th>
@@ -1781,7 +1775,7 @@ function web_invoice_draw_user_selection_form($user_id) {
 					}
 					?>
 					</select>
-					<input type='submit' class='button' id="web_invoice_create_new_invoice" value='Create New Invoice' />
+					<input type='submit' class='button' id="web_invoice_create_new_web_invoice" value='Create New Invoice' />
 
 
 					<?php if(web_invoice_number_of_invoices() > 0) { ?><span id="web_invoice_copy_invoice" class="web_invoice_click_me">copy from another</span>

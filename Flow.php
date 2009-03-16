@@ -35,7 +35,7 @@ class Web_Invoice_Decider {
 
 	$web_invoice_action = (!empty($_REQUEST['web_invoice_action']) ? $_REQUEST['web_invoice_action'] : $web_invoice_action);
 	$invoice_id = $_REQUEST['invoice_id'];
-	$recurring_billing = $_REQUEST['recurring_billing'];
+	$web_invoice_recurring_billing = $_REQUEST['web_invoice_recurring_billing'];
 	//echo "do this: " . $web_invoice_action;
 
 	echo "<div class='wrap'>";
@@ -72,13 +72,13 @@ class Web_Invoice_Decider {
 		web_invoice_show_welcome_message();
 		break;
 
-		case "recurring_billing":
+		case "web_invoice_recurring_billing":
 		web_invoice_recurring_overview();
 		break;
 
 		case "send_now":
 		web_invoice_show_message(web_invoice_send_email($invoice_id));
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 		break;
 
 		case "first_setup":
@@ -92,50 +92,50 @@ class Web_Invoice_Decider {
 		web_invoice_options_manageInvoice();
 		break;
 
-		case "invoice_settings":
+		case "web_invoice_settings":
 		web_invoice_process_settings();
 		web_invoice_show_settings();
 		break;
 
 		case "delete_invoice":
 		web_invoice_show_message(web_invoice_delete($_REQUEST['multiple_invoices']));
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 		break;
 
 		case "send_invoice":
 		if(empty($_REQUEST['multiple_invoices'])) { web_invoice_show_message("No invoices selected, nothing sent."); }
 		else { web_invoice_show_message(web_invoice_send_email($_REQUEST['multiple_invoices']), 'updated fade'); }
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 		break;
 
 		case "send_reminder":
 		if(empty($_REQUEST['multiple_invoices'])) { web_invoice_show_message("No invoices selected, no reminder sent."); }
 		else { web_invoice_show_message(web_invoice_send_email($_REQUEST['multiple_invoices'], 'reminder'), 'updated fade'); }
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 		break;
 
 		case "archive_invoice":
 		if(empty($_REQUEST['multiple_invoices'])) { web_invoice_show_message("No invoices selected, nothing archived."); }
 		else { web_invoice_show_message(web_invoice_archive($_REQUEST['multiple_invoices']), 'updated fade'); }
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 		break;
 
 		case "unrachive_invoice":
 		if(empty($_REQUEST['multiple_invoices'])) { web_invoice_show_message("No invoices selected, nothing un-archived."); }
 		else { web_invoice_show_message(web_invoice_unarchive($_REQUEST['multiple_invoices']), 'updated fade'); }
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 		break;
 
 		case "mark_as_paid":
 		if(empty($_REQUEST['multiple_invoices'])) { web_invoice_show_message("No invoices selected, nothing marked as paid."); }
 		else { web_invoice_show_message(web_invoice_mark_as_paid($_REQUEST['multiple_invoices']), 'updated fade'); }
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 		break;
 
 		case "mark_as_sent":
 		if(empty($_REQUEST['multiple_invoices'])) { web_invoice_show_message("No invoices selected, nothing marked as sent.."); }
 		else { web_invoice_show_message(web_invoice_mark_as_sent($_REQUEST['multiple_invoices']), 'updated fade'); }
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 		break;
 
 		case "save_not_send":
@@ -147,7 +147,7 @@ class Web_Invoice_Decider {
 		$message .= " <a href=".web_invoice_build_invoice_link($invoice_id) .">View Web Invoice</a>";
 
 		web_invoice_show_message($message,' updated fade');
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 
 		break;
 
@@ -157,7 +157,7 @@ class Web_Invoice_Decider {
 
 		default:
 
-		if($recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+		if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 
 		break;
 	}

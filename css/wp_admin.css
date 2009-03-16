@@ -17,7 +17,7 @@
 	color:#000;
 	display:none;
 	}
-#new_invoice_form option {padding-right: 10px;}
+#new_web_invoice_form option {padding-right: 10px;}
 .web_invoice_timestamp select{
 	height:20px !important;
 	line-height:20px !important;
@@ -71,8 +71,8 @@
 #web_invoice_need_mm {color:#FF7200;cursor:pointer; font-size: 12px;}
 #invoice_sorter_table  .header {cursor:pointer;}
 #invoice_sorter_table   {cursor:pointer;margin-bottom: 3px;}
-#add_new_invoice .error {background: #FFF; border:1px solid red; padding}
-#add_new_invoice .white_background {background: #FFF;}
+#add_new_web_invoice .error {background: #FFF; border:1px solid red; padding}
+#add_new_web_invoice .white_background {background: #FFF;}
 
 #invoice_list tr, #invoice_list td, #invoice_list th {background: transparent; border:0;}
 #invoice_preview .subject {background: #FFF2CF; margin-bottom:10px; border:1px dotted; padding:10px 10px 10px 30px; font-size: 13px;  font-family: Arial;}

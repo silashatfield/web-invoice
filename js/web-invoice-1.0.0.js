@@ -2,9 +2,9 @@ function web_invoice_add_time(add_days) {
 
 	if(add_days == 'clear') {
 
-	jQuery("#new_invoice_form #mm").val('');
-	jQuery("#new_invoice_form #jj").val('');
-	jQuery("#new_invoice_form #aa").val('');
+	jQuery("#new_web_invoice_form #mm").val('');
+	jQuery("#new_web_invoice_form #jj").val('');
+	jQuery("#new_web_invoice_form #aa").val('');
 	}
 	 else
 	 {
@@ -13,9 +13,9 @@ function web_invoice_add_time(add_days) {
 	var week_from_now = new Date(myDate.getTime() + add_days*24*60*60*1000);;
 	month = week_from_now.getMonth() + 1;
 
-	jQuery("#new_invoice_form #mm").val(month);
-	jQuery("#new_invoice_form #jj").val(week_from_now.getDate());
-	jQuery("#new_invoice_form #aa").val(week_from_now.getFullYear());
+	jQuery("#new_web_invoice_form #mm").val(month);
+	jQuery("#new_web_invoice_form #jj").val(week_from_now.getDate());
+	jQuery("#new_web_invoice_form #aa").val(week_from_now.getFullYear());
 		}
 
 
@@ -119,8 +119,8 @@ jQuery(document).ready(function(){
 	jQuery("#web_invoice_show_archived").click(function() { jQuery(".web_invoice_archived").toggle(); return false;})
 	jQuery("#web_invoice_enable_recurring_billing").click(function() { jQuery(".web_invoice_enable_recurring_billing").toggle(); jQuery("#web_invoice_enable_recurring_billing").toggle();  })
 	jQuery("#web_invoice_need_mm").click(function() { jQuery(".web_invoice_credit_card_processors").toggle();  })
-	jQuery("#web_invoice_copy_invoice").click(function() { jQuery(".web_invoice_copy_invoice").toggle();jQuery("#web_invoice_create_new_invoice").toggle();jQuery("#web_invoice_copy_invoice").toggle();  })
-	jQuery("#web_invoice_copy_invoice_cancel").click(function() { jQuery(".web_invoice_copy_invoice").toggle();jQuery("#web_invoice_create_new_invoice").toggle();jQuery("#web_invoice_copy_invoice").toggle();  })
+	jQuery("#web_invoice_copy_invoice").click(function() { jQuery(".web_invoice_copy_invoice").toggle();jQuery("#web_invoice_create_new_web_invoice").toggle();jQuery("#web_invoice_copy_invoice").toggle();  })
+	jQuery("#web_invoice_copy_invoice_cancel").click(function() { jQuery(".web_invoice_copy_invoice").toggle();jQuery("#web_invoice_create_new_web_invoice").toggle();jQuery("#web_invoice_copy_invoice").toggle();  })
 
 
 	jQuery("#web_invoice_merchantexpress_prefill").click(function() { jQuery("#web_invoice_gateway_url").val('https://gateway.merchantexpress.com');  })
@@ -145,7 +145,7 @@ jQuery(document).ready(function(){
 
 	jQuery('#delete_all_web_invoice_databases').click(function() {
 		var txt = 'Are you sure you want to delete all the databases?  All your invoice and log data will be lost forever. ';
-		jQuery.prompt(txt,{	buttons:{Delete:true, Cancel:false}, callback: function(v,m){ if(v){  document.location = "admin.php?page=new_invoice&web_invoice_action=complete_removal"; }	}
+		jQuery.prompt(txt,{	buttons:{Delete:true, Cancel:false}, callback: function(v,m){ if(v){  document.location = "admin.php?page=new_web_invoice&web_invoice_action=complete_removal"; }	}
 	});
 	return false
 	});
@@ -189,7 +189,7 @@ jQuery(document).ready(function(){
 	 });//key up.
 
 
-	jQuery('#new_invoice_form').submit(function() {
+	jQuery('#new_web_invoice_form').submit(function() {
 	      if(jQuery("#invoice_subject").val() == '') { jQuery("#invoice_subject").addClass("error"); jQuery("#invoice_subject").blur(); return false; }
 	});
 

@@ -37,7 +37,8 @@ function web_invoice_number_of_invoices()
 
 function web_invoice_does_invoice_exist($invoice_id) {
 	global $wpdb;
-	return $wpdb->get_var("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = $invoice_id");
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	return $invoice->id;
 }
 
 function web_invoice_validate_cc_number($cc_number) {
@@ -87,10 +88,6 @@ function web_invoice_validate_cc_number($cc_number) {
    }
 }
 
-
-
-
-
 function web_invoice_update_log($invoice_id,$action_type,$value)
 {
 	global $wpdb;
@@ -112,7 +109,13 @@ function web_invoice_query_log($invoice_id,$action_type) {
 function web_invoice_meta($invoice_id,$meta_key)
 {
 	global $wpdb;
-	return $wpdb->get_var("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_key = '$meta_key' AND invoice_id = '$invoice_id'");
+	global $_web_invoice_meta_cache;
+
+	if (!isset($_web_invoice_meta_cache[$invoice_id][$meta_key]) || !$_web_invoice_meta_cache[$invoice_id][$meta_key]) {
+		$_web_invoice_meta_cache[$invoice_id][$meta_key] = $wpdb->get_var("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_key = '$meta_key' AND invoice_id = '$invoice_id'");
+	}
+
+	return $_web_invoice_meta_cache[$invoice_id][$meta_key];
 }
 
 function web_invoice_update_invoice_meta($invoice_id,$meta_key,$meta_value)
@@ -341,7 +344,7 @@ function web_invoice_paid($invoice_id) {
 
 function web_invoice_recurring($invoice_id) {
 	global $wpdb;
-	if(web_invoice_meta($invoice_id,'recurring_billing')) return true;
+	if(web_invoice_meta($invoice_id,'web_invoice_recurring_billing')) return true;
 }
 
 function web_invoice_recurring_started($invoice_id) {
@@ -352,7 +355,8 @@ function web_invoice_recurring_started($invoice_id) {
 function web_invoice_paid_status($invoice_id) {
 	//Merged with paid_status in class
 	global $wpdb;
-	if(!empty($invoice_id) && web_invoice_meta($invoice_id,'paid_status') || $wpdb->get_var("SELECT status FROM  ".Web_Invoice::tablename('main')." WHERE invoice_num = '$invoice_id'")) return true;
+	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
+	if(!empty($invoice_id) && web_invoice_meta($invoice_id,'paid_status') || $invoice_id->status) return true;
 }
 
 function web_invoice_paid_date($invoice_id) {
@@ -785,7 +789,7 @@ $StateProvinceTwoToFull = array(
 
 
 function web_invoice_country_array() {
-	return array("US"=> "United States","AL"=> "Albania","DZ"=> "Algeria","AD"=> "Andorra","AO"=> "Angola","AI"=> "Anguilla","AG"=> "Antigua and Barbuda","AR"=> "Argentina","AM"=> "Armenia","AW"=> "Aruba","AU"=> "Australia","AT"=> "Austria","AZ"=> "Azerbaijan Republic","BS"=> "Bahamas","BH"=> "Bahrain","BB"=> "Barbados","BE"=> "Belgium","BZ"=> "Belize","BJ"=> "Benin","BM"=> "Bermuda","BT"=> "Bhutan","BO"=> "Bolivia","BA"=> "Bosnia and Herzegovina","BW"=> "Botswana","BR"=> "Brazil","VG"=> "British Virgin Islands","BN"=> "Brunei","BG"=> "Bulgaria","BF"=> "Burkina Faso","BI"=> "Burundi","KH"=> "Cambodia","CA"=> "Canada","CV"=> "Cape Verde","KY"=> "Cayman Islands","TD"=> "Chad","CL"=> "Chile","C2"=> "China","CO"=> "Colombia","KM"=> "Comoros","CK"=> "Cook Islands","CR"=> "Costa Rica","HR"=> "Croatia","CY"=> "Cyprus","CZ"=> "Czech Republic","CD"=> "Democratic Republic of the Congo","DK"=> "Denmark","DJ"=> "Djibouti","DM"=> "Dominica","DO"=> "Dominican Republic","EC"=> "Ecuador","SV"=> "El Salvador","ER"=> "Eritrea","EE"=> "Estonia","ET"=> "Ethiopia","FK"=> "Falkland Islands","FO"=> "Faroe Islands","FM"=> "Federated States of Micronesia","FJ"=> "Fiji","FI"=> "Finland","FR"=> "France","GF"=> "French Guiana","PF"=> "French Polynesia","GA"=> "Gabon Republic","GM"=> "Gambia","DE"=> "Germany","GI"=> "Gibraltar","GR"=> "Greece","GL"=> "Greenland","GD"=> "Grenada","GP"=> "Guadeloupe","GT"=> "Guatemala","GN"=> "Guinea","GW"=> "Guinea Bissau","GY"=> "Guyana","HN"=> "Honduras","HK"=> "Hong Kong","HU"=> "Hungary","IS"=> "Iceland","IN"=> "India","ID"=> "Indonesia","IE"=> "Ireland","IL"=> "Israel","IT"=> "Italy","JM"=> "Jamaica","JP"=> "Japan","JO"=> "Jordan","KZ"=> "Kazakhstan","KE"=> "Kenya","KI"=> "Kiribati","KW"=> "Kuwait","KG"=> "Kyrgyzstan","LA"=> "Laos","LV"=> "Latvia","LS"=> "Lesotho","LI"=> "Liechtenstein","LT"=> "Lithuania","LU"=> "Luxembourg","MG"=> "Madagascar","MW"=> "Malawi","MY"=> "Malaysia","MV"=> "Maldives","ML"=> "Mali","MT"=> "Malta","MH"=> "Marshall Islands","MQ"=> "Martinique","MR"=> "Mauritania","MU"=> "Mauritius","YT"=> "Mayotte","MX"=> "Mexico","MN"=> "Mongolia","MS"=> "Montserrat","MA"=> "Morocco","MZ"=> "Mozambique","NA"=> "Namibia","NR"=> "Nauru","NP"=> "Nepal","NL"=> "Netherlands","AN"=> "Netherlands Antilles","NC"=> "New Caledonia","NZ"=> "New Zealand","NI"=> "Nicaragua","NE"=> "Niger","NU"=> "Niue","NF"=> "Norfolk Island","NO"=> "Norway","OM"=> "Oman","PW"=> "Palau","PA"=> "Panama","PG"=> "Papua New Guinea","PE"=> "Peru","PH"=> "Philippines","PN"=> "Pitcairn Islands","PL"=> "Poland","PT"=> "Portugal","QA"=> "Qatar","CG"=> "Republic of the Congo","RE"=> "Reunion","RO"=> "Romania","RU"=> "Russia","RW"=> "Rwanda","VC"=> "Saint Vincent and the Grenadines","WS"=> "Samoa","SM"=> "San Marino","ST"=> "S�o Tom� and Pr�ncipe","SA"=> "Saudi Arabia","SN"=> "Senegal","SC"=> "Seychelles","SL"=> "Sierra Leone","SG"=> "Singapore","SK"=> "Slovakia","SI"=> "Slovenia","SB"=> "Solomon Islands","SO"=> "Somalia","ZA"=> "South Africa","KR"=> "South Korea","ES"=> "Spain","LK"=> "Sri Lanka","SH"=> "St. Helena","KN"=> "St. Kitts and Nevis","LC"=> "St. Lucia","PM"=> "St. Pierre and Miquelon","SR"=> "Suriname","SJ"=> "Svalbard and Jan Mayen Islands","SZ"=> "Swaziland","SE"=> "Sweden","CH"=> "Switzerland","TW"=> "Taiwan","TJ"=> "Tajikistan","TZ"=> "Tanzania","TH"=> "Thailand","TG"=> "Togo","TO"=> "Tonga","TT"=> "Trinidad and Tobago","TN"=> "Tunisia","TR"=> "Turkey","TM"=> "Turkmenistan","TC"=> "Turks and Caicos Islands","TV"=> "Tuvalu","UG"=> "Uganda","UA"=> "Ukraine","AE"=> "United Arab Emirates","GB"=> "United Kingdom","UY"=> "Uruguay","VU"=> "Vanuatu","VA"=> "Vatican City State","VE"=> "Venezuela","VN"=> "Vietnam","WF"=> "Wallis and Futuna Islands","YE"=> "Yemen","ZM"=> "Zambia");
+	return array("US"=> "United States","AL"=> "Albania","DZ"=> "Algeria","AD"=> "Andorra","AO"=> "Angola","AI"=> "Anguilla","AG"=> "Antigua and Barbuda","AR"=> "Argentina","AM"=> "Armenia","AW"=> "Aruba","AU"=> "Australia","AT"=> "Austria","AZ"=> "Azerbaijan Republic","BS"=> "Bahamas","BH"=> "Bahrain","BB"=> "Barbados","BE"=> "Belgium","BZ"=> "Belize","BJ"=> "Benin","BM"=> "Bermuda","BT"=> "Bhutan","BO"=> "Bolivia","BA"=> "Bosnia and Herzegovina","BW"=> "Botswana","BR"=> "Brazil","VG"=> "British Virgin Islands","BN"=> "Brunei","BG"=> "Bulgaria","BF"=> "Burkina Faso","BI"=> "Burundi","KH"=> "Cambodia","CA"=> "Canada","CV"=> "Cape Verde","KY"=> "Cayman Islands","TD"=> "Chad","CL"=> "Chile","C2"=> "China","CO"=> "Colombia","KM"=> "Comoros","CK"=> "Cook Islands","CR"=> "Costa Rica","HR"=> "Croatia","CY"=> "Cyprus","CZ"=> "Czech Republic","CD"=> "Democratic Republic of the Congo","DK"=> "Denmark","DJ"=> "Djibouti","DM"=> "Dominica","DO"=> "Dominican Republic","EC"=> "Ecuador","SV"=> "El Salvador","ER"=> "Eritrea","EE"=> "Estonia","ET"=> "Ethiopia","FK"=> "Falkland Islands","FO"=> "Faroe Islands","FM"=> "Federated States of Micronesia","FJ"=> "Fiji","FI"=> "Finland","FR"=> "France","GF"=> "French Guiana","PF"=> "French Polynesia","GA"=> "Gabon Republic","GM"=> "Gambia","DE"=> "Germany","GI"=> "Gibraltar","GR"=> "Greece","GL"=> "Greenland","GD"=> "Grenada","GP"=> "Guadeloupe","GT"=> "Guatemala","GN"=> "Guinea","GW"=> "Guinea Bissau","GY"=> "Guyana","HN"=> "Honduras","HK"=> "Hong Kong","HU"=> "Hungary","IS"=> "Iceland","IN"=> "India","ID"=> "Indonesia","IE"=> "Ireland","IL"=> "Israel","IT"=> "Italy","JM"=> "Jamaica","JP"=> "Japan","JO"=> "Jordan","KZ"=> "Kazakhstan","KE"=> "Kenya","KI"=> "Kiribati","KW"=> "Kuwait","KG"=> "Kyrgyzstan","LA"=> "Laos","LV"=> "Latvia","LS"=> "Lesotho","LI"=> "Liechtenstein","LT"=> "Lithuania","LU"=> "Luxembourg","MG"=> "Madagascar","MW"=> "Malawi","MY"=> "Malaysia","MV"=> "Maldives","ML"=> "Mali","MT"=> "Malta","MH"=> "Marshall Islands","MQ"=> "Martinique","MR"=> "Mauritania","MU"=> "Mauritius","YT"=> "Mayotte","MX"=> "Mexico","MN"=> "Mongolia","MS"=> "Montserrat","MA"=> "Morocco","MZ"=> "Mozambique","NA"=> "Namibia","NR"=> "Nauru","NP"=> "Nepal","NL"=> "Netherlands","AN"=> "Netherlands Antilles","NC"=> "New Caledonia","NZ"=> "New Zealand","NI"=> "Nicaragua","NE"=> "Niger","NU"=> "Niue","NF"=> "Norfolk Island","NO"=> "Norway","OM"=> "Oman","PW"=> "Palau","PA"=> "Panama","PG"=> "Papua New Guinea","PE"=> "Peru","PH"=> "Philippines","PN"=> "Pitcairn Islands","PL"=> "Poland","PT"=> "Portugal","QA"=> "Qatar","CG"=> "Republic of the Congo","RE"=> "Reunion","RO"=> "Romania","RU"=> "Russia","RW"=> "Rwanda","VC"=> "Saint Vincent and the Grenadines","WS"=> "Samoa","SM"=> "San Marino","ST"=> "São Tomé and Príncipe","SA"=> "Saudi Arabia","SN"=> "Senegal","SC"=> "Seychelles","SL"=> "Sierra Leone","SG"=> "Singapore","SK"=> "Slovakia","SI"=> "Slovenia","SB"=> "Solomon Islands","SO"=> "Somalia","ZA"=> "South Africa","KR"=> "South Korea","ES"=> "Spain","LK"=> "Sri Lanka","SH"=> "St. Helena","KN"=> "St. Kitts and Nevis","LC"=> "St. Lucia","PM"=> "St. Pierre and Miquelon","SR"=> "Suriname","SJ"=> "Svalbard and Jan Mayen Islands","SZ"=> "Swaziland","SE"=> "Sweden","CH"=> "Switzerland","TW"=> "Taiwan","TJ"=> "Tajikistan","TZ"=> "Tanzania","TH"=> "Thailand","TG"=> "Togo","TO"=> "Tonga","TT"=> "Trinidad and Tobago","TN"=> "Tunisia","TR"=> "Turkey","TM"=> "Turkmenistan","TC"=> "Turks and Caicos Islands","TV"=> "Tuvalu","UG"=> "Uganda","UA"=> "Ukraine","AE"=> "United Arab Emirates","GB"=> "United Kingdom","UY"=> "Uruguay","VU"=> "Vanuatu","VA"=> "Vatican City State","VE"=> "Venezuela","VN"=> "Vietnam","WF"=> "Wallis and Futuna Islands","YE"=> "Yemen","ZM"=> "Zambia");
 }
 
 
@@ -847,7 +851,7 @@ if(!$stop_transaction) {
 	$payment->setParameter("x_card_code", $_POST['card_code']);
 	$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
 	$payment->setParameter("x_amount", $invoice->display('amount'));
-	if($recurring) $payment->setParameter("x_recurring_billing", true);
+	if($recurring) $payment->setParameter("x_web_invoice_recurring_billing", true);
 
 	// Order Info
 	$payment->setParameter("x_description", $invoice->display('subject'));
@@ -1103,7 +1107,7 @@ function web_invoice_process_invoice_update($invoice_id) {
 	// See if invoice is recurring
 	if(!empty($web_invoice_subscription_name) &&	!empty($web_invoice_subscription_unit) && !empty($web_invoice_subscription_total_occurances)) {
 		$web_invoice_recurring_status = true;
-		web_invoice_update_invoice_meta($invoice_id, "recurring_billing", true);
+		web_invoice_update_invoice_meta($invoice_id, "web_invoice_recurring_billing", true);
 		$message .= " Recurring invoice saved.  This invoice may be viewed under \"Recurring Billing\". ";
 
 	}
@@ -1111,7 +1115,7 @@ function web_invoice_process_invoice_update($invoice_id) {
 	// See if invoice is recurring
 	if(empty($web_invoice_subscription_name) &&	empty($web_invoice_subscription_unit) && empty($web_invoice_subscription_total_occurances)) {
 		$web_invoice_recurring_status = false;
-		web_invoice_update_invoice_meta($invoice_id, "recurring_billing", false);
+		web_invoice_update_invoice_meta($invoice_id, "web_invoice_recurring_billing", false);
 
 
 	}
@@ -1223,9 +1227,20 @@ function web_invoice_determine_currency($invoice_id) {
 }
 
 function web_invoice_md5_to_invoice($md5) {
-	global $wpdb;
-	$all_invoices = $wpdb->get_col("SELECT invoice_num FROM ".Web_Invoice::tablename('main')." ");
-	foreach ($all_invoices as $value) { if(md5($value) == $md5) return $value; }
+	global $wpdb, $_web_invoice_md5_to_invoice_cache;
+
+	if (isset($_web_invoice_md5_to_invoice_cache[$md5]) && $_web_invoice_md5_to_invoice_cache[$md5]) {
+		return $_web_invoice_md5_to_invoice_cache[$md5];
+	}
+
+	$md5_escaped = mysql_escape_string($md5);
+	$all_invoices = $wpdb->get_col("SELECT invoice_num FROM ".Web_Invoice::tablename('main')." WHERE MD5(invoice_num) = '{$md5_escaped}'");
+	foreach ($all_invoices as $value) {
+		if(md5($value) == $md5) {
+			$_web_invoice_md5_to_invoice_cache[$md5] = $value;
+			return $_web_invoice_md5_to_invoice_cache[$md5];
+		}
+	}
 }
 
 function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
@@ -1233,9 +1248,6 @@ function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
 	$tax = $invoice->display('tax_percent');
 	$amount = $invoice->display('amount');
 	$display_id = $invoice->display('display_id');
-
-
-
 
 	$tax_free_sum = 0;
 	$counter = 1;
@@ -1253,7 +1265,6 @@ function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
 		<input type='hidden' name='amount' value='$amount' />\n";
 
 		$single_item = true;
-
 
 		break;
 		}
@@ -1283,9 +1294,6 @@ function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_
 	$tax = $invoice->display('tax_percent');
 	$amount = $invoice->display('amount');
 	$display_id = $invoice->display('display_id');
-
-
-
 
 	$tax_free_sum = 0;
 	$counter = 1;
