@@ -4,7 +4,7 @@ Plugin Name: Web Invoice
 Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
 Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
 Author: S H Mohanjith
-Version: 1.1.0
+Version: 1.1.1
 Author URI: http://mohanjith.com/
 
 Copyright 2009  S H Mohanjith.   (email : moha@mohanjith.net)
@@ -329,7 +329,7 @@ class Web_Invoice_GetInfo {
 	var $id;
 	var $_row_cache;
 
-	public function __construct($invoice_id) {
+	function __construct($invoice_id) {
 		global $_web_invoice_getinfo, $wpdb;
 
 		$this->id = $invoice_id;
@@ -343,7 +343,7 @@ class Web_Invoice_GetInfo {
 		}
 	}
 
-	private function _setRowCache($row) {
+	function _setRowCache($row) {
 		global $_web_invoice_getinfo;
 
 		if (!$row) {
@@ -440,7 +440,7 @@ class Web_Invoice_GetInfo {
 		global $wpdb;
 
 		if (!$this->_row_cache) {
-			$this->$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$this->id}'"));
+			$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$this->id}'"));
 		}
 
 		$invoice_info = $this->_row_cache ;

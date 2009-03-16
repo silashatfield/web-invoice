@@ -4,7 +4,7 @@ Donate link: http://mohanjith.com/wordpress
 Tags: bill, moneybookers, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
 Tested up to: 2.7.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 
 Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
 
@@ -53,6 +53,13 @@ Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.1.1**
+
+* Made compatible with PHP4
+* When the invoice doesn't save, the MySQL error code is given along with
+  other information.
+* Bug fixes from 1.1.0
 
 **Version 1.1.0**
 

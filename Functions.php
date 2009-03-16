@@ -1100,7 +1100,7 @@ function web_invoice_process_invoice_update($invoice_id) {
 			web_invoice_update_log($invoice_id, 'created', ' Created ');;
 		}
 		else {
-			$error = true; $message = "There was a problem saving invoice.  Try deactivating and reactivating plugin.";
+			$error = true; $message = "There was a problem saving invoice. Try deactivating and reactivating plugin. REF: ".mysql_errno();
 		}
 	}
 
