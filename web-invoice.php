@@ -364,7 +364,7 @@ class Web_Invoice_GetInfo {
 
 		if ($this->_row_cache) {
 			$uid = $this->_row_cache->user_id;
-			$user_email = $this->_row_cache->user_email;
+			$user_email = $wpdb->get_var("SELECT user_email FROM ". $wpdb->prefix . "users WHERE id=".$uid);
 		} else {
 			$uid = false;
 			$user_email = false;
