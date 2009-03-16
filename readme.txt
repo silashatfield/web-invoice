@@ -55,6 +55,10 @@ Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) 
 
 == Change Log ==
 
+**Version 1.2.1**
+
+* Bug fixes from 1.2.0
+
 **Version 1.2.0**
 
 * Support Moneybookers API (Similar to PayPal IPN)

@@ -490,7 +490,7 @@ function web_invoice_complete_removal()
 	return "All settings and databased removed.";
 }
 
-function get_invoice_user_id($invoice_id) {
+function get_web_invoice_user_id($invoice_id) {
 	// in class
 	global $wpdb;
 	$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$invoice_id."'");
@@ -825,7 +825,7 @@ $web_invoice_custom_invoice_id = web_invoice_meta($invoice_id,'web_invoice_custo
 // If there is a custom invoice id, we're setting the $_POST['invoice_num'] to the custom id, because that is what's getting passed to authorize.net
 if($web_invoice_custom_invoice_id) { $_POST['invoice_num'] = $web_invoice_custom_invoice_id; }
 
-$wp_users_id = get_invoice_user_id($invoice_id);
+$wp_users_id = get_web_invoice_user_id($invoice_id);
 
 
 if(empty($_POST['first_name'])){$errors [ 'first_name' ] [] = "Please enter your first name.";$stop_transaction = true;}
