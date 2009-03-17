@@ -407,12 +407,12 @@ function web_invoice_send_email_reciept($invoice_id) {
 
 	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
 
-	$message = web_invoice_show_email($invoice_id);
+	$message = web_invoice_show_receipt_email($invoice_id);
 
 	$from = get_option("web_invoice_email_address");
-	$headers = "From: $from\r\n";
+	$headers = "From: {$from}\r\n";
 	if (get_option('web_invoice_cc_thank_you_email') == 'yes') {
-		$headers = "Bcc: ".get_option('web_invoice_email_address')."\r\n";
+		$headers .= "Bcc: {$from}\r\n";
 	}
 
 	if(mail($invoice_info->recipient('email_address'), "Reciept", $message, $headers))
