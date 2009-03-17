@@ -55,6 +55,10 @@ Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) 
 
 == Change Log ==
 
+**Version 1.2.4**
+
+* Corrected typo (Reciept => Receipt)
+
 **Version 1.2.3**
 
 * Moneybookers API bug fixes (Using POST instead of GET)

@@ -215,7 +215,7 @@ if(is_array($invoice_id))
 	$counter++;
 	web_invoice_update_invoice_meta($single_invoice_id,'paid_status','paid');
  	web_invoice_update_log($single_invoice_id,'paid',"Invoice marked as paid");
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_reciept($single_invoice_id);
+	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($single_invoice_id);
 	}
 
 	if(get_option('web_invoice_send_thank_you_email') == 'yes') {
@@ -230,7 +230,7 @@ else
 	$counter++;
 	web_invoice_update_invoice_meta($invoice_id,'paid_status','paid');
  	web_invoice_update_log($invoice_id,'paid',"Invoice marked as paid");
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_reciept($invoice_id);
+	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
 
 	if(get_option('web_invoice_send_thank_you_email') == 'yes') {
 	return $counter . " invoice marked as paid, and thank you email sent to customer.";
@@ -402,7 +402,7 @@ function web_invoice_draw_select($name,$values,$current_value = '') {
 	return $output;
 }
 
-function web_invoice_send_email_reciept($invoice_id) {
+function web_invoice_send_email_receipt($invoice_id) {
 	global $wpdb;
 
 	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
@@ -415,8 +415,8 @@ function web_invoice_send_email_reciept($invoice_id) {
 		$headers .= "Bcc: {$from}\r\n";
 	}
 
-	if(mail($invoice_info->recipient('email_address'), "Reciept", $message, $headers))
-	{ web_invoice_update_log($invoice_id,'contact','Reciept eMailed'); }
+	if(mail($invoice_info->recipient('email_address'), "Receipt", $message, $headers))
+	{ web_invoice_update_log($invoice_id,'contact','Receipt eMailed'); }
 
 	return $message;
 }
@@ -897,7 +897,7 @@ if(!$stop_transaction) {
 
 	//Mark invoice as paid
 	web_invoice_paid($invoice_id);
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_reciept($invoice_id);
+	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
 
 	if($recurring) {
 

@@ -1236,7 +1236,7 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 </tr>
 
 <tr class="gateway_info">
-	<th width="200">Customer Reciept Email Header</th>
+	<th width="200">Customer Receipt Email Header</th>
 	<td>
 	<input name="web_invoice_gateway_header_email_receipt" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_header_email_receipt')); ?>" />
 	</td>
@@ -1524,17 +1524,17 @@ function web_invoice_user_profile_fields()
 <?php
 }
 
-function web_invoice_show_paypal_reciept($invoice_id) {
+function web_invoice_show_paypal_receipt($invoice_id) {
 
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 
 	if(isset($_POST['first_name'])) update_usermeta($invoice->recipient('user_id'), 'first_name', $_POST['first_name']);
 	if(isset($_POST['last_name'])) update_usermeta($invoice->recipient('user_id'), 'last_name', $_POST['last_name']);
 
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_reciept($invoice_id);
+	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
 
 	web_invoice_paid($invoice_id);
-	web_invoice_update_log($invoice_id,'paid',"PayPal Reciept: (" . $_REQUEST['receipt_id']. ")");
+	web_invoice_update_log($invoice_id,'paid',"PayPal Receipt: (" . $_REQUEST['receipt_id']. ")");
 	if(isset($_REQUEST['payer_email'])) web_invoice_update_log($invoice_id,'paid',"PayPal payee user email: (" . $_REQUEST['payer_email']. ")");
 
 
