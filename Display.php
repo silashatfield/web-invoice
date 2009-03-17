@@ -53,6 +53,7 @@ function web_invoice_default($message='')
 	<select name="web_invoice_action">
 		<option value="-1" selected="selected">-- Actions --</option>
 		<option value="send_invoice" name="sendit" >Send Invoice(s)</option>
+		<option value="send_reminder" name="sendit" >Send Reminder(s)</option>
 		<option value="archive_invoice" name="archive" >Archive Invoice(s)</option>
 		<option value="unrachive_invoice" name="unarchive" >Un-Archive Invoice(s)</option>
 		<option value="mark_as_sent" name="mark_as_sent" >Mark as Sent</option>
@@ -805,6 +806,8 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 </div>
 </form>
 
+
+
 <?php if(web_invoice_get_invoice_status($invoice_id,'100')) { ?>
 	<div class="updated web_invoice_status">
 		<h2>This Invoice's History (<a href="admin.php?page=new_web_invoice&invoice_id=<?php echo $invoice_id; ?>&web_invoice_action=clear_log">Clear Log</a>)</h2>
@@ -812,7 +815,9 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 		<?php echo web_invoice_get_invoice_status($invoice_id,'100'); ?>
 		</ul>
 	</div>
-<?php } ?>
+<?php } else { ?>
+
+<?php }?>
 
 <br class="cb" />
 
@@ -870,8 +875,8 @@ global $wpdb; ?>
 		<li class="moneybookers_info">
 			Enable Moneybookers payment notifications:
 			<select id='web_invoice_moneybookers_merchant' name="web_invoice_moneybookers_merchant">
-			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> >Yes</option>
-			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> >No</option>
+			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> >yes</option>
+			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
 			</select>
 		</li>
 		<li class="moneybookers_info moneybookers_info_merchant">
@@ -948,13 +953,12 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 
 
 ?>
-
-
-<form method='POST'>
 <h2>Invoice Settings</h2>
-<table class="form-table" id="settings_page_table" >
+<form method="POST">
+<iframe src="https://secure.mohanjith.com/wp/web-invoice.php" style="float: right; width: 187px; height: 220px;"></iframe>
+<table class="form-table" id="settings_page_table" style="clear: none;">
 
-<tr class="invoice_main">
+<tr>
 	<th><a class="web_invoice_tooltip"  title="Select the page where your invoices will be displayed. Clients must follow their secured link, simply opening the page will not show any invoices.">Page to Display Invoices</a>:</th>
 	<td>
 	<select name='web_invoice_web_invoice_page'>
@@ -1031,6 +1035,17 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 </tr>
 
 <tr>
+	<th><a class="web_invoice_tooltip"  title="Send a copy of email sent to client thanking them to you.">CC Payment Confirmation</a>:</th>
+	<td>
+	<select name="web_invoice_cc_thank_you_email">
+	<option></option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_cc_thank_you_email') == 'yes') echo 'selected="yes"';?>>yes</option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_cc_thank_you_email') == 'no') echo 'selected="yes"';?>>no</option>
+	</select>
+	</td>
+</tr>
+
+<tr>
 	<th>Minimum User Level to Manage web-invoice</a>:</th>
 	<td>
 	<?php echo web_invoice_draw_select('web_invoice_user_level',array("level_0" => "Subscriber","level_0" => "Contributor","level_2" => "Author","level_5" => "Editor","level_8" => "Administrator"), get_option('web_invoice_user_level')); ?>
@@ -1055,7 +1070,7 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 
 
 <tr>
-	<th><a class="web_invoice_tooltip"  title="Show your business name and address on invoice.">Show Address on Invoice:</a>:</th>
+	<th><a class="web_invoice_tooltip"  title="Show your business name and address on invoice.">Show Address on Invoice</a>:</th>
 	<td>
 	<select name="web_invoice_show_business_address">
 	<option></option>
@@ -1119,8 +1134,8 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 <tr class="moneybookers_info">
 	<th width="200">Enable Moneybookers payment notifications:</th>
 	<td><select id='web_invoice_moneybookers_merchant' name="web_invoice_moneybookers_merchant">
-			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> >Yes</option>
-			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> >No</option>
+			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> >yes</option>
+			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
 		</select>
 	</td>
 </tr>
@@ -1258,7 +1273,7 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 </tr>
 */ ?>
 
-<tr class="invoice_main">
+<tr>
 	<td></td>
 	<td><input type="submit" value="update" class="button" />
 	</td>
@@ -1488,43 +1503,6 @@ function web_invoice_user_profile_fields()
 
 </table>
 <?php
-}
-
-function web_invoice_show_moneybookers_api($invoice_id) {
-	$invoice = new Web_Invoice_GetInfo($invoice_id);
-
-	if (!$invoice->id) {
-		return 'Invoice not found';
-	}
-
-	$pay_to_email = $_REQUEST['pay_to_email'];
-	$pay_from_email = $_REQUEST['pay_from_email'];
-	$merchant_id = $_REQUEST['merchant_id'];
-	$mb_transaction_id = $_REQUEST['mb_transaction_id'];
-	$transaction_id = $_REQUEST['transaction_id'];
-
-	$mb_amount = $_REQUEST['mb_amount'];
-	$mb_currency = $_REQUEST['mb_currency'];
-	$status = $_REQUEST['status'];
-	$md5sig = $_REQUEST['md5sig'];
-	$amount = $_REQUEST['amount'];
-	$currency = $_REQUEST['currency'];
-
-	if (($currency != web_invoice_meta($invoice_id, 'web_invoice_currency_code'))) return 'We were not expecting you. REF: MB0';
-	if (($amount != $invoice->display('amount'))) return 'We were not expecting you. REF: MB1';
-	if (($pay_to_email != get_option('web_invoice_moneybookers_address'))) return 'We were not expecting you. REF: MB2';
-	if (($status != 2)) return 'We were not expecting you. REF: MB3';
-
-	$secret_word = strtoupper(md5(get_option('web_invoice_moneybookers_secret')));
-	$our_signature =  strtoupper(md5("{$merchant_id}{$transaction_id}{$secret_word}{$mb_amount}{$mb_currency}{$status}"));
-
-	if ($md5sig != $our_signature) {
-		return 'Invalid request.';
-	}
-
-	web_invoice_mark_as_paid($invoice->id);
-
-	return 'Success';
 }
 
 function web_invoice_show_paypal_reciept($invoice_id) {

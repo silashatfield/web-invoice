@@ -410,7 +410,10 @@ function web_invoice_send_email_reciept($invoice_id) {
 	$message = web_invoice_show_email($invoice_id);
 
 	$from = get_option("web_invoice_email_address");
-	$headers = "From: $from";
+	$headers = "From: $from\r\n";
+	if (get_option('web_invoice_cc_thank_you_email') == 'yes') {
+		$headers = "Bcc: ".get_option('web_invoice_email_address')."\r\n";
+	}
 
 	if(mail($invoice_info->recipient('email_address'), "Reciept", $message, $headers))
 	{ web_invoice_update_log($invoice_id,'contact','Reciept eMailed'); }
@@ -465,6 +468,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_use_css');
 	delete_option('web_invoice_hide_page_title');
 	delete_option('web_invoice_send_thank_you_email');
+	delete_option('web_invoice_cc_thank_you_email');
 	delete_option('web_invoice_reminder_message');
 
 	//Gateway Settings
@@ -1188,6 +1192,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_payment_method'])) update_option('web_invoice_payment_method', $_POST['web_invoice_payment_method']);
 	if(isset($_POST['web_invoice_protocol'])) update_option('web_invoice_protocol', $_POST['web_invoice_protocol']);
 	if(isset($_POST['web_invoice_send_thank_you_email'])) update_option('web_invoice_send_thank_you_email', $_POST['web_invoice_send_thank_you_email']);
+	if(isset($_POST['web_invoice_cc_thank_you_email'])) update_option('web_invoice_cc_thank_you_email', $_POST['web_invoice_cc_thank_you_email']);
 	if(isset($_POST['web_invoice_show_business_address'])) update_option('web_invoice_show_business_address', $_POST['web_invoice_show_business_address']);
 	if(isset($_POST['web_invoice_show_quantities'])) update_option('web_invoice_show_quantities', $_POST['web_invoice_show_quantities']);
 	if(isset($_POST['web_invoice_use_css'])) update_option('web_invoice_use_css', $_POST['web_invoice_use_css']);

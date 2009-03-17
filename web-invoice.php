@@ -4,7 +4,7 @@ Plugin Name: Web Invoice
 Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
 Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
 Author: S H Mohanjith
-Version: 1.2.1
+Version: 1.2.2
 Author URI: http://mohanjith.com/
 
 Copyright 2009  S H Mohanjith.   (email : moha@mohanjith.net)
@@ -41,6 +41,7 @@ require_once("Flow.php");
 require_once("Functions.php");
 require_once("Display.php");
 require_once("Frontend.php");
+require_once("gateways/moneybookers.class.php");
 
 $web_invoice = new Web_Invoice();
 $web_invoice->security();
@@ -77,6 +78,8 @@ class Web_Invoice {
 		add_action('profile_update','web_invoice_profile_update');
 		add_action('edit_user_profile', 'web_invoice_user_profile_fields');
 		add_action('show_user_profile', 'web_invoice_user_profile_fields');
+
+		add_action('wp', array($this, 'api'));
 
 		register_activation_hook(__FILE__, array(&$this, 'install'));
 		register_deactivation_hook(__FILE__, "web_invoice_deactivation");
@@ -143,6 +146,15 @@ class Web_Invoice {
 		$Web_Invoice_Decider = new Web_Invoice_Decider('web_invoice_recurring_billing');
 		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
 		echo $Web_Invoice_Decider->display();
+	}
+
+	function api() {
+		if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page'))) {
+			if((get_option('web_invoice_moneybookers_merchant') == 'True') && isset($_REQUEST['mb_transaction_id']) && isset($_REQUEST['status'])) {
+				$moneybookers_obj = new Web_Invoice_Moneybookers($_GET['transaction_id']);
+				$moneybookers_obj->processRequest($_SERVER['REMOTE_ADDR'], $_POST);
+			}
+		}
 	}
 
 	function invoice_overview() {
@@ -302,6 +314,7 @@ class Web_Invoice {
 		add_option('web_invoice_use_css','yes');
 		add_option('web_invoice_force_https','false');
 		add_option('web_invoice_send_thank_you_email','no');
+		add_option('web_invoice_cc_thank_you_email','no');
 
 		//Authorize.net Gateway  Settings
 		add_option('web_invoice_gateway_username','');
@@ -322,7 +335,7 @@ class Web_Invoice {
 		// Moneybookers
 		add_option('web_invoice_moneybookers_merchant','False');
 		add_option('web_invoice_moneybookers_secret',uniqid());
-		add_option('web_invoice_moneybookers_ip', '213.129.75.203');
+		add_option('web_invoice_moneybookers_ip', '83.220.158.0-83.220.158.31');
 	}
 
 }

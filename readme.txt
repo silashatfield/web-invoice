@@ -1,4 +1,4 @@
-=== Web Invoice ===
+=== Web Invoice - Invoicing and billing for WordPress ===
 Contributors: mohanjith
 Donate link: http://mohanjith.com/wordpress
 Tags: bill, moneybookers, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
@@ -54,6 +54,12 @@ Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.2.2**
+
+* Better debugging for Moneybookers API
+* Send reminders
+* Bug fixes from 1.2.1
 
 **Version 1.2.1**
 
