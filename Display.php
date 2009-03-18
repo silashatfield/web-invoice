@@ -837,6 +837,7 @@ global $wpdb; ?>
 	$web_invoice_web_invoice_page = get_option("web_invoice_web_invoice_page");
 	$web_invoice_paypal_address = get_option("web_invoice_paypal_address");
 	$web_invoice_moneybookers_address = get_option("web_invoice_moneybookers_address");
+	$web_invoice_alertpay_address = get_option("web_invoice_alertpay_address");
 	$web_invoice_gateway_username = get_option("web_invoice_gateway_username");
 	$web_invoice_payment_method = get_option("web_invoice_payment_method");
 
@@ -864,6 +865,7 @@ global $wpdb; ?>
 		<option></option>
 		<option value="paypal" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'paypal') echo 'selected="yes"';?>>PayPal</option>
 		<option value="moneybookers" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'moneybookers') echo 'selected="yes"';?>>Moneybookers</option>
+		<option value="alertpay" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'alertpay') echo 'selected="yes"';?>>AlertPay</option>
 		<option value="cc" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'cc') echo 'selected="yes"';?>>Credit Card</option>
 		</select>
 
@@ -871,6 +873,7 @@ global $wpdb; ?>
 
 		<li class="moneybookers_info">
 			Your Moneybookers username: <input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
+			<a href="http://keti.ws/27481" alt="moneybookers.com" class="web_invoice_click_me">Do you need a Moneybookers account?</a>
 		</li>
 		<li class="moneybookers_info">
 			Enable Moneybookers payment notifications:
@@ -884,6 +887,24 @@ global $wpdb; ?>
 		</li>
 		<li class="moneybookers_info moneybookers_info_merchant">
 			Moneybookers payment notification IP: <input id='web_invoice_moneybookers_ip' name="web_invoice_moneybookers_ip" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" />
+		</li>
+
+		<li class="alertpay_info">
+			Your AlertPay username: <input id='web_invoice_alertpay_address' name="web_invoice_alertpay_address" class="search-input input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
+			<a href="http://keti.ws/36283" alt="alertpay.com" class="web_invoice_click_me">Do you need an AlertPay account?</a>
+		</li>
+		<li class="alertpay_info">
+			Enable AlertPay IPN:
+			<select id='web_invoice_alertpay_merchant' name="web_invoice_alertpay_merchant">
+			<option value="True" <?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?> >yes</option>
+			<option value="False" <?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
+			</select>
+			<span class="web_invoice_alertpay_url web_invoice_info">Your alert URL is
+				<a title="Copy this link" href="<?php echo get_permalink(get_option('web_invoice_web_invoice_page')); ?>"><?php echo get_permalink(get_option('web_invoice_web_invoice_page')); ?></a>
+			</span>
+		</li>
+		<li class="alertpay_info alertpay_info_merchant">
+			AlertPay IPN security code: <input id='web_invoice_alertpay_secret' name="web_invoice_alertpay_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" />
 		</li>
 
 		<li class="gateway_info">
@@ -1114,6 +1135,7 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 	<select id="web_invoice_payment_method" name="web_invoice_payment_method">
 	<option value="paypal" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'paypal') echo 'selected="yes"';?>>PayPal</option>
 	<option value="moneybookers" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'moneybookers') echo 'selected="yes"';?>>Moneybookers</option>
+	<option value="alertpay" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'alertpay') echo 'selected="yes"';?>>AlertPay</option>
 	<option value="cc" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'cc') echo 'selected="yes"';?>>Credit Card</option>
 	</select>
 	</td>
@@ -1127,7 +1149,9 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 
 <tr class="moneybookers_info">
 	<th width="200">Moneybookers Username</th>
-	<td><input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
+	<td>
+		<input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
+		<a id="web_invoice_moneybookers_register_link" href="http://keti.ws/27481" alt="moneybookers.com" class="web_invoice_click_me">Do you need a Moneybookers account?</a>
 	</td>
 </tr>
 
@@ -1146,6 +1170,37 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 <tr class="moneybookers_info moneybookers_info_merchant">
 	<th>Moneybookers payment notification IP:</th>
 	<td><input id='web_invoice_moneybookers_ip' name="web_invoice_moneybookers_ip" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" /></td>
+</tr>
+
+<tr class="alertpay_info">
+	<th>Your AlertPay username:</th>
+	<td>
+		<input id='web_invoice_alertpay_address' name="web_invoice_alertpay_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
+		<a id="web_invoice_alertpay_register_link" href="http://keti.ws/36283" alt="alertpay.com" class="web_invoice_click_me">Do you need an AlertPay account?</a>
+	</td>
+</tr>
+<tr class="alertpay_info">
+	<th>Enable AlertPay IPN:</th>
+	<td><select id='web_invoice_alertpay_merchant' name="web_invoice_alertpay_merchant">
+			<option value="True" <?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?> >yes</option>
+			<option value="False" <?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
+		</select>
+		<span class="web_invoice_alertpay_url web_invoice_info">Your alert URL is
+			<a title="Copy this link" href="<?php echo get_permalink(get_option('web_invoice_web_invoice_page')); ?>"><?php echo get_permalink(get_option('web_invoice_web_invoice_page')); ?></a>
+		</span>
+	</td>
+<tr class="alertpay_info alertpay_info_merchant">
+	<th>AlertPay IPN security code:</th
+	<td><input id='web_invoice_alertpay_secret' name="web_invoice_alertpay_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" /></td>
+</tr>
+<tr class="alertpay_info alertpay_info_merchant">
+	<th>Test / Live Mode:</th>
+	<td>
+	<select name="web_invoice_alertpay_test_mode">
+	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_alertpay_test_mode') == 'TRUE') echo 'selected="yes"';?>>Test - Do Not Process Transactions</option>
+	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_alertpay_test_mode') == 'FALSE') echo 'selected="yes"';?>>Live - Process Transactions</option>
+	</select>
+	</td>
 </tr>
 
 <tr>
@@ -1579,42 +1634,57 @@ function web_invoice_show_business_address() {
 function web_invoice_show_billing_information($invoice_id) {
 $invoice = new Web_Invoice_GetInfo($invoice_id);
 $Web_Invoice = new Web_Invoice();
-$pp = false; $cc = false; $mb = false;
+$pp = false; $cc = false; $mb = false; $alertpay = false;
 
 if(get_option('web_invoice_payment_method') == 'paypal') { $pp = true; }
 if(get_option('web_invoice_payment_method') == 'moneybookers') { $mb = true; }
+if(get_option('web_invoice_payment_method') == 'alertpay') { $alertpay = true; }
 if(get_option('web_invoice_payment_method') == 'cc') { $cc = true;}
 
 ?>
 
 <div id="billing_overview" class="clearfix noprint">
 
-<h2 class="invoice_page_subheading">Billing Information</h2>
+<?php if (!$alertpay) { ?>
+	<h2 class="invoice_page_subheading">Billing Information</h2>
 
-<?php if($cc) { ?>
-<form method="post" name="checkout_form" id="checkout_form" class="online_payment_form" onsubmit="process_cc_checkout(); return false;" class="clearfix">
-<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
-<input type="hidden" name="user_id" value="<?php echo $invoice->recipient('user_id'); ?>" />
-<input type="hidden" name="email_address" value="<?php echo $invoice->recipient('email_address'); ?>" />
-<input type="hidden" name="invoice_num" value="<?php echo  $invoice_id; ?>" />
-<input type="hidden" name="currency_code" id="currency_code"  value="<?php echo $invoice->display('currency'); ?>" />
-<input type="hidden" name="web_invoice_id_hash" value="<?php echo $invoice->display('hash'); ?>" />
-<?php } ?>
+	<?php if($cc) { ?>
+	<form method="post" name="checkout_form" id="checkout_form" class="online_payment_form" onsubmit="process_cc_checkout(); return false;" class="clearfix">
+	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
+	<input type="hidden" name="user_id" value="<?php echo $invoice->recipient('user_id'); ?>" />
+	<input type="hidden" name="email_address" value="<?php echo $invoice->recipient('email_address'); ?>" />
+	<input type="hidden" name="invoice_num" value="<?php echo  $invoice_id; ?>" />
+	<input type="hidden" name="currency_code" id="currency_code"  value="<?php echo $invoice->display('currency'); ?>" />
+	<input type="hidden" name="web_invoice_id_hash" value="<?php echo $invoice->display('hash'); ?>" />
+	<?php } ?>
 
-<?php if($mb) { ?>
-<form action="https://www.moneybookers.com/app/payment.pl" method="post" class="clearfix" target="_moneybookers">
-<input type="hidden" name="currency" value="<?php echo $invoice->display('currency'); ?>" />
-<input type="hidden" name="no_shipping" value="1">
-<input type="hidden" name="pay_to_email" value="<?php echo get_option('web_invoice_moneybookers_address'); ?>" />
+	<?php if($mb) { ?>
+	<form action="https://www.moneybookers.com/app/payment.pl" method="post" class="clearfix" target="_moneybookers">
+	<input type="hidden" name="currency" value="<?php echo $invoice->display('currency'); ?>" />
+	<input type="hidden" name="no_shipping" value="1">
+	<input type="hidden" name="pay_to_email" value="<?php echo get_option('web_invoice_moneybookers_address'); ?>" />
+	<input type="hidden" name="return_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+	<input type="hidden" name="status_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
+	<input type="hidden" name="transaction_id" id="invoice_num" value="<?php echo  $invoice->display('display_id'); ?>" />
+	<?php
+	// Convert Itemized List into Moneybookers Item List
+	if(is_array($invoice->display('itemized'))) echo web_invoice_create_moneybookers_itemized_list($invoice->display('itemized'),$invoice_id);
+	?>
+	<?php } ?>
+
+<?php } else { ?>
+<form action="https://www.alertpay.com/PayProcess.aspx" method="post" class="clearfix" target="_moneybookers">
+<input type="hidden" name="ap_currency" value="<?php echo $invoice->display('currency'); ?>" />
+<input type="hidden" name="ap_purchasetype" value="Service">
+<input type="hidden" name="ap_merchant" value="<?php echo get_option('web_invoice_alertpay_address'); ?>" />
+<input type="hidden" name="ap_totalamount" value="<?php echo $invoice->display('amount'); ?>" />
+<input type="hidden" name="ap_itemname" id="invoice_num" value="<?php echo  $invoice->display('display_id'); ?>" />
 <input type="hidden" name="return_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
-<input type="hidden" name="status_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
-<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
-<input type="hidden" name="transaction_id" id="invoice_num" value="<?php echo  $invoice->display('display_id'); ?>" />
 <?php
-// Convert Itemized List into PayPal Item List
-if(is_array($invoice->display('itemized'))) echo web_invoice_create_moneybookers_itemized_list($invoice->display('itemized'),$invoice_id);
-?>
-<?php } ?>
+// Convert Itemized List into AlertPay Item List (Not supported, we just show an aggregated fields)
+if(is_array($invoice->display('itemized'))) echo web_invoice_create_alertpay_itemized_list($invoice->display('itemized'),$invoice_id);
+} ?>
 
 <?php if($pp) { ?>
 <form action="https://www.paypal.com/us/cgi-bin/webscr" method="post" class="clearfix">
@@ -1632,8 +1702,8 @@ if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemi
 ?>
 <?php } ?>
 
-
 <fieldset id="credit_card_information">
+<?php if (!$alertpay) { ?>
 	<ol>
 
 	<?php if ($mb) { ?>
@@ -1728,13 +1798,6 @@ if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemi
 	<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
 	</li>
 
-	<?php /* if($amount < 1) { ?>
-	<li>
-	<label for="amount">Amount:</label>
-	$<input name="amount" class="no_set_amount" type="input" value="" />
-	</li>
-	<?php } */ ?>
-
 	<?php if($cc) { ?>
 
 	<li class="hide_after_success">
@@ -1776,6 +1839,12 @@ if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemi
 	<input type="image" src="http://www.moneybookers.com/images/logos/checkout_logos/checkoutlogo_CCs_240x80.gif" style="border:0; width:240px; height:80px; padding:0;" name="submit" alt="Moneybookers.com and money moves" />
 	</li>
 	<?php } ?>
+<?php } else { ?>
+	<li>
+	<label for="submit">&nbsp;</label>
+	<input type="image" src="https://www.alertpay.com//PayNow/4FF7280888FE4FD4AE1B4A286ED9B8D5a.gif" style="border:0; width:170px; height:70px; padding:0;" name="submit" alt="Pay now with AlertPay" />
+	</li>
+<?php } ?>
 
 	<br class="cb" />
 	</ol>

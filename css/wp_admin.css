@@ -39,6 +39,7 @@
 .web_invoice_click_me, .web_invoice_click_me a{cursor: pointer; color:#FF7200; text-decoration:none; font-size: 11px;}
 #web_invoice_first_time_setup .paypal_info {display:none;}
 #web_invoice_first_time_setup .moneybookers_info {display:none;}
+#web_invoice_first_time_setup .alertpay_info {display:none;}
 #web_invoice_first_time_setup .gateway_info {display:none;}
 #web_invoice_first_time_setup input {width: 300px;}
 #web_invoice_first_time_setup select{margin-left: 10px; }
@@ -88,6 +89,7 @@
 #invoice_history_log {margin-left:10px;}
 #settings_page_table  .gateway_info  {display:none;}
 #settings_page_table  .moneybookers_info  {display:none;}
+#settings_page_table  .alertpay_info  {display:none;}
 #settings_page_table  .paypal_info  {display:none;}
 #settings_page_table  .input_field, #settings_page_table  textarea  {width: 340px;}
 #web_invoice_enable_recurring_billing {padding: 20px;}

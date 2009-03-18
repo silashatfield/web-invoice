@@ -460,7 +460,6 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_business_address');
 	delete_option('web_invoice_business_phone');
 	delete_option('web_invoice_paypal_address');
-	delete_option('web_invoice_moneybookers_address');
 	delete_option('web_invoice_default_currency_code');
 	delete_option('web_invoice_web_invoice_page');
 	delete_option('web_invoice_billing_meta');
@@ -487,9 +486,16 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_gateway_email_customer');
 
 	// Moneybookers
+	delete_option('web_invoice_moneybookers_address');
 	delete_option('web_invoice_moneybookers_merchant');
 	delete_option('web_invoice_moneybookers_secret');
 	delete_option('web_invoice_moneybookers_ip');
+
+	// AlertPay
+	delete_option('web_invoice_alertpay_address');
+	delete_option('web_invoice_alertpay_merchant');
+	delete_option('web_invoice_alertpay_secret');
+	delete_option('web_invoice_alertpay_test_mode');
 
 	return "All settings and databased removed.";
 }
@@ -1187,7 +1193,6 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_email_address'])) update_option('web_invoice_email_address', $_POST['web_invoice_email_address']);
 	if(isset($_POST['web_invoice_force_https'])) update_option('web_invoice_force_https', $_POST['web_invoice_force_https']);
 	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
-	if(isset($_POST['web_invoice_moneybookers_address'])) update_option('web_invoice_moneybookers_address', $_POST['web_invoice_moneybookers_address']);
 	if(isset($_POST['web_invoice_payment_link'])) update_option('web_invoice_payment_link', $_POST['web_invoice_payment_link']);
 	if(isset($_POST['web_invoice_payment_method'])) update_option('web_invoice_payment_method', $_POST['web_invoice_payment_method']);
 	if(isset($_POST['web_invoice_protocol'])) update_option('web_invoice_protocol', $_POST['web_invoice_protocol']);
@@ -1218,9 +1223,16 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_gateway_email_customer'])) update_option('web_invoice_gateway_email_customer', $_POST['web_invoice_gateway_email_customer']);
 
 	// Moneybookers
+	if(isset($_POST['web_invoice_moneybookers_address'])) update_option('web_invoice_moneybookers_address', $_POST['web_invoice_moneybookers_address']);
 	if(isset($_POST['web_invoice_moneybookers_merchant'])) update_option('web_invoice_moneybookers_merchant', $_POST['web_invoice_moneybookers_merchant']);
 	if(isset($_POST['web_invoice_moneybookers_secret'])) update_option('web_invoice_moneybookers_secret', $_POST['web_invoice_moneybookers_secret']);
 	if(isset($_POST['web_invoice_moneybookers_ip'])) update_option('web_invoice_moneybookers_ip', $_POST['web_invoice_moneybookers_ip']);
+
+	// AlertPay
+	if(isset($_POST['web_invoice_alertpay_address'])) update_option('web_invoice_alertpay_address', $_POST['web_invoice_alertpay_address']);
+	if(isset($_POST['web_invoice_alertpay_merchant'])) update_option('web_invoice_alertpay_merchant', $_POST['web_invoice_alertpay_merchant']);
+	if(isset($_POST['web_invoice_alertpay_secret'])) update_option('web_invoice_alertpay_secret', $_POST['web_invoice_alertpay_secret']);
+	if(isset($_POST['web_invoice_alertpay_test_mode'])) update_option('web_invoice_alertpay_test_mode', $_POST['web_invoice_alertpay_test_mode']);
 }
 
 function web_invoice_is_not_merchant() {
@@ -1319,7 +1331,7 @@ function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_
 
 		// In case this isn't the first loop, unset anything we've done so far
 		$output = "
-		<input type='hidden' name='item_name' value='Reference Invoice #$display_id' /> \n
+		<input type='hidden' name='item_name' value='Reference Invoice # $display_id' /> \n
 		<input type='hidden' name='amount' value='$amount' />\n";
 
 		$single_item = true;
@@ -1347,3 +1359,43 @@ function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_
 
 	return $output;
 }
+
+function web_invoice_create_alertpay_itemized_list($itemized_array,$invoice_id) {
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	$tax = $invoice->display('tax_percent');
+	$amount = $invoice->display('amount');
+	$display_id = $invoice->display('display_id');
+
+	$tax_free_sum = 0;
+	$counter = 1;
+	foreach($itemized_array as $itemized_item) {
+
+		// If we have a negative item, Moneybookers will not accept, we must group everything into one amount
+		if($itemized_item[price] * $itemized_item[quantity] < 0) {
+
+		unset($output);
+		unset($tax);
+
+		// In case this isn't the first loop, unset anything we've done so far
+		$single_item = true;
+
+		break;
+		}
+		$counter++;
+		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
+	}
+
+	$output = "
+		<input type='hidden' name='ap_itemdescription' value='Reference Invoice # $display_id' /> \n
+		<input type='hidden' name='ap_amount' value='$tax_free_sum' />\n
+		<input type='hidden' name='ap_quantity' value='1' />\n";
+
+	// Add tax only by using tax_free_sum (which is the sums of all the individual items * quantities.
+	if(!empty($tax)) {
+		$tax_cart = round($tax_free_sum * ($tax / 100),2);
+		$output .= "<input type='hidden' name='ap_taxamount' value='". $tax_cart ."' />\n";
+	}
+
+	return $output;
+}
+

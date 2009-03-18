@@ -41,7 +41,6 @@ require_once("Flow.php");
 require_once("Functions.php");
 require_once("Display.php");
 require_once("Frontend.php");
-require_once("gateways/moneybookers.class.php");
 
 $web_invoice = new Web_Invoice();
 $web_invoice->security();
@@ -151,8 +150,13 @@ class Web_Invoice {
 	function api() {
 		if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page'))) {
 			if((get_option('web_invoice_moneybookers_merchant') == 'True') && isset($_POST['mb_transaction_id']) && isset($_POST['status'])) {
+				require_once("gateways/moneybookers.class.php");
 				$moneybookers_obj = new Web_Invoice_Moneybookers($_POST['transaction_id']);
 				$moneybookers_obj->processRequest($_SERVER['REMOTE_ADDR'], $_POST);
+			} else if((get_option('web_invoice_alertpay_merchant') == 'True') && isset($_POST['ap_itemname']) && isset($_POST['ap_securitycode'])) {
+				require_once("gateways/alertpay.class.php");
+				$alertpay_obj = new Web_Invoice_AlertPay($_POST['ap_itemname']);
+				$alertpay_obj->processRequest($_SERVER['REMOTE_ADDR'], $_POST);
 			}
 		}
 	}
@@ -191,7 +195,7 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'));
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'));
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery') );
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery') );
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.3.0');
 		} else {
 
 			// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
@@ -307,7 +311,6 @@ class Web_Invoice {
 		add_option('web_invoice_user_level','level_8');
 		add_option('web_invoice_web_invoice_page','');
 		add_option('web_invoice_paypal_address','');
-		add_option('web_invoice_moneybookers_address','');
 		add_option('web_invoice_default_currency_code','USD');
 
 		add_option('web_invoice_show_quantities','Hide');
@@ -333,9 +336,16 @@ class Web_Invoice {
 		add_option('web_invoice_gateway_email_customer','FALSE');
 
 		// Moneybookers
+		add_option('web_invoice_moneybookers_address','');
 		add_option('web_invoice_moneybookers_merchant','False');
 		add_option('web_invoice_moneybookers_secret',uniqid());
 		add_option('web_invoice_moneybookers_ip', '83.220.158.0-83.220.158.31');
+
+		// AlertPay
+		add_option('web_invoice_alertpay_address','');
+		add_option('web_invoice_alertpay_merchant','False');
+		add_option('web_invoice_alertpay_secret',uniqid());
+		add_option('web_invoice_alertpay_test_mode','FALSE');
 	}
 
 }

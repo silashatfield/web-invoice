@@ -132,15 +132,46 @@ jQuery(document).ready(function(){
 		jQuery('.moneybookers_info').show();
 
 		if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
+		if(jQuery('#web_invoice_moneybookers_address').val() != '') { jQuery('#web_invoice_moneybookers_register_link').hide(); }
+	}
+	if(jQuery('#web_invoice_payment_method').val() == 'alertpay') {
+		jQuery('.alertpay_info').show();
+
+		if(jQuery('#web_invoice_alertpay_merchant').val() == 'False') {  jQuery('.alertpay_info_merchant').hide();  }
+		if(jQuery('#web_invoice_alertpay_address').val() != '') { jQuery('#web_invoice_alertpay_register_link').hide(); }
 	}
 
 	jQuery('#web_invoice_payment_method').change(function(){
-		if(jQuery(this).val() == 'paypal') {  jQuery('.paypal_info').show(); jQuery('.moneybookers_info').hide(); jQuery('.gateway_info').hide();  }
-		if(jQuery(this).val() == 'moneybookers') {
-			jQuery('.moneybookers_info').show(); jQuery('.paypal_info').hide(); jQuery('.gateway_info').hide();
-			if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
+		if(jQuery(this).val() == 'paypal') {
+			jQuery('.paypal_info').show();
+			jQuery('.moneybookers_info').hide();
+			jQuery('.alertpay_info').hide();
+			jQuery('.gateway_info').hide();
 		}
-		if(jQuery(this).val() == 'cc') {  jQuery('.gateway_info').show(); jQuery('.moneybookers_info').hide(); jQuery('.paypal_info').hide(); }
+		if(jQuery(this).val() == 'moneybookers') {
+			jQuery('.moneybookers_info').show();
+			jQuery('.paypal_info').hide();
+			jQuery('.gateway_info').hide();
+			jQuery('.alertpay_info').hide();
+
+			if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
+			if(jQuery('#web_invoice_moneybookers_address').val() != '') { jQuery('#web_invoice_moneybookers_register_link').hide(); }
+		}
+		if(jQuery(this).val() == 'alertpay') {
+			jQuery('.alertpay_info').show();
+			jQuery('.moneybookers_info').hide();
+			jQuery('.paypal_info').hide();
+			jQuery('.gateway_info').hide();
+
+			if(jQuery('#web_invoice_alertpay_merchant').val() == 'False') {  jQuery('.alertpay_info_merchant').hide();  }
+			if(jQuery('#web_invoice_alertpay_address').val() != '') { jQuery('#web_invoice_alertpay_register_link').hide(); }
+		}
+		if(jQuery(this).val() == 'cc') {
+			jQuery('.gateway_info').show();
+			jQuery('.moneybookers_info').hide();
+			jQuery('.alertpay_info').hide();
+			jQuery('.paypal_info').hide();
+		}
 	});
 
 	jQuery('#web_invoice_moneybookers_merchant').change(function(){
@@ -149,6 +180,15 @@ jQuery(document).ready(function(){
 		}
 		if(jQuery(this).val() == 'False') {
 			jQuery('.moneybookers_info_merchant').hide();
+		}
+	});
+
+	jQuery('#web_invoice_alertpay_merchant').change(function(){
+		if(jQuery(this).val() == 'True') {
+			jQuery('.alertpay_info_merchant').show();
+		}
+		if(jQuery(this).val() == 'False') {
+			jQuery('.alertpay_info_merchant').hide();
 		}
 	});
 

@@ -10,8 +10,6 @@ Web-Invoice lets you create and send web invoices and setup recurring billing fo
 
 == Description ==
 
-**This is a fork of [WP-Invoice](http://wordpress.org/extend/plugins/wp-invoice/)**
-
 Web Invoice lets WordPress blog owners send itemized invoices to their clients. Ideal for web developers, SEO consultants, general contractors, or anyone with a WordPress blog and clients to bill. The plugin ties into WP's user management database to keep track of your clients and their information.
 
 Once an invoice is created from the WP admin section, an email with a brief description and a unique link is sent to client. Clients follow the link to your blog's special invoice page, view their invoice, and pay their bill using Moneybookers or PayPal. The control panel is very user-friendly and intuitive.
@@ -24,14 +22,16 @@ Some features:
 * Prefill customer information using the WordPress user list
 * Send invoice notifications to customers with a secured link back to the web invoice
 * Accept credit card payment via Authorize.net or MerchantPlus NaviGate
-* Moneybookers or PayPal available if you don't have a credit card processing account
+* Moneybookers, AlertPay or PayPal available if you don't have a credit card processing account
 * Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature
 * Force web invoice pages to be viewed in SSL mode
 * Archive old invoices
 * Easily use old invoices as templates for new ones
 * Dynamic and intuitive user interface
 * Automatically mark invoices paid via Moneybookers as paid (Requires merchant status)
+* Automatically mark invoices paid via AlertPay as paid (Requires business status)
 
+This is a fork of [WP-Invoice](http://wordpress.org/extend/plugins/wp-invoice/), however now lot of things have changed since.
 
 == Installation ==
 
@@ -54,6 +54,11 @@ Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.3.0**
+
+* Add support for AlertPay
+* Support AlertPay IPN (Similar to PayPal IPN)
 
 **Version 1.2.4**
 
