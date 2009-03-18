@@ -1386,7 +1386,7 @@ function web_invoice_create_alertpay_itemized_list($itemized_array,$invoice_id) 
 	}
 
 	$output = "
-		<input type='hidden' name='ap_itemdescription' value='Reference Invoice # $display_id' /> \n
+		<input type='hidden' name='ap_description' value='Reference Invoice # $display_id' /> \n
 		<input type='hidden' name='ap_amount' value='$tax_free_sum' />\n
 		<input type='hidden' name='ap_quantity' value='1' />\n";
 

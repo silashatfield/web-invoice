@@ -31,6 +31,8 @@ Some features:
 * Automatically mark invoices paid via Moneybookers as paid (Requires merchant status)
 * Automatically mark invoices paid via AlertPay as paid (Requires business status)
 
+If you like this plugin please give it a good rating, and consider saying thanks or making a donation.
+
 This is a fork of [WP-Invoice](http://wordpress.org/extend/plugins/wp-invoice/), however now lot of things have changed since.
 
 == Installation ==
