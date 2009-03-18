@@ -1680,7 +1680,7 @@ if(get_option('web_invoice_payment_method') == 'cc') { $cc = true;}
 <input type="hidden" name="ap_merchant" value="<?php echo get_option('web_invoice_alertpay_address'); ?>" />
 <input type="hidden" name="ap_totalamount" value="<?php echo $invoice->display('amount'); ?>" />
 <input type="hidden" name="ap_itemname" id="invoice_num" value="<?php echo  $invoice->display('display_id'); ?>" />
-<input type="hidden" name="return_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+<input type="hidden" name="ap_returnurl" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
 <?php
 // Convert Itemized List into AlertPay Item List (Not supported, we just show an aggregated fields)
 if(is_array($invoice->display('itemized'))) echo web_invoice_create_alertpay_itemized_list($invoice->display('itemized'),$invoice_id);
