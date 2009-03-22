@@ -59,13 +59,8 @@ function web_invoice_the_content($content) {
 
 
 	?></div><?php
-
-
 	} else return $content;
-
 }
-
-
 
 function web_invoice_frontend_js() {
 if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page')))  {

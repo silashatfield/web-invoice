@@ -1194,7 +1194,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_force_https'])) update_option('web_invoice_force_https', $_POST['web_invoice_force_https']);
 	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 	if(isset($_POST['web_invoice_payment_link'])) update_option('web_invoice_payment_link', $_POST['web_invoice_payment_link']);
-	if(isset($_POST['web_invoice_payment_method'])) update_option('web_invoice_payment_method', $_POST['web_invoice_payment_method']);
+	if(isset($_POST['web_invoice_payment_method'])) update_option('web_invoice_payment_method', join($_POST['web_invoice_payment_method'],','));
 	if(isset($_POST['web_invoice_protocol'])) update_option('web_invoice_protocol', $_POST['web_invoice_protocol']);
 	if(isset($_POST['web_invoice_send_thank_you_email'])) update_option('web_invoice_send_thank_you_email', $_POST['web_invoice_send_thank_you_email']);
 	if(isset($_POST['web_invoice_cc_thank_you_email'])) update_option('web_invoice_cc_thank_you_email', $_POST['web_invoice_cc_thank_you_email']);
@@ -1265,6 +1265,10 @@ function web_invoice_md5_to_invoice($md5) {
 			return $_web_invoice_md5_to_invoice_cache[$md5];
 		}
 	}
+}
+
+function web_invoice_get_alertpay_api_url() {
+	return get_permalink(get_option('web_invoice_web_invoice_page'));
 }
 
 function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {

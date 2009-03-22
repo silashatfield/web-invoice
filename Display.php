@@ -861,12 +861,12 @@ global $wpdb; ?>
 
 <?php if(empty($web_invoice_payment_method)) { ?>
 	<li>Select how you want to accept money:
-		<select id="web_invoice_payment_method" name="web_invoice_payment_method">
+		<select id="web_invoice_payment_method" name="web_invoice_payment_method[]" multiple="multiple" size="3">
 		<option></option>
-		<option value="paypal" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'paypal') echo 'selected="yes"';?>>PayPal</option>
-		<option value="moneybookers" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'moneybookers') echo 'selected="yes"';?>>Moneybookers</option>
-		<option value="alertpay" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'alertpay') echo 'selected="yes"';?>>AlertPay</option>
-		<option value="cc" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'cc') echo 'selected="yes"';?>>Credit Card</option>
+		<option value="paypal" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>>PayPal</option>
+		<option value="moneybookers" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>>Moneybookers</option>
+		<option value="alertpay" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>>AlertPay</option>
+		<option value="cc" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>>Credit Card</option>
 		</select>
 
 		<li class="paypal_info">Your PayPal username: <input id='web_invoice_paypal_address' name="web_invoice_paypal_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" /></li>
@@ -900,7 +900,8 @@ global $wpdb; ?>
 			<option value="False" <?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
 			</select>
 			<span class="web_invoice_alertpay_url web_invoice_info">Your alert URL is
-				<a title="Copy this link" href="<?php echo get_permalink(get_option('web_invoice_web_invoice_page')); ?>"><?php echo get_permalink(get_option('web_invoice_web_invoice_page')); ?></a>
+				<a title="Copy this link" href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br/>
+				Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).
 			</span>
 		</li>
 		<li class="alertpay_info alertpay_info_merchant">
@@ -1132,11 +1133,11 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 <tr>
 	<th>Payment Method:</th>
 	<td>
-	<select id="web_invoice_payment_method" name="web_invoice_payment_method">
-	<option value="paypal" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'paypal') echo 'selected="yes"';?>>PayPal</option>
-	<option value="moneybookers" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'moneybookers') echo 'selected="yes"';?>>Moneybookers</option>
-	<option value="alertpay" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'alertpay') echo 'selected="yes"';?>>AlertPay</option>
-	<option value="cc" style="padding-right: 10px;"<?php if(get_option('web_invoice_payment_method') == 'cc') echo 'selected="yes"';?>>Credit Card</option>
+	<select id="web_invoice_payment_method" name="web_invoice_payment_method[]" multiple="multiple" size="3">
+	<option value="paypal" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>>PayPal</option>
+	<option value="moneybookers" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>>Moneybookers</option>
+	<option value="alertpay" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>>AlertPay</option>
+	<option value="cc" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>>Credit Card</option>
 	</select>
 	</td>
 </tr>
@@ -1186,7 +1187,8 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 			<option value="False" <?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
 		</select>
 		<span class="web_invoice_alertpay_url web_invoice_info">Your alert URL is
-			<a title="Copy this link" href="<?php echo get_permalink(get_option('web_invoice_web_invoice_page')); ?>"><?php echo get_permalink(get_option('web_invoice_web_invoice_page')); ?></a>
+			<a title="Copy this link" href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br/>
+			Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).
 		</span>
 	</td>
 <tr class="alertpay_info alertpay_info_merchant">
@@ -1305,8 +1307,6 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 	</td>
 </tr>
 
-
-
 <tr class="gateway_info">
 	<th>Delim Data:</th>
 	<td>
@@ -1316,17 +1316,6 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 	</select>
 	</td>
 </tr>
-
-<?php /*<tr class="gateway_info">
-	<th>Relay Response:</th>
-	<td>
-	<select name="web_invoice_gateway_relay_response">
-	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_relay_response') == 'TRUE') echo 'selected="yes"';?>>True</option>
-	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_relay_response') == 'FALSE') echo 'selected="yes"';?>>False</option>
-	</select>
-	</td>
-</tr>
-*/ ?>
 
 <tr>
 	<td></td>
@@ -1636,32 +1625,77 @@ $invoice = new Web_Invoice_GetInfo($invoice_id);
 $Web_Invoice = new Web_Invoice();
 $pp = false; $cc = false; $mb = false; $alertpay = false;
 
-if(get_option('web_invoice_payment_method') == 'paypal') { $pp = true; }
-if(get_option('web_invoice_payment_method') == 'moneybookers') { $mb = true; }
-if(get_option('web_invoice_payment_method') == 'alertpay') { $alertpay = true; }
-if(get_option('web_invoice_payment_method') == 'cc') { $cc = true;}
+if(stristr(get_option('web_invoice_payment_method'),'paypal')) { $pp = true; }
+if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) { $mb = true; }
+if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) { $alertpay = true; }
+if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true;}
 
 ?>
 
 <div id="billing_overview" class="clearfix noprint">
+	<div id="payment_methods">
+		Pay with: <br/>
+		    <?php if ($cc) { ?>
+		    <a href="#cc_payment_form" title="Visa Master American Express"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/cc_logo.png" alt="Visa Master American Express" width="265" height="45" /></a>
+		    <?php } ?>
+		    <?php if ($alertpay) { ?>
+		    <a href="#alertpay_payment_form" title="AlertPay"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/alertpay_logo.png" alt="AlertPay" width="81" height="45" /></a>
+		    <?php } ?>
+		    <?php if ($mb) { ?>
+		    <a href="#moneybookers_payment_form" title="Moneybookers"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/moneybookers_logo.png" alt="Moneybookers" width="75" height="42" /></a>
+		    <?php } ?>
+		    <?php if ($pp) { ?>
+		    <a href="#paypal_payment_form" title="PayPal"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png" alt="PayPal" width="80" height="45" /></a>
+		    <?php } ?>
+		<p></p>
+	</div>
+<?php
 
-<?php if (!$alertpay) { ?>
-	<h2 class="invoice_page_subheading">Billing Information</h2>
+if ($alertpay) web_invoice_show_alertpay_form($invoice_id, $invoice);
+if ($cc) web_invoice_show_cc_form($invoice_id, $invoice);
+if ($mb) web_invoice_show_moneybookers_form($invoice_id, $invoice);
+if ($pp) web_invoice_show_paypal_form($invoice_id, $invoice);
 
-	<?php if($cc) { ?>
-	<form method="post" name="checkout_form" id="checkout_form" class="online_payment_form" onsubmit="process_cc_checkout(); return false;" class="clearfix">
-	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
-	<input type="hidden" name="user_id" value="<?php echo $invoice->recipient('user_id'); ?>" />
-	<input type="hidden" name="email_address" value="<?php echo $invoice->recipient('email_address'); ?>" />
-	<input type="hidden" name="invoice_num" value="<?php echo  $invoice_id; ?>" />
-	<input type="hidden" name="currency_code" id="currency_code"  value="<?php echo $invoice->display('currency'); ?>" />
-	<input type="hidden" name="web_invoice_id_hash" value="<?php echo $invoice->display('hash'); ?>" />
-	<?php } ?>
+?>
+</div>
+<?php
+}
 
-	<?php if($mb) { ?>
-	<form action="https://www.moneybookers.com/app/payment.pl" method="post" class="clearfix" target="_moneybookers">
+function web_invoice_show_alertpay_form($invoice_id, $invoice) {
+?>
+<div id="alertpay_payment_form" class="payment_form">
+<form action="https://www.alertpay.com/PayProcess.aspx" method="post" class="clearfix" target="_moneybookers">
+	<input type="hidden" name="ap_currency" value="<?php echo $invoice->display('currency'); ?>" />
+	<input type="hidden" name="ap_purchasetype" value="Service">
+	<input type="hidden" name="ap_merchant" value="<?php echo get_option('web_invoice_alertpay_address'); ?>" />
+	<input type="hidden" name="ap_totalamount" value="<?php echo $invoice->display('amount'); ?>" />
+	<input type="hidden" name="ap_itemname" id="invoice_num" value="<?php echo  $invoice->display('display_id'); ?>" />
+	<input type="hidden" name="ap_returnurl" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+	<?php
+	// Convert Itemized List into AlertPay Item List (Not supported, we just show an aggregated fields)
+	if(is_array($invoice->display('itemized'))) echo web_invoice_create_alertpay_itemized_list($invoice->display('itemized'),$invoice_id);
+	?>
+	<fieldset id="credit_card_information">
+	<ol>
+		<li>
+		<label for="submit">&nbsp;</label>
+		<input type="image" src="https://www.alertpay.com//PayNow/4FF7280888FE4FD4AE1B4A286ED9B8D5a.gif" style="border:0; width:170px; height:70px; padding:0;" name="submit" alt="Pay now with AlertPay" />
+		</li>
+	</ol>
+	</fieldset>
+</form>
+</div>
+<?php
+}
+
+function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
+?>
+<div id="moneybookers_payment_form" class="payment_form">
+<h2 class="invoice_page_subheading">Billing Information</h2>
+<form action="https://www.moneybookers.com/app/payment.pl" method="post" class="clearfix" target="_moneybookers">
 	<input type="hidden" name="currency" value="<?php echo $invoice->display('currency'); ?>" />
-	<input type="hidden" name="no_shipping" value="1">
+	<input type="hidden" name="no_shipping" value="1" />
+	<input type="hidden" name="rid" value="5413099" />
 	<input type="hidden" name="pay_to_email" value="<?php echo get_option('web_invoice_moneybookers_address'); ?>" />
 	<input type="hidden" name="return_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
 	<input type="hidden" name="status_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
@@ -1671,193 +1705,234 @@ if(get_option('web_invoice_payment_method') == 'cc') { $cc = true;}
 	// Convert Itemized List into Moneybookers Item List
 	if(is_array($invoice->display('itemized'))) echo web_invoice_create_moneybookers_itemized_list($invoice->display('itemized'),$invoice_id);
 	?>
-	<?php } ?>
-
-<?php } else { ?>
-<form action="https://www.alertpay.com/PayProcess.aspx" method="post" class="clearfix" target="_moneybookers">
-<input type="hidden" name="ap_currency" value="<?php echo $invoice->display('currency'); ?>" />
-<input type="hidden" name="ap_purchasetype" value="Service">
-<input type="hidden" name="ap_merchant" value="<?php echo get_option('web_invoice_alertpay_address'); ?>" />
-<input type="hidden" name="ap_totalamount" value="<?php echo $invoice->display('amount'); ?>" />
-<input type="hidden" name="ap_itemname" id="invoice_num" value="<?php echo  $invoice->display('display_id'); ?>" />
-<input type="hidden" name="ap_returnurl" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
-<?php
-// Convert Itemized List into AlertPay Item List (Not supported, we just show an aggregated fields)
-if(is_array($invoice->display('itemized'))) echo web_invoice_create_alertpay_itemized_list($invoice->display('itemized'),$invoice_id);
-} ?>
-
-<?php if($pp) { ?>
-<form action="https://www.paypal.com/us/cgi-bin/webscr" method="post" class="clearfix">
-<input type="hidden" name="currency_code" value="<?php echo $invoice->display('currency'); ?>" />
-<input type="hidden" name="no_shipping" value="1">
-<input type="hidden" name="upload" value="1">
-<input type="hidden" name="business" value="<?php echo get_option('web_invoice_paypal_address'); ?>" />
-<input type="hidden" name="return" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
-<input type="hidden" name="rm" value="2">
-<input type="hidden" name="amount"  value="<?php echo $invoice->display('amount'); ?>">
-<input  type="hidden" name="invoice" id="invoice_num"  value="<?php echo  $invoice->display('display_id'); ?>" />
-<?php
-// Convert Itemized List into PayPal Item List
-if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemized_list($invoice->display('itemized'),$invoice_id);
-?>
-<?php } ?>
-
-<fieldset id="credit_card_information">
-<?php if (!$alertpay) { ?>
+	<fieldset id="credit_card_information">
 	<ol>
+		<li>
+		<label for="firstname">First Name</label>
+		<?php echo web_invoice_draw_inputfield("firstname",$invoice->recipient('first_name')); ?>
+		</li>
 
-	<?php if ($mb) { ?>
-	<li>
-	<label for="firstname">First Name</label>
-	<?php echo web_invoice_draw_inputfield("firstname",$invoice->recipient('first_name')); ?>
-	</li>
+		<li>
+		<label for="lastname">Last Name</label>
+		<?php echo web_invoice_draw_inputfield("lastname",$invoice->recipient('last_name')); ?>
+		</li>
 
-	<li>
-	<label for="lastname">Last Name</label>
-	<?php echo web_invoice_draw_inputfield("lastname",$invoice->recipient('last_name')); ?>
-	</li>
+		<li>
+		<label for="pay_from_email">Email Address</label>
+		<?php echo web_invoice_draw_inputfield("pay_from_email",$invoice->recipient('email_address')); ?>
+		</li>
 
-	<li>
-	<label for="pay_from_email">Email Address</label>
-	<?php echo web_invoice_draw_inputfield("pay_from_email",$invoice->recipient('email_address')); ?>
-	</li>
+		<li>
+		<label class="inputLabel" for="phone_number">Phone Number</label>
+		<input name="phone_number" class="input_field"  type="text" id="phone_number" size="40" maxlength="50" value="<?php print $invoice->recipient('phonenumber'); ?>" />
+		</li>
 
-	<?php } else { ?>
+		<li>
+		<label for="address">Address</label>
+		<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
+		</li>
 
-	<li>
-	<label for="first_name">First Name</label>
-	<?php echo web_invoice_draw_inputfield("first_name",$invoice->recipient('first_name')); ?>
-	</li>
+		<li>
+		<label for="city">City</label>
+		<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
+		</li>
 
-	<li>
-	<label for="last_name">Last Name</label>
-	<?php echo web_invoice_draw_inputfield("last_name",$invoice->recipient('last_name')); ?>
-	</li>
+		<li>
+		<label for="state">State/Province</label>
+		<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
+		</li>
 
-	<li>
-	<label for="email">Email Address</label>
-	<?php echo web_invoice_draw_inputfield("email_address",$invoice->recipient('email_address')); ?>
-	</li>
+		<li>
+		<label for="postal_code">Zip/Postal Code</label>
+		<?php echo web_invoice_draw_inputfield("postal_code",$invoice->recipient('zip')); ?>
+		</li>
 
-	<?php } ?>
+		<li>
+		<label for="country">Country</label>
+		<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
+		</li>
 
-	<?php if($pp) {
-	list($day_phone_a, $day_phone_b, $day_phone_c) = split('[/.-]', $invoice->recipient('paypal_phonenumber'));
-	?>
-	<li>
-	<label for="day_phone_a">Phone Number</label>
-	<?php echo web_invoice_draw_inputfield("night_phone_a",$day_phone_a,' style="width:25px;" size="3" maxlength="3" '); ?>-
-	<?php echo web_invoice_draw_inputfield("night_phone_b",$day_phone_b,' style="width:25px;" size="3" maxlength="3" '); ?>-
-	<?php echo web_invoice_draw_inputfield("night_phone_c",$day_phone_c,' style="width:35px;" size="4" maxlength="4" '); ?>
-	</li>
-	<?php } ?>
-
-	<?php if($cc) { ?>
-	<li>
-	<label class="inputLabel" for="phonenumber">Phone Number</label>
-	<input name="phonenumber" class="input_field"  type="text" id="phonenumber" size="40" maxlength="50" value="<?php print $invoice->recipient('phonenumber'); ?>" />
-	</li>
-	<?php } ?>
-
-	<?php if($mb) { ?>
-	<li>
-	<label class="inputLabel" for="phone_number">Phone Number</label>
-	<input name="phone_number" class="input_field"  type="text" id="phone_number" size="40" maxlength="50" value="<?php print $invoice->recipient('phonenumber'); ?>" />
-	</li>
-	<?php } ?>
-
-	<li>
-	<label for="address">Address</label>
-	<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
-	</li>
-
-	<li>
-	<label for="city">City</label>
-	<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
-	</li>
-
-	<li>
-	<label for="state">State/Province</label>
-	<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
-	</li>
-
-	<?php if($mb) { ?>
-	<li>
-	<label for="postal_code">Zip/Postal Code</label>
-	<?php echo web_invoice_draw_inputfield("postal_code",$invoice->recipient('zip')); ?>
-	</li>
-	<?php } else { ?>
-	<li>
-	<label for="zip">Zip/Postal Code</label>
-	<?php echo web_invoice_draw_inputfield("zip",$invoice->recipient('zip')); ?>
-	</li>
-	<?php } ?>
-
-	<li>
-	<label for="country">Country</label>
-	<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
-	</li>
-
-	<?php if($cc) { ?>
-
-	<li class="hide_after_success">
-	<label class="inputLabel" for="card_num">Credit Card Number</label>
-	<input name="card_num" autocomplete="off" onkeyup="cc_card_pick();"  id="card_num" class="credit_card_number input_field"  type="text"  size="22"  maxlength="22" />
-	</li>
-
-	<li class="hide_after_success nocard"  id="cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/images/card_array.png) no-repeat;">
-	</li>
-
-	<li class="hide_after_success">
-	<label class="inputLabel" for="exp_month">Expiration Date</label>
-	Month <select name="exp_month" id="exp_month"><?php print web_invoice_printMonthDropdown(); ?></select>
-	Year <select name="exp_year" id="exp_year"><?php print web_invoice_printYearDropdown(); ?></select>
-	</li>
-
-	<li class="hide_after_success">
-	<label class="inputLabel" for="card_code">Security Code</label>
-	<input id="card_code" autocomplete="off"  name="card_code" class="input_field"  style="width: 70px;" type="text" size="4" maxlength="4" />
-	</li>
-
-	<li id="web_invoice_process_wait">
-	<label for="submit"><span></span>&nbsp;</label>
-	<button type="submit" id="cc_pay_button" class="hide_after_success submit_button">
-	Pay <?php echo $invoice->display('display_amount'); ?></button>
-	</li>
-	<?php } ?>
-
-	<?php if($pp) { ?>
-	<li>
-	<label for="submit">&nbsp;</label>
-	<input type="image"  src="http://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif" style="border:0; width:107px; height:26px;padding:0;" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" />
-	</li>
-	<?php } ?>
-
-	<?php if($mb) { ?>
-	<li>
-	<label for="submit">&nbsp;</label>
-	<input type="image" src="http://www.moneybookers.com/images/logos/checkout_logos/checkoutlogo_CCs_240x80.gif" style="border:0; width:240px; height:80px; padding:0;" name="submit" alt="Moneybookers.com and money moves" />
-	</li>
-	<?php } ?>
-<?php } else { ?>
-	<li>
-	<label for="submit">&nbsp;</label>
-	<input type="image" src="https://www.alertpay.com//PayNow/4FF7280888FE4FD4AE1B4A286ED9B8D5a.gif" style="border:0; width:170px; height:70px; padding:0;" name="submit" alt="Pay now with AlertPay" />
-	</li>
-<?php } ?>
-
+		<li>
+		<label for="submit">&nbsp;</label>
+		<input type="image" src="http://www.moneybookers.com/images/logos/checkout_logos/checkoutlogo_CCs_240x80.gif" style="border:0; width:240px; height:80px; padding:0;" name="submit" alt="Moneybookers.com and money moves" />
+		</li>
 	<br class="cb" />
 	</ol>
 </fieldset>
-
 </form>
-<?php if($cc) { ?>
-&nbsp;
-<div id="wp_cc_response"></div>
-<?php } ?>
-
 </div>
+<?php
+}
 
+function web_invoice_show_paypal_form($invoice_id, $invoice) {
+?>
+<div id="paypal_payment_form" class="payment_form">
+<h2 class="invoice_page_subheading">Billing Information</h2>
+<form action="https://www.paypal.com/us/cgi-bin/webscr" method="post" class="clearfix">
+	<input type="hidden" name="currency_code" value="<?php echo $invoice->display('currency'); ?>" />
+	<input type="hidden" name="no_shipping" value="1">
+	<input type="hidden" name="upload" value="1">
+	<input type="hidden" name="business" value="<?php echo get_option('web_invoice_paypal_address'); ?>" />
+	<input type="hidden" name="return" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+	<input type="hidden" name="rm" value="2">
+	<input type="hidden" name="amount"  value="<?php echo $invoice->display('amount'); ?>">
+	<input  type="hidden" name="invoice" id="invoice_num"  value="<?php echo  $invoice->display('display_id'); ?>" />
+	<?php
+	// Convert Itemized List into PayPal Item List
+	if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemized_list($invoice->display('itemized'),$invoice_id);
+	?>
+	<fieldset id="credit_card_information">
+	<ol>
+		<li>
+		<label for="first_name">First Name</label>
+		<?php echo web_invoice_draw_inputfield("first_name",$invoice->recipient('first_name')); ?>
+		</li>
+
+		<li>
+		<label for="last_name">Last Name</label>
+		<?php echo web_invoice_draw_inputfield("last_name",$invoice->recipient('last_name')); ?>
+		</li>
+
+		<li>
+		<label for="email">Email Address</label>
+		<?php echo web_invoice_draw_inputfield("email_address",$invoice->recipient('email_address')); ?>
+		</li>
+
+	<?php
+		list($day_phone_a, $day_phone_b, $day_phone_c) = split('[/.-]', $invoice->recipient('paypal_phonenumber'));
+		?>
+		<li>
+		<label for="day_phone_a">Phone Number</label>
+		<?php echo web_invoice_draw_inputfield("night_phone_a",$day_phone_a,' style="width:25px;" size="3" maxlength="3" '); ?>-
+		<?php echo web_invoice_draw_inputfield("night_phone_b",$day_phone_b,' style="width:25px;" size="3" maxlength="3" '); ?>-
+		<?php echo web_invoice_draw_inputfield("night_phone_c",$day_phone_c,' style="width:35px;" size="4" maxlength="4" '); ?>
+		</li>
+
+		<li>
+		<label for="address">Address</label>
+		<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
+		</li>
+
+		<li>
+		<label for="city">City</label>
+		<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
+		</li>
+
+		<li>
+		<label for="state">State/Province</label>
+		<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
+		</li>
+
+		<li>
+		<label for="zip">Zip/Postal Code</label>
+		<?php echo web_invoice_draw_inputfield("zip",$invoice->recipient('zip')); ?>
+		</li>
+
+		<li>
+		<label for="country">Country</label>
+		<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
+		</li>
+
+		<li>
+		<label for="submit">&nbsp;</label>
+		<input type="image"  src="http://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif" style="border:0; width:107px; height:26px;padding:0;" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" />
+		</li>
+
+	<br class="cb" />
+	</ol>
+</form>
+</div>
+<?php
+}
+
+function web_invoice_show_cc_form($invoice_id, $invoice) {
+?>
+<div id="cc_payment_form" class="payment_form">
+<h2 class="invoice_page_subheading">Billing Information</h2>
+<form method="post" name="checkout_form" id="checkout_form" class="online_payment_form" onsubmit="process_cc_checkout(); return false;" class="clearfix">
+	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
+	<input type="hidden" name="user_id" value="<?php echo $invoice->recipient('user_id'); ?>" />
+	<input type="hidden" name="email_address" value="<?php echo $invoice->recipient('email_address'); ?>" />
+	<input type="hidden" name="invoice_num" value="<?php echo  $invoice_id; ?>" />
+	<input type="hidden" name="currency_code" id="currency_code"  value="<?php echo $invoice->display('currency'); ?>" />
+	<input type="hidden" name="web_invoice_id_hash" value="<?php echo $invoice->display('hash'); ?>" />
+	<fieldset id="credit_card_information">
+	<ol>
+		<li>
+		<label for="first_name">First Name</label>
+		<?php echo web_invoice_draw_inputfield("first_name",$invoice->recipient('first_name')); ?>
+		</li>
+
+		<li>
+		<label for="last_name">Last Name</label>
+		<?php echo web_invoice_draw_inputfield("last_name",$invoice->recipient('last_name')); ?>
+		</li>
+
+		<li>
+		<label for="email">Email Address</label>
+		<?php echo web_invoice_draw_inputfield("email_address",$invoice->recipient('email_address')); ?>
+		</li>
+
+		<li>
+		<label class="inputLabel" for="phonenumber">Phone Number</label>
+		<input name="phonenumber" class="input_field"  type="text" id="phonenumber" size="40" maxlength="50" value="<?php print $invoice->recipient('phonenumber'); ?>" />
+		</li>
+
+		<li>
+		<label for="address">Address</label>
+		<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
+		</li>
+
+		<li>
+		<label for="city">City</label>
+		<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
+		</li>
+
+		<li>
+		<label for="state">State/Province</label>
+		<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
+		</li>
+
+		<li>
+		<label for="zip">Zip/Postal Code</label>
+		<?php echo web_invoice_draw_inputfield("zip",$invoice->recipient('zip')); ?>
+		</li>
+
+		<li>
+		<label for="country">Country</label>
+		<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
+		</li>
+
+		<li class="hide_after_success">
+		<label class="inputLabel" for="card_num">Credit Card Number</label>
+		<input name="card_num" autocomplete="off" onkeyup="cc_card_pick();"  id="card_num" class="credit_card_number input_field"  type="text"  size="22"  maxlength="22" />
+		</li>
+
+		<li class="hide_after_success nocard"  id="cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/images/card_array.png) no-repeat;">
+		</li>
+
+		<li class="hide_after_success">
+		<label class="inputLabel" for="exp_month">Expiration Date</label>
+		Month <select name="exp_month" id="exp_month"><?php print web_invoice_printMonthDropdown(); ?></select>
+		Year <select name="exp_year" id="exp_year"><?php print web_invoice_printYearDropdown(); ?></select>
+		</li>
+
+		<li class="hide_after_success">
+		<label class="inputLabel" for="card_code">Security Code</label>
+		<input id="card_code" autocomplete="off"  name="card_code" class="input_field"  style="width: 70px;" type="text" size="4" maxlength="4" />
+		</li>
+
+		<li id="web_invoice_process_wait">
+		<label for="submit"><span></span>&nbsp;</label>
+		<button type="submit" id="cc_pay_button" class="hide_after_success submit_button">
+		Pay <?php echo $invoice->display('display_amount'); ?></button>
+		</li>
+
+	<br class="cb" />
+	</ol>
+	&nbsp;<div id="wp_cc_response"></div>
+</form>
+</div>
 <?php
 }
 

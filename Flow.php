@@ -84,7 +84,7 @@ class Web_Invoice_Decider {
 		case "first_setup":
 		if(isset($_POST['web_invoice_web_invoice_page'])) update_option('web_invoice_web_invoice_page', $_POST['web_invoice_web_invoice_page']);
 		if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
-		if(isset($_POST['web_invoice_payment_method'])) update_option('web_invoice_payment_method', $_POST['web_invoice_payment_method']);
+		if(isset($_POST['web_invoice_payment_method'])) update_option('web_invoice_payment_method', join($_POST['web_invoice_payment_method'],','));
 		if(isset($_POST['web_invoice_gateway_username'])) update_option('web_invoice_gateway_username', $_POST['web_invoice_gateway_username']);
 		if(isset($_POST['web_invoice_gateway_tran_key'])) update_option('web_invoice_gateway_tran_key', $_POST['web_invoice_gateway_tran_key']);
 		if(isset($_POST['web_invoice_gateway_merchant_email'])) update_option('web_invoice_gateway_merchant_email', $_POST['web_invoice_gateway_merchant_email']);

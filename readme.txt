@@ -1,7 +1,7 @@
 === Web Invoice - Invoicing and billing for WordPress ===
 Contributors: mohanjith
 Donate link: http://mohanjith.com/wordpress
-Tags: bill, moneybookers, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
+Tags: bill, moneybookers, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
 Tested up to: 2.7.1
 Stable tag: trunk
@@ -30,6 +30,11 @@ Some features:
 * Dynamic and intuitive user interface
 * Automatically mark invoices paid via Moneybookers as paid (Requires merchant status)
 * Automatically mark invoices paid via AlertPay as paid (Requires business status)
+* Split gateway support (Your client is given the option of choosing the preferred gateway from
+  the list of gateways you support). e.g PayPal and Moneybookers
+
+Would you like to see this plugin in other languages? Please show your interest in
+the [Web Invoice community forum](http://mohanjith.com/forum/).
 
 If you like this plugin please give it a good rating, and consider saying thanks or making a donation.
 
@@ -46,7 +51,7 @@ Please see the [Web Invoice plugin home page](http://mohanjith.com/wordpress/web
 
 == Frequently Asked Questions ==
 
-Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) for suggestions and help.
+Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for suggestions and help.
 
 == Screenshots ==
 
@@ -56,6 +61,10 @@ Please visit the [Web Invoice community page](http://webinvoice.uservoice.com/) 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.4.0**
+
+* Split Gateway support
 
 **Version 1.3.0**
 

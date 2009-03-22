@@ -1,3 +1,19 @@
+if (!Array.indexOf)
+{
+  Array.indexOf = [].indexOf ?
+      function (arr, obj, from) { return arr.indexOf(obj, from); }:
+      function (arr, obj, from) { // (for IE6)
+        var l = arr.length,
+            i = from ? parseInt( (1*from) + (from<0 ? l:0), 10) : 0;
+        i = i<0 ? 0 : i;
+        for (; i<l; i++) {
+          if (i in arr  &&  arr[i] === obj) { return i; }
+        }
+        return -1;
+      };
+}
+
+
 function web_invoice_add_time(add_days) {
 
 	if(add_days == 'clear') {
@@ -126,15 +142,17 @@ jQuery(document).ready(function(){
 	jQuery("#web_invoice_merchantexpress_prefill").click(function() { jQuery("#web_invoice_gateway_url").val('https://gateway.merchantexpress.com');  })
 	jQuery("#web_invoice_merchantwarehouse_prefill").click(function() { jQuery("#web_invoice_gateway_url").val('https://gateway.merchantwarehouse.com');  })
 
-	if(jQuery('#web_invoice_payment_method').val() == 'cc') { jQuery('.gateway_info').show();  }
-	if(jQuery('#web_invoice_payment_method').val() == 'paypal') {  jQuery('.paypal_info').show();  }
-	if(jQuery('#web_invoice_payment_method').val() == 'moneybookers') {
+	payment_method_array = (jQuery("#web_invoice_payment_method").val()+"").split(",");
+
+	if(payment_method_array.indexOf('cc') != -1) { jQuery('.gateway_info').show();  }
+	if(payment_method_array.indexOf('paypal') != -1) {  jQuery('.paypal_info').show();  }
+	if(payment_method_array.indexOf('moneybookers') != -1) {
 		jQuery('.moneybookers_info').show();
 
 		if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
 		if(jQuery('#web_invoice_moneybookers_address').val() != '') { jQuery('#web_invoice_moneybookers_register_link').hide(); }
 	}
-	if(jQuery('#web_invoice_payment_method').val() == 'alertpay') {
+	if(payment_method_array.indexOf('alertpay') != -1) {
 		jQuery('.alertpay_info').show();
 
 		if(jQuery('#web_invoice_alertpay_merchant').val() == 'False') {  jQuery('.alertpay_info_merchant').hide();  }
@@ -142,35 +160,29 @@ jQuery(document).ready(function(){
 	}
 
 	jQuery('#web_invoice_payment_method').change(function(){
-		if(jQuery(this).val() == 'paypal') {
+		payment_method_array = (jQuery(this).val()+"").split(",");
+
+		jQuery('.paypal_info').hide();
+		jQuery('.moneybookers_info').hide();
+		jQuery('.alertpay_info').hide();
+		jQuery('.gateway_info').hide();
+		if(payment_method_array.indexOf('paypal') != -1) {
 			jQuery('.paypal_info').show();
-			jQuery('.moneybookers_info').hide();
-			jQuery('.alertpay_info').hide();
-			jQuery('.gateway_info').hide();
 		}
-		if(jQuery(this).val() == 'moneybookers') {
+		if(payment_method_array.indexOf('moneybookers') != -1) {
 			jQuery('.moneybookers_info').show();
-			jQuery('.paypal_info').hide();
-			jQuery('.gateway_info').hide();
-			jQuery('.alertpay_info').hide();
 
 			if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
 			if(jQuery('#web_invoice_moneybookers_address').val() != '') { jQuery('#web_invoice_moneybookers_register_link').hide(); }
 		}
-		if(jQuery(this).val() == 'alertpay') {
+		if(payment_method_array.indexOf('alertpay') != -1) {
 			jQuery('.alertpay_info').show();
-			jQuery('.moneybookers_info').hide();
-			jQuery('.paypal_info').hide();
-			jQuery('.gateway_info').hide();
 
 			if(jQuery('#web_invoice_alertpay_merchant').val() == 'False') {  jQuery('.alertpay_info_merchant').hide();  }
 			if(jQuery('#web_invoice_alertpay_address').val() != '') { jQuery('#web_invoice_alertpay_register_link').hide(); }
 		}
-		if(jQuery(this).val() == 'cc') {
+		if(payment_method_array.indexOf('cc') != -1) {
 			jQuery('.gateway_info').show();
-			jQuery('.moneybookers_info').hide();
-			jQuery('.alertpay_info').hide();
-			jQuery('.paypal_info').hide();
 		}
 	});
 

@@ -105,3 +105,4 @@ div.jqi .jqicontainer{ background-color: #d2d2e2; padding: 5px; color: #ffffff; 
 div.jqi .jqimessage{ background-color: #ababca; padding: 10px; }
 div.jqi .jqibuttons{ text-align: center; padding: 5px 0 0 0; }
 div.jqi button{ padding: 3px 10px 3px 10px; margin: 0 10px; }
+select#web_invoice_payment_method { height: 6em; }
