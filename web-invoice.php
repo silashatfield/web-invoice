@@ -4,7 +4,7 @@ Plugin Name: Web Invoice
 Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
 Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
 Author: S H Mohanjith
-Version: 1.4.0
+Version: 1.5.0
 Author URI: http://mohanjith.com/
 
 Copyright 2009  S H Mohanjith.   (email : moha@mohanjith.net)
@@ -36,6 +36,7 @@ Copyright 2009  S H Mohanjith.   (email : moha@mohanjith.net)
 
 
 define("WEB_INVOICE_VERSION_NUM", "1.0.0");
+define("WEB_INVOICE_TRANS_DOMAIN", "web-invoice");
 
 require_once("Flow.php");
 require_once("Functions.php");
@@ -86,7 +87,6 @@ class Web_Invoice {
 		add_action('admin_head', array($this, 'admin_head'));
 		add_action('contextual_help', 'web_invoice_contextual_help_list');
 		add_action('wp_head', 'web_invoice_frontend_css');
-		//add_action( 'wp_dashboard_setup', array($this, 'web_invoice_dashboard'),1);
 
 		add_filter('favorite_actions', array(&$this, 'favorites'));
 		add_action('admin_menu', array($this, 'web_invoice_add_pages'));
@@ -183,6 +183,8 @@ class Web_Invoice {
 
 	function init() {
 		global $wpdb;
+
+		load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)), dirname(plugin_basename(__FILE__)));
 
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery.maskedinput',$this->uri."/js/jquery.maskedinput.js", array('jquery'));
@@ -340,7 +342,7 @@ class Web_Invoice {
 		add_option('web_invoice_moneybookers_address','');
 		add_option('web_invoice_moneybookers_merchant','False');
 		add_option('web_invoice_moneybookers_secret',uniqid());
-		add_option('web_invoice_moneybookers_ip', '83.220.158.0-83.220.158.31');
+		add_option('web_invoice_moneybookers_ip', '83.220.158.0-83.220.158.31,213.129.75.193-213.129.75.206');
 
 		// AlertPay
 		add_option('web_invoice_alertpay_address','');

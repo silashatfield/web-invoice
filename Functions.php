@@ -582,7 +582,6 @@ function web_invoice_profile_update() {
 	global $wpdb;
 	$user_id =  $_REQUEST['user_id'];
 
-
 	if(isset($_POST['streetaddress'])) update_usermeta($user_id, 'streetaddress', $_POST['streetaddress']);
 	if(isset($_POST['zip']))  update_usermeta($user_id, 'zip', $_POST['zip']);
 	if(isset($_POST['state'])) update_usermeta($user_id, 'state', $_POST['state']);
@@ -801,11 +800,25 @@ $StateProvinceTwoToFull = array(
   return($StateProvinceTwoToFull);
 }
 
-
 function web_invoice_country_array() {
 	return array("US"=> "United States","AL"=> "Albania","DZ"=> "Algeria","AD"=> "Andorra","AO"=> "Angola","AI"=> "Anguilla","AG"=> "Antigua and Barbuda","AR"=> "Argentina","AM"=> "Armenia","AW"=> "Aruba","AU"=> "Australia","AT"=> "Austria","AZ"=> "Azerbaijan Republic","BS"=> "Bahamas","BH"=> "Bahrain","BB"=> "Barbados","BE"=> "Belgium","BZ"=> "Belize","BJ"=> "Benin","BM"=> "Bermuda","BT"=> "Bhutan","BO"=> "Bolivia","BA"=> "Bosnia and Herzegovina","BW"=> "Botswana","BR"=> "Brazil","VG"=> "British Virgin Islands","BN"=> "Brunei","BG"=> "Bulgaria","BF"=> "Burkina Faso","BI"=> "Burundi","KH"=> "Cambodia","CA"=> "Canada","CV"=> "Cape Verde","KY"=> "Cayman Islands","TD"=> "Chad","CL"=> "Chile","C2"=> "China","CO"=> "Colombia","KM"=> "Comoros","CK"=> "Cook Islands","CR"=> "Costa Rica","HR"=> "Croatia","CY"=> "Cyprus","CZ"=> "Czech Republic","CD"=> "Democratic Republic of the Congo","DK"=> "Denmark","DJ"=> "Djibouti","DM"=> "Dominica","DO"=> "Dominican Republic","EC"=> "Ecuador","SV"=> "El Salvador","ER"=> "Eritrea","EE"=> "Estonia","ET"=> "Ethiopia","FK"=> "Falkland Islands","FO"=> "Faroe Islands","FM"=> "Federated States of Micronesia","FJ"=> "Fiji","FI"=> "Finland","FR"=> "France","GF"=> "French Guiana","PF"=> "French Polynesia","GA"=> "Gabon Republic","GM"=> "Gambia","DE"=> "Germany","GI"=> "Gibraltar","GR"=> "Greece","GL"=> "Greenland","GD"=> "Grenada","GP"=> "Guadeloupe","GT"=> "Guatemala","GN"=> "Guinea","GW"=> "Guinea Bissau","GY"=> "Guyana","HN"=> "Honduras","HK"=> "Hong Kong","HU"=> "Hungary","IS"=> "Iceland","IN"=> "India","ID"=> "Indonesia","IE"=> "Ireland","IL"=> "Israel","IT"=> "Italy","JM"=> "Jamaica","JP"=> "Japan","JO"=> "Jordan","KZ"=> "Kazakhstan","KE"=> "Kenya","KI"=> "Kiribati","KW"=> "Kuwait","KG"=> "Kyrgyzstan","LA"=> "Laos","LV"=> "Latvia","LS"=> "Lesotho","LI"=> "Liechtenstein","LT"=> "Lithuania","LU"=> "Luxembourg","MG"=> "Madagascar","MW"=> "Malawi","MY"=> "Malaysia","MV"=> "Maldives","ML"=> "Mali","MT"=> "Malta","MH"=> "Marshall Islands","MQ"=> "Martinique","MR"=> "Mauritania","MU"=> "Mauritius","YT"=> "Mayotte","MX"=> "Mexico","MN"=> "Mongolia","MS"=> "Montserrat","MA"=> "Morocco","MZ"=> "Mozambique","NA"=> "Namibia","NR"=> "Nauru","NP"=> "Nepal","NL"=> "Netherlands","AN"=> "Netherlands Antilles","NC"=> "New Caledonia","NZ"=> "New Zealand","NI"=> "Nicaragua","NE"=> "Niger","NU"=> "Niue","NF"=> "Norfolk Island","NO"=> "Norway","OM"=> "Oman","PW"=> "Palau","PA"=> "Panama","PG"=> "Papua New Guinea","PE"=> "Peru","PH"=> "Philippines","PN"=> "Pitcairn Islands","PL"=> "Poland","PT"=> "Portugal","QA"=> "Qatar","CG"=> "Republic of the Congo","RE"=> "Reunion","RO"=> "Romania","RU"=> "Russia","RW"=> "Rwanda","VC"=> "Saint Vincent and the Grenadines","WS"=> "Samoa","SM"=> "San Marino","ST"=> "São Tomé and Príncipe","SA"=> "Saudi Arabia","SN"=> "Senegal","SC"=> "Seychelles","SL"=> "Sierra Leone","SG"=> "Singapore","SK"=> "Slovakia","SI"=> "Slovenia","SB"=> "Solomon Islands","SO"=> "Somalia","ZA"=> "South Africa","KR"=> "South Korea","ES"=> "Spain","LK"=> "Sri Lanka","SH"=> "St. Helena","KN"=> "St. Kitts and Nevis","LC"=> "St. Lucia","PM"=> "St. Pierre and Miquelon","SR"=> "Suriname","SJ"=> "Svalbard and Jan Mayen Islands","SZ"=> "Swaziland","SE"=> "Sweden","CH"=> "Switzerland","TW"=> "Taiwan","TJ"=> "Tajikistan","TZ"=> "Tanzania","TH"=> "Thailand","TG"=> "Togo","TO"=> "Tonga","TT"=> "Trinidad and Tobago","TN"=> "Tunisia","TR"=> "Turkey","TM"=> "Turkmenistan","TC"=> "Turks and Caicos Islands","TV"=> "Tuvalu","UG"=> "Uganda","UA"=> "Ukraine","AE"=> "United Arab Emirates","GB"=> "United Kingdom","UY"=> "Uruguay","VU"=> "Vanuatu","VA"=> "Vatican City State","VE"=> "Venezuela","VN"=> "Vietnam","WF"=> "Wallis and Futuna Islands","YE"=> "Yemen","ZM"=> "Zambia");
 }
 
+function web_invoice_month_array() {
+	return array(
+		"01" => __("Jan", WEB_INVOICE_TRANS_DOMAIN),
+		"02" => __("Feb", WEB_INVOICE_TRANS_DOMAIN),
+		"03" => __("Mar", WEB_INVOICE_TRANS_DOMAIN),
+		"04" => __("Apr", WEB_INVOICE_TRANS_DOMAIN),
+		"05" => __("May", WEB_INVOICE_TRANS_DOMAIN),
+		"06" => __("Jun", WEB_INVOICE_TRANS_DOMAIN),
+		"07" => __("Jul", WEB_INVOICE_TRANS_DOMAIN),
+		"08" => __("Aug", WEB_INVOICE_TRANS_DOMAIN),
+		"09" => __("Sep", WEB_INVOICE_TRANS_DOMAIN),
+		"10" => __("Oct", WEB_INVOICE_TRANS_DOMAIN),
+		"11" => __("Nov", WEB_INVOICE_TRANS_DOMAIN),
+		"12" => __("Dec", WEB_INVOICE_TRANS_DOMAIN));
+}
 
 function web_invoice_go_secure($destination) {
     $reload = 'Location: ' . $destination;
@@ -969,9 +982,6 @@ $errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transac
 //echo $payment->getTransactionID();
 //echo $payment->getAVSResponse();
 //echo $payment->getAuthCode();
-
-
-
 }
 
 
@@ -1039,9 +1049,6 @@ if(!$success) return $currency;
 
 
 }
-
-
-
 
 function web_invoice_contextual_help_list($content) {
 // Will add help and FAQ here eventually
@@ -1270,136 +1277,3 @@ function web_invoice_md5_to_invoice($md5) {
 function web_invoice_get_alertpay_api_url() {
 	return get_permalink(get_option('web_invoice_web_invoice_page'));
 }
-
-function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
-	$invoice = new Web_Invoice_GetInfo($invoice_id);
-	$tax = $invoice->display('tax_percent');
-	$amount = $invoice->display('amount');
-	$display_id = $invoice->display('display_id');
-
-	$tax_free_sum = 0;
-	$counter = 1;
-	foreach($itemized_array as $itemized_item) {
-
-		// If we have a negative item, PayPal will not accept, we must group everything into one amount
-		if($itemized_item[price] * $itemized_item[quantity] < 0) {
-
-		unset($output);
-		unset($tax);
-
-		// In case this isn't the first loop, unset anything we've done so far
-		$output = "
-		<input type='hidden' name='item_name' value='Reference Invoice #$display_id' /> \n
-		<input type='hidden' name='amount' value='$amount' />\n";
-
-		$single_item = true;
-
-		break;
-		}
-
-		$output .= "<input type='hidden' name='item_name_$counter' value='".$itemized_item[name]."' />\n";
-		$output .= "<input type='hidden' name='amount_$counter' value='".$itemized_item[price] * $itemized_item[quantity]."' />\n";
-
-		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
-		$counter++;
-	}
-
-	// Add tax onnly by using tax_free_sum (which is the sums of all the individual items * quantities.
-	if(!empty($tax)) {
-	$tax_cart = round($tax_free_sum * ($tax / 100),2);
-		$output .= "<input type='hidden' name='tax_cart' value='". $tax_cart ."' />\n";
-		}
-
-	if($single_item) $output .= "<input type='hidden' name='cmd' value='_xclick' />\n";
-	if(!$single_item) $output .= "
-	<input type='hidden' name='cmd' value='_ext-enter' />
-	<input type='hidden' name='redirect_cmd' value='_cart' />\n";
-	return $output;
-}
-
-function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_id) {
-	$invoice = new Web_Invoice_GetInfo($invoice_id);
-	$tax = $invoice->display('tax_percent');
-	$amount = $invoice->display('amount');
-	$display_id = $invoice->display('display_id');
-
-	$tax_free_sum = 0;
-	$counter = 1;
-	foreach($itemized_array as $itemized_item) {
-
-		// If we have a negative item, Moneybookers will not accept, we must group everything into one amount
-		if($itemized_item[price] * $itemized_item[quantity] < 0) {
-
-		unset($output);
-		unset($tax);
-
-		// In case this isn't the first loop, unset anything we've done so far
-		$output = "
-		<input type='hidden' name='item_name' value='Reference Invoice # $display_id' /> \n
-		<input type='hidden' name='amount' value='$amount' />\n";
-
-		$single_item = true;
-
-
-		break;
-		}
-
-		$output .= "<input type='hidden' name='detail{$counter}_description' value='".$itemized_item[description]."' />\n";
-		$output .= "<input type='hidden' name='detail{$counter}_text' value='".$itemized_item[name]."' />\n";
-
-		$counter++;
-
-		$output .= "<input type='hidden' name='amount{$counter}' value='".$itemized_item[price] * $itemized_item[quantity]."' />\n";
-
-		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
-	}
-
-	// Add tax only by using tax_free_sum (which is the sums of all the individual items * quantities.
-	if(!empty($tax)) {
-	$tax_cart = round($tax_free_sum * ($tax / 100),2);
-		$output .= "<input type='hidden' name='detail{$counter}_text' value='Tax ({$tax} %)' />\n";
-		$output .= "<input type='hidden' name='amount{$counter}' value='". $tax_cart ."' />\n";
-	}
-
-	return $output;
-}
-
-function web_invoice_create_alertpay_itemized_list($itemized_array,$invoice_id) {
-	$invoice = new Web_Invoice_GetInfo($invoice_id);
-	$tax = $invoice->display('tax_percent');
-	$amount = $invoice->display('amount');
-	$display_id = $invoice->display('display_id');
-
-	$tax_free_sum = 0;
-	$counter = 1;
-	foreach($itemized_array as $itemized_item) {
-
-		// If we have a negative item, Moneybookers will not accept, we must group everything into one amount
-		if($itemized_item[price] * $itemized_item[quantity] < 0) {
-
-		unset($output);
-		unset($tax);
-
-		// In case this isn't the first loop, unset anything we've done so far
-		$single_item = true;
-
-		break;
-		}
-		$counter++;
-		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
-	}
-
-	$output = "
-		<input type='hidden' name='ap_description' value='Reference Invoice # $display_id' /> \n
-		<input type='hidden' name='ap_amount' value='$tax_free_sum' />\n
-		<input type='hidden' name='ap_quantity' value='1' />\n";
-
-	// Add tax only by using tax_free_sum (which is the sums of all the individual items * quantities.
-	if(!empty($tax)) {
-		$tax_cart = round($tax_free_sum * ($tax / 100),2);
-		$output .= "<input type='hidden' name='ap_taxamount' value='". $tax_cart ."' />\n";
-	}
-
-	return $output;
-}
-

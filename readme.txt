@@ -32,6 +32,7 @@ Some features:
 * Automatically mark invoices paid via AlertPay as paid (Requires business status)
 * Split gateway support (Your client is given the option of choosing the preferred gateway from
   the list of gateways you support). e.g PayPal and Moneybookers
+* Interfaces are internationalized
 
 Would you like to see this plugin in other languages? Please show your interest in
 the [Web Invoice community forum](http://mohanjith.com/forum/).

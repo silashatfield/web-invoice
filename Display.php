@@ -23,14 +23,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
-
 function web_invoice_default($message='')
 {
 	global $wpdb;
 	//Make sure tables exist
-
-
 
 	// The error takes precedence over others being that nothing can be done w/o tables
 	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) { $warning_message = ""; }
@@ -41,53 +37,45 @@ function web_invoice_default($message='')
 	$all_invoices = $wpdb->get_results("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num != ''");
 
 ?>
-
-
-
-
 	<form id="invoices-filter" action="" method="post" >
-	<h2>Invoice Overview</h2>
+	<h2><?php _e('Invoice Overview', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 	<div class="tablenav clearfix">
 
 	<div class="alignleft">
 	<select name="web_invoice_action">
-		<option value="-1" selected="selected">-- Actions --</option>
-		<option value="send_invoice" name="sendit" >Send Invoice(s)</option>
-		<option value="send_reminder" name="sendit" >Send Reminder(s)</option>
-		<option value="archive_invoice" name="archive" >Archive Invoice(s)</option>
-		<option value="unrachive_invoice" name="unarchive" >Un-Archive Invoice(s)</option>
-		<option value="mark_as_sent" name="mark_as_sent" >Mark as Sent</option>
-		<option value="mark_as_paid" name="mark_as_paid" >Mark as Paid</option>
-		<?php /*<option value="make_template" name="unarchive" >Make Template</option>
-		<option value="unmake_template" name="unarchive" >Unmake Template</option>*/ ?>
-		<option  value="delete_invoice" name="deleteit" >Delete</option>
+		<option value="-1" selected="selected"><?php _e('-- Actions --', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="send_invoice" name="sendit" ><?php _e('Send Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="send_reminder" name="sendit" ><?php _e('Send Reminder(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="archive_invoice" name="archive" ><?php _e('Archive Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="unrachive_invoice" name="unarchive" ><?php _e('Un-Archive Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="mark_as_sent" name="mark_as_sent" ><?php _e('Mark as Sent', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="mark_as_paid" name="mark_as_paid" ><?php _e('Mark as Paid', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option  value="delete_invoice" name="deleteit" ><?php _e('Delete', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	</select>
 	<input type="submit" value="Apply" class="button-secondary action" />
 	</div>
 
 	<div class="alignright">
 		<ul class="subsubsub" style="margin:0;">
-		<li>Filter:</li>
-		<li><a href='#' class="" id="">All Invoices</a> |</li>
-		<li><a href='#'  class="paid" id="">Paid</a> |</li>
-		<li><a href='#'  class="sent" id="">Unpaid</a> |</li>
-		<li>Custom: <input type="text" id="FilterTextBox" class="search-input" name="FilterTextBox" /> </li>
+		<li><?php _e('Filter:', WEB_INVOICE_TRANS_DOMAIN); ?></li>
+		<li><a href='#' class="" id=""><?php _e('All Invoices', WEB_INVOICE_TRANS_DOMAIN); ?></a> |</li>
+		<li><a href='#' class="paid" id=""><?php _e('Paid', WEB_INVOICE_TRANS_DOMAIN); ?></a> |</li>
+		<li><a href='#' class="sent" id=""><?php _e('Unpaid', WEB_INVOICE_TRANS_DOMAIN); ?></a> |</li>
+		<li><?php _e('Custom: ', WEB_INVOICE_TRANS_DOMAIN); ?><input type="text" id="FilterTextBox" class="search-input" name="FilterTextBox" /> </li>
 		</ul>
 	</div>
 	</div>
 	<br class="clear" />
 
-
-
 	<table class="widefat" id="invoice_sorter_table">
 	<thead>
 	<tr>
 		<th class="check-column"><input type="checkbox" id="CheckAll" /></th>
-		<th class="invoice_id_col">Invoice Id</th>
-		<th>Subject</th>
-		<th>Amount</th>
-		<th>Status</th>
-		<th>User</th>
+		<th class="invoice_id_col"><?php _e('Invoice Id', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<th><?php _e('Subject', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<th><?php _e('Amount', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<th><?php _e('Status', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<th><?php _e('User', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 		<th></th>
 	</tr>
 	</thead>
@@ -107,16 +95,12 @@ function web_invoice_default($message='')
 		$invoice_link = web_invoice_build_invoice_link($invoice_id);
 		$user_id = $invoice->user_id;
 
-
-
 		//Determine if unique/custom id used
 		$custom_id = web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id');
 		$display_id = ($custom_id ? $custom_id : $invoice_id);
 
 		// Determine Currency
 		$currency_code = web_invoice_determine_currency($invoice_id);
-
-
 		$show_money = web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($invoice->amount);
 
 		// Determine What to Call Recipient
@@ -134,7 +118,7 @@ function web_invoice_default($message='')
 
 		// Days Since Sent
 		if(web_invoice_paid_status($invoice_id)) {
-		$days_since = "<span style='display:none;'>-1</span> Paid"; }
+		$days_since = "<span style='display:none;'>-1</span>".__(' Paid', WEB_INVOICE_TRANS_DOMAIN); }
 		else {
 			if(web_invoice_meta($invoice_id,'sent_date')) {
 
@@ -142,12 +126,12 @@ function web_invoice_default($message='')
 			$date2 = date("Y-m-d", time());
 			$difference = abs(strtotime($date2) - strtotime($date1));
 			$days = round(((($difference/60)/60)/24), 0);
-			if($days == 0) { $days_since = "<span style='display:none;'>$days</span>Sent Today. "; }
-			elseif($days == 1) { $days_since = "<span style='display:none;'>$days</span>Sent Yesterday. "; }
-			elseif($days > 1) { $days_since = "<span style='display:none;'>$days</span>Sent $days days ago. "; }
+			if($days == 0) { $days_since = "<span style='display:none;'>$days</span>".__('Sent Today. ', WEB_INVOICE_TRANS_DOMAIN); }
+			elseif($days == 1) { $days_since = "<span style='display:none;'>$days</span>".__('Sent Yesterday. ', WEB_INVOICE_TRANS_DOMAIN); }
+			elseif($days > 1) { $days_since = "<span style='display:none;'>$days</span>".sprintf(__('Sent %s days ago. ', WEB_INVOICE_TRANS_DOMAIN),$days); }
 			}
 			else {
-			$days_since ="<span style='display:none;'>999</span>Not Sent";	}
+			$days_since ="<span style='display:none;'>999</span>".__('Not Sent', WEB_INVOICE_TRANS_DOMAIN);	}
 		}
 
 
@@ -158,7 +142,7 @@ function web_invoice_default($message='')
 		$output_row .= "	<td>$show_money</td>\n";
 		$output_row .= "	<td>$days_since</td>\n";
 		$output_row .= "	<td> <a href='user-edit.php?user_id=$user_id'>$call_me_this</a></td>\n";
-		$output_row .= "	<td><a href='$invoice_link'>View Web Invoice</a></td>\n";
+		$output_row .= "	<td><a href='$invoice_link'>".__('View Web Invoice', WEB_INVOICE_TRANS_DOMAIN)."</a></td>\n";
 		$output_row .= "</tr>";
 
 		echo $output_row;
@@ -167,31 +151,25 @@ function web_invoice_default($message='')
 	if($x_counter == 0) {
 	// No result
 	?>
-<tr><td colspan="6" align="center"><div style="padding: 20px;">You have not created any invoices yet, <a href="admin.php?page=new_web_invoice">create one now.</a></div></td></tr>
+<tr><td colspan="6" align="center"><div style="padding: 20px;"><?php _e('You have not created any invoices yet, ', WEB_INVOICE_TRANS_DOMAIN); ?><a href="admin.php?page=new_web_invoice"><?php _e('create one now.', WEB_INVOICE_TRANS_DOMAIN); ?></a></div></td></tr>
 	<?php
 
 	}
 ?>
 	</tbody>
 	</table>
-	<?php if($wpdb->query("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived'")) { ?><a href="" id="web_invoice_show_archived">Show / Hide Archived</a><?php }?>
+	<?php if($wpdb->query("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived'")) { ?><a href="" id="web_invoice_show_archived"><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
 	</form>
 <?php
 
-
-
 	// web_invoice_options_manageInvoice();
 	 if(web_invoice_is_not_merchant()) web_invoice_cc_setup(false);
-
 }
 
 function web_invoice_recurring_overview($message='')
 {
 	global $wpdb;
-	//Make sure tables exist
-
-
-
+	// Make sure tables exist
 	// The error takes precedence over others being that nothing can be done w/o tables
 	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) { $warning_message = ""; }
 
@@ -201,21 +179,17 @@ function web_invoice_recurring_overview($message='')
 	$all_invoices = $wpdb->get_results("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num != ''");
 
 ?>
-
-
-
-
 	<form id="invoices-filter" action="" method="post" >
 	<input type="hidden" name="web_invoice_recurring_billing" value="true" />
-	<h2>Recurring Billing Overview</h2>
+	<h2><?php _e('Recurring Billing Overview', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 
 	<?php if(web_invoice_is_not_merchant()) { ?>
 	<div class="web_invoice_rounded_box">
-		<p><b>You need a credit card processing account to use recurring billing. </b>
-			You may get an ARB (Automated Recurring Billing) account from <a href="http://keti.ws/37281">MerchantPlus</a> (800-546-1997),
-			<a href="http://keti.ws/37282">MerchantExpress.com</a> (888-845-9457) or
-			<a href="http://keti.ws/36282">MerchantWarehouse</a> (866-400-9706).</p>
-		<p>	Once you have an account, enter in your username and transaction key into the <a href="admin.php?page=web_invoice_settings">settings page</a>.</p>
+		<p><?php printf(__('You need a credit card processing account to use recurring billing. </b>
+			You may get an ARB (Automated Recurring Billing) account from %1$s (800-546-1997),
+			%2$s (888-845-9457) or
+			%3$s (866-400-9706).', WEB_INVOICE_TRANS_DOMAIN), '<a href="http://keti.ws/37281">MerchantPlus</a>', '<a href="http://keti.ws/37282">MerchantExpress.com</a>', '<a href="http://keti.ws/36282">MerchantWarehouse</a>'); ?><b></p>
+		<p><?php _e('Once you have an account, enter in your username and transaction key into the ', WEB_INVOICE_TRANS_DOMAIN); ?><a href="admin.php?page=web_invoice_settings"><?php _e('settings page', WEB_INVOICE_TRANS_DOMAIN); ?></a>.</p>
 	</div>
 	<?php } ?>
 
@@ -223,19 +197,19 @@ function web_invoice_recurring_overview($message='')
 
 	<div class="alignleft">
 	<select name="web_invoice_action">
-		<option value="-1" selected="selected">-- Actions --</option>
-		<option value="send_invoice" name="sendit" >Send Invoice(s)</option>
-		<option value="archive_invoice" name="archive" >Archive Invoice(s)</option>
-		<option value="unrachive_invoice" name="unarchive" >Un-Archive Invoice(s)</option>
-		<option value="stop_web_invoice_recurring_billing" name="mark_as_sent" >Stop Recurring Billing</option>
-		<option  value="delete_invoice" onClick="if(confirm('If you delete a recurring invoice, the subscription will be cancelled.')) {return true;} return false;">Delete</option>
+		<option value="-1" selected="selected"><?php _e('-- Actions --', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="send_invoice" name="sendit" ><?php _e('Send Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="archive_invoice" name="archive" ><?php _e('Archive Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="unrachive_invoice" name="unarchive" ><?php _e('Un-Archive Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option value="stop_web_invoice_recurring_billing" name="mark_as_sent" ><?php _e('Stop Recurring Billing', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		<option  value="delete_invoice" onClick="if(confirm('<?php _e('If you delete a recurring invoice, the subscription will be cancelled.', WEB_INVOICE_TRANS_DOMAIN); ?>')) {return true;} return false;"><?php _e('Delete', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	</select>
-	<input type="submit" value="Apply" class="button-secondary action" />
+	<input type="submit" value="<?php _e('Apply', WEB_INVOICE_TRANS_DOMAIN); ?>" class="button-secondary action" />
 	</div>
 
 	<div class="alignright">
 		<ul class="subsubsub" style="margin:0;">
-		<li>Filter: <input type="text" id="FilterTextBox" class="search-input" name="FilterTextBox" /> </li>
+		<li><?php _e('Filter: ', WEB_INVOICE_TRANS_DOMAIN); ?><input type="text" id="FilterTextBox" class="search-input" name="FilterTextBox" /> </li>
 		</ul>
 	</div>
 	</div>
@@ -247,11 +221,11 @@ function web_invoice_recurring_overview($message='')
 	<thead>
 	<tr>
 		<th class="check-column"><input type="checkbox" id="CheckAll" /></th>
-		<th class="invoice_id_col">Invoice Id</th>
-		<th>Subject</th>
-		<th>Amount</th>
-		<th>Status</th>
-		<th>User</th>
+		<th class="invoice_id_col"><?php _e('Invoice Id', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<th><?php _e('Subject', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<th><?php _e('Amount', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<th><?php _e('Status', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<th><?php _e('User', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 		<th>&nbsp;</th>
 	</tr>
 	</thead>
@@ -270,7 +244,6 @@ function web_invoice_recurring_overview($message='')
 
 		//Basic Settings
 		$invoice_id = $invoice->invoice_num;
-
 
 		if(web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id')) $custom_id = web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id'); else $custom_id = $invoice_id;
 		$subject = $invoice->subject;
@@ -296,7 +269,7 @@ function web_invoice_recurring_overview($message='')
 
 		// Days Since Sent
 		if(web_invoice_paid_status($invoice_id)) {
-		$days_since = "<span style='display:none;'>-2</span> Paid"; }
+		$days_since = "<span style='display:none;'>-2</span>".__(' Paid', WEB_INVOICE_TRANS_DOMAIN); }
 		else {
 			if(web_invoice_meta($invoice_id,'sent_date')) {
 
@@ -304,15 +277,15 @@ function web_invoice_recurring_overview($message='')
 			$date2 = date("Y-m-d", time());
 			$difference = abs(strtotime($date2) - strtotime($date1));
 			$days = round(((($difference/60)/60)/24), 0);
-			if($days == 0) { $days_since = "<span style='display:none;'>$days</span>Sent Today. "; }
-			elseif($days == 1) { $days_since = "<span style='display:none;'>$days</span>Sent Yesterday. "; }
-			elseif($days > 1) { $days_since = "<span style='display:none;'>$days</span>Sent $days days ago. "; }
+			if($days == 0) { $days_since = "<span style='display:none;'>$days</span>".__('Sent Today. ', WEB_INVOICE_TRANS_DOMAIN); }
+			elseif($days == 1) { $days_since = "<span style='display:none;'>$days</span>".__('Sent Yesterday. ', WEB_INVOICE_TRANS_DOMAIN); }
+			elseif($days > 1) { $days_since = "<span style='display:none;'>$days</span>".sprintf(__('Sent %s days ago. ', WEB_INVOICE_TRANS_DOMAIN), $days); }
 			}
 			else {
-			$days_since ="<span style='display:none;'>999</span>Not Sent";	}
+			$days_since ="<span style='display:none;'>999</span>".__('Not Sent', WEB_INVOICE_TRANS_DOMAIN);	}
 		}
 
-		if(web_invoice_recurring_started($invoice_id)) $days_since = "<span style='display:none;'>-1</span>Active Recurring";
+		if(web_invoice_recurring_started($invoice_id)) $days_since = "<span style='display:none;'>-1</span>".__('Active Recurring', WEB_INVOICE_TRANS_DOMAIN);
 
 
 
@@ -323,7 +296,7 @@ function web_invoice_recurring_overview($message='')
 		$output_row .= "	<td>$show_money</td>\n";
 		$output_row .= "	<td>$days_since</td>\n";
 		$output_row .= "	<td> <a href='user-edit.php?user_id=$user_id'>$call_me_this</a></td>\n";
-		$output_row .= "	<td><a href='$invoice_link'>View Web Invoice</a></td>\n";
+		$output_row .= "	<td><a href='$invoice_link'>".__('View Web Invoice', WEB_INVOICE_TRANS_DOMAIN)."</a></td>\n";
 		$output_row .= "</tr>";
 
 		echo $output_row;
@@ -332,34 +305,26 @@ function web_invoice_recurring_overview($message='')
 	if($x_counter == 0) {
 	// No result
 	?>
-<tr><td colspan="6" align="center"><div style="padding: 20px;">You have not created any recurring invoices yet, <a href="admin.php?page=new_web_invoice">create one now.</a></div></td></tr>
+<tr><td colspan="6" align="center"><div style="padding: 20px;"><?php _e('You have not created any recurring invoices yet, ', WEB_INVOICE_TRANS_DOMAIN); ?><a href="admin.php?page=new_web_invoice"><?php _e('create one now.', WEB_INVOICE_TRANS_DOMAIN); ?></a></div></td></tr>
 	<?php
 
 	}
-
 		?>
 	</tbody>
 	</table>
-		<?php if($wpdb->query("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived'")) { ?><a href="" id="web_invoice_show_archived">Show / Hide Archived</a><?php }?>
+		<?php if($wpdb->query("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived'")) { ?><a href="" id="web_invoice_show_archived"><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
 		</form>
-
 		<?php
-
-
-
 	// web_invoice_options_manageInvoice();
 	 if(web_invoice_is_not_merchant()) web_invoice_cc_setup(false);
-
 }
 
 function web_invoice_saved_preview($invoice_id)
 {
-
 	?>
+	<h2><?php _e('Save and Preview', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 
-	<h2>Save and Preview</h2>
-
-	<p>This is what your invoice will appear like in the email message. The recipient will see the itemized list after following their link to your website.</p>
+	<p><?php _e('This is what your invoice will appear like in the email message. The recipient will see the itemized list after following their link to your website.', WEB_INVOICE_TRANS_DOMAIN); ?></p>
 
 	<div id="invoice_preview">
 	<?php echo web_invoice_show_invoice($invoice_id); ?>
@@ -385,10 +350,7 @@ function web_invoice_saved_preview($invoice_id)
 		</form>
 
 	</div>
-	Do not use the back button or you could have duplicates.
-
-<?php
-
+	<?php _e('Do not use the back button or you could have duplicates.', WEB_INVOICE_TRANS_DOMAIN);
 }
 
 
@@ -398,7 +360,6 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 	//Load Defaults
 	$currency = get_option("web_invoice_default_currency_code");
-
 
 	if(!empty($_REQUEST['user_id'])) $user_id = $_REQUEST['user_id'];
 
@@ -433,9 +394,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 		$web_invoice_subscription_total_occurances = web_invoice_meta($template_invoice_id,'web_invoice_subscription_total_occurances');
 
 		$web_invoice_recurring_billing = web_invoice_meta($template_invoice_id,'web_invoice_recurring_billing');
-
 	}
-
 
 	// Invoice Exists, we are modifying it
 	if(isset($invoice_id)) {
@@ -462,14 +421,10 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 		$web_invoice_subscription_start_day = web_invoice_meta($invoice_id,'web_invoice_subscription_start_day');
 		$web_invoice_subscription_start_year = web_invoice_meta($invoice_id,'web_invoice_subscription_start_year');
 		$web_invoice_subscription_total_occurances = web_invoice_meta($invoice_id,'web_invoice_subscription_total_occurances');
-
-
-
 	}
 
 	//Whether recurring bill will start when client pays, or a date is specified
 	if($web_invoice_subscription_start_month && $web_invoice_subscription_start_year && $web_invoice_subscription_start_day) $recurring_auto_start = true; else $recurring_auto_start = false;
-
 
 	// Brand New Invoice
 	if(!isset($invoice_id) && isset($_REQUEST['user_id'])) {
@@ -489,62 +444,57 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 	//Load Invoice Specific Settings, and override default
 	if(!empty($web_invoice_currency_code)) $currency = $web_invoice_currency_code;
 
-
 	// Crreae two blank arrays for itemized list if none is set
 	if(count($itemized_array) == 0) {
 	$itemized_array[1] = "";
 	$itemized_array[2] = "";
 	}
 
-	if(get_option("web_invoice_web_invoice_page") == '') { $warning_message .= "Invoice page not selected. "; }
-	if(get_option("web_invoice_payment_method") == '') { $warning_message .= "Payment method not set. "; }
-	if(get_option("web_invoice_payment_method") == '' || get_option("web_invoice_web_invoice_page") == '') { $warning_message .= "Visit <a href='admin.php?page=web_invoice_settings'>settings page</a> to configure."; }
+	if(get_option("web_invoice_web_invoice_page") == '') { $warning_message .= __('Invoice page not selected. ', WEB_INVOICE_TRANS_DOMAIN); }
+	if(get_option("web_invoice_payment_method") == '') { $warning_message .= __('Payment method not set. ', WEB_INVOICE_TRANS_DOMAIN); }
+	if(get_option("web_invoice_payment_method") == '' || get_option("web_invoice_web_invoice_page") == '') {
+		$warning_message .= __("Visit ", WEB_INVOICE_TRANS_DOMAIN)."<a href='admin.php?page=web_invoice_settings'>settings page</a>".__(" to configure.", WEB_INVOICE_TRANS_DOMAIN);
+	}
 
-	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) { $warning_message = "The plugin database tables are gone, deactivate and reactivate plugin to re-create them."; }
+	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) {
+		$warning_message = __("The plugin database tables are gone, deactivate and reactivate plugin to re-create them.", WEB_INVOICE_TRANS_DOMAIN);
+	}
 
 	if($warning_message) echo "<div id=\"message\" class='error' ><p>$warning_message</p></div>";
 	if($message) echo "<div id=\"message\" class='updated fade' ><p>$message</p></div>";
 
-
 	?>
-
-
-
-	<?php if(!isset($invoice_id)) { ?> <h2>New Web Invoice</h2><?php  web_invoice_draw_user_selection_form($user_id); } ?>
-	<?php if(isset($user_id) && isset($invoice_id)) { ?><h2>Manage Invoice</h2><?php } ?>
+	<?php if(!isset($invoice_id)) { ?> <h2><?php _e('New Web Invoice', WEB_INVOICE_TRANS_DOMAIN); ?></h2><?php  web_invoice_draw_user_selection_form($user_id); } ?>
+	<?php if(isset($user_id) && isset($invoice_id)) { ?><h2><?php _e('Manage Invoice', WEB_INVOICE_TRANS_DOMAIN); ?></h2><?php } ?>
 
 	<?php if(isset($invoice_id) && web_invoice_paid_status($invoice_id) || web_invoice_recurring_started($invoice_id) || web_invoice_query_log($invoice_id, 'subscription_error')) { ?>
 	<div class="updated web_invoice_status">
 	<?php if(web_invoice_paid_status($invoice_id)) { ?>
-	<h2>Invoice Paid</h2>
+	<h2><?php _e('Invoice Paid', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 	<?php foreach(web_invoice_query_log($invoice_id, 'paid') as $info) {
-	echo $info->value . " on <span class='web_invoice_tamp_stamp'>" . $info->time_stamp . "</span><br />";
+	echo sprintf(__('%s on ', WEB_INVOICE_TRANS_DOMAIN), $info->value) . "<span class='web_invoice_tamp_stamp'>" . $info->time_stamp . "</span><br />";
 	} ?>
 	<?php } ?>
 
 	<?php if(web_invoice_recurring_started($invoice_id)) { ?>
-	<h2>Recurring Billing Initiated</h2>
+	<h2><?php _e('Recurring Billing Initiated', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 	<?php foreach(web_invoice_query_log($invoice_id, 'subscription') as $info) {
-	echo $info->value . " on " . $info->time_stamp . "<br />";
+	echo sprintf(__('%s on ', WEB_INVOICE_TRANS_DOMAIN), $info->value) . $info->time_stamp . "<br />";
 	} } ?>
 
 	<?php
 	$subscription_errors = web_invoice_query_log($invoice_id, 'subscription_error');
 	if($subscription_errors) { ?>
-	<h2>Recurring Billing Problems</h2>
+	<h2><?php _e('Recurring Billing Problems', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 	<ol>
 	<?php
 	foreach($subscription_errors as $info) {
-	echo "<li>" . $info->value . " on " . $info->time_stamp . "</li>";
+	echo "<li>" . sprintf(__('%s on ', WEB_INVOICE_TRANS_DOMAIN), $info->value). $info->time_stamp . "</li>";
 	} ?>
 	</ol>
 	<?php	}
 	}  ?>
-
-
-
 	</div>
-
 
 	<?php if(isset($user_id)) { ?>
 	<div id="poststuff" class="metabox-holder">
@@ -556,28 +506,28 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 
 <div class="postbox" id="web_invoice_client_info_div">
-<h3><label for="link_name">Client Information</label></h3>
+<h3><label for="link_name"><?php _e('Client Information', WEB_INVOICE_TRANS_DOMAIN); ?></label></h3>
 <div class="inside">
 
 
 <table class="form-table" id="add_new_web_invoice">
 
 	<?php
-	if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">Your business name isn't set, go to Settings page to set it.</a></th></tr>\n"; 	?>
+	if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">".__("Your business name isn't set, go to Settings page to set it.", WEB_INVOICE_TRANS_DOMAIN)."</a></th></tr>\n"; 	?>
 
-	<tr><th><?php _e("Email Address") ?></th><td><?php echo $user_email; ?> <a class="web_invoice_click_me" href="user-edit.php?user_id=<?php echo $user_id; ?>#billing_info">Go to User Profile</a></td>
-	<tr style="height: 90px;"><th><?php _e("Billing Information") ?></th>
+	<tr><th><?php _e("Email Address", WEB_INVOICE_TRANS_DOMAIN) ?></th><td><?php echo $user_email; ?> <a class="web_invoice_click_me" href="user-edit.php?user_id=<?php echo $user_id; ?>#billing_info"><?php _e('Go to User Profile', WEB_INVOICE_TRANS_DOMAIN); ?></a></td>
+	<tr style="height: 90px;"><th><?php _e("Billing Information", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 
 
 	<div id="web_invoice_edit_user_from_invoice">
-      <span class="web_invoice_make_editable<?php if(!$first_name) echo " web_invoice_unset"; ?>" id="web_invoice_first_name"><?php if($first_name) echo $first_name; else echo "Set First Name"; ?></span>
-      <span class="web_invoice_make_editable<?php if(!$last_name) echo " web_invoice_unset"; ?>" id="web_invoice_last_name"><?php if($last_name) echo $last_name; else echo "Set Last Name"; ?></span><br />
-      <span class="web_invoice_make_editable<?php if(!$streetaddress) echo " web_invoice_unset"; ?>" id="web_invoice_streetaddress"><?php if($streetaddress) echo $streetaddress; else echo "Set Street Address"; ?></span><br />
-      <span class="web_invoice_make_editable<?php if(!$city) echo " web_invoice_unset"; ?>" id="web_invoice_city"><?php if($city) echo $city; else echo "Set City"; ?></span>
-      <span class="web_invoice_make_editable<?php if(!$state) echo " web_invoice_unset"; ?>" id="web_invoice_state"><?php if($state) echo $state; else echo "Set State"; ?></span>
-      <span class="web_invoice_make_editable<?php if(!$zip) echo " web_invoice_unset"; ?>" id="web_invoice_zip"><?php if($zip) echo $zip; else echo "Set Zip Code"; ?></span>
-      <span class="web_invoice_make_editable<?php if(!$country) echo " web_invoice_unset"; ?>" id="web_invoice_country"><?php if($country) echo $country; else echo "Set Country"; ?></span>
+      <span class="web_invoice_make_editable<?php if(!$first_name) echo " web_invoice_unset"; ?>" id="web_invoice_first_name"><?php if($first_name) echo $first_name; else echo __("Set First Name", WEB_INVOICE_TRANS_DOMAIN); ?></span>
+      <span class="web_invoice_make_editable<?php if(!$last_name) echo " web_invoice_unset"; ?>" id="web_invoice_last_name"><?php if($last_name) echo $last_name; else echo __("Set Last Name", WEB_INVOICE_TRANS_DOMAIN); ?></span><br />
+      <span class="web_invoice_make_editable<?php if(!$streetaddress) echo " web_invoice_unset"; ?>" id="web_invoice_streetaddress"><?php if($streetaddress) echo $streetaddress; else echo __("Set Street Address", WEB_INVOICE_TRANS_DOMAIN); ?></span><br />
+      <span class="web_invoice_make_editable<?php if(!$city) echo " web_invoice_unset"; ?>" id="web_invoice_city"><?php if($city) echo $city; else echo __("Set City", WEB_INVOICE_TRANS_DOMAIN); ?></span>
+      <span class="web_invoice_make_editable<?php if(!$state) echo " web_invoice_unset"; ?>" id="web_invoice_state"><?php if($state) echo $state; else echo __("Set State", WEB_INVOICE_TRANS_DOMAIN); ?></span>
+      <span class="web_invoice_make_editable<?php if(!$zip) echo " web_invoice_unset"; ?>" id="web_invoice_zip"><?php if($zip) echo $zip; else echo __("Set Zip Code", WEB_INVOICE_TRANS_DOMAIN); ?></span>
+      <span class="web_invoice_make_editable<?php if(!$country) echo " web_invoice_unset"; ?>" id="web_invoice_country"><?php if($country) echo $country; else echo __("Set Country", WEB_INVOICE_TRANS_DOMAIN); ?></span>
 
 	</div>
 	</td>
@@ -588,51 +538,51 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 </div>
 
 <div class="postbox" id="web_invoice_client_info_div">
-<h3><label for="link_name">Recurring Billing</label></h3>
+<h3><label for="link_name"><?php _e("Recurring Billing", WEB_INVOICE_TRANS_DOMAIN) ?></label></h3>
 
 <div id="web_invoice_enable_recurring_billing" class="web_invoice_click_me" <?php if($web_invoice_recurring_billing) { ?>style="display:none;"<?php } ?>>
-	Create a recurring billing schedule for this invoice.
+	<?php _e("Create a recurring billing schedule for this invoice.", WEB_INVOICE_TRANS_DOMAIN) ?>
 </div>
 
 <div class="web_invoice_enable_recurring_billing" <?php if(!$web_invoice_recurring_billing) { ?>style="display:none;"<?php } ?>>
 
 <table class="form-table" id="add_new_web_invoice">
 	<tr>
-		<th><a class="web_invoice_tooltip"  title="A name to identify this subscription by in addition to the invoice id. (ex: 'standard hosting')">Subscription Name</a></th>
+		<th><a class="web_invoice_tooltip" title="<?php _e("A name to identify this subscription by in addition to the invoice id. (ex: 'standard hosting')", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Subscription Name", WEB_INVOICE_TRANS_DOMAIN) ?></a></th>
 		<td><?php echo web_invoice_draw_inputfield('web_invoice_subscription_name',$web_invoice_subscription_name); ?></td>
 	</tr>
 
 	<tr>
-		<th>Start Date</th>
+		<th><?php _e("Start Date", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td>
 
 
-			<span style="<?php if($recurring_auto_start) { ?>display:none;<?php } ?>" class="web_invoice_timestamp">Start automatically as soon as the customer enters their billing information. <span class="web_invoice_click_me" onclick="jQuery('.web_invoice_timestamp').toggle();">Specify Start Date</span></span>
-
+			<span style="<?php if($recurring_auto_start) { ?>display:none;<?php } ?>" class="web_invoice_timestamp"><?php _e("Start automatically as soon as the customer enters their billing information. ", WEB_INVOICE_TRANS_DOMAIN) ?><span class="web_invoice_click_me" onclick="jQuery('.web_invoice_timestamp').toggle();"><?php _e("Specify Start Date", WEB_INVOICE_TRANS_DOMAIN) ?></span></span>
 			<div style="<?php if(!$recurring_auto_start) { ?>display:none;<?php } ?>" class="web_invoice_timestamp">
-			<?php echo web_invoice_draw_select('web_invoice_subscription_start_month', array("01" => "Jan","02" => "Feb","03" => "Mar","04" => "Apr","05" => "May","06" => "Jun","07" => "Jul","08" => "Aug","09" => "Sep","10" => "Oct","11" => "Nov","12" => "Dec"), $web_invoice_subscription_start_month); ?>
+			<?php echo web_invoice_draw_select('web_invoice_subscription_start_month', web_invoice_month_array(), $web_invoice_subscription_start_month); ?>
 			<?php echo web_invoice_draw_inputfield('web_invoice_subscription_start_day', $web_invoice_subscription_start_day, ' size="2" maxlength="2" autocomplete="off" '); ?>,
 			<?php echo web_invoice_draw_inputfield('web_invoice_subscription_start_year', $web_invoice_subscription_start_year, ' size="4" maxlength="4" autocomplete="off" '); ?>
-			<span onclick="web_invoice_subscription_start_time(7);" class="web_invoice_click_me">In One Week</span> |
-			<span onclick="web_invoice_subscription_start_time(30);" class="web_invoice_click_me">In 30 Days</span> |
-			<span onclick="jQuery('.web_invoice_timestamp').toggle();web_invoice_subscription_start_time('clear');"  class="web_invoice_click_me">Start automatically</span>
+			<span onclick="web_invoice_subscription_start_time(7);" class="web_invoice_click_me"><?php _e("In One Week", WEB_INVOICE_TRANS_DOMAIN) ?></span> |
+			<span onclick="web_invoice_subscription_start_time(30);" class="web_invoice_click_me"><?php _e("In 30 Days", WEB_INVOICE_TRANS_DOMAIN) ?></span> |
+			<span onclick="jQuery('.web_invoice_timestamp').toggle();web_invoice_subscription_start_time('clear');"  class="web_invoice_click_me"><?php _e("Start automatically", WEB_INVOICE_TRANS_DOMAIN) ?></span>
 			</div>
 		</td>
 	</tr>
 
 	<tr>
-		<th><a class="web_invoice_tooltip"  title="This will be the number of times the client will be billed. (ex: 12)">Bill Every</a></th>
-		<td><?php echo web_invoice_draw_inputfield('web_invoice_subscription_length', $web_invoice_subscription_length,' size="3" maxlength="3" autocomplete="off" '); ?> <?php echo web_invoice_draw_select('web_invoice_subscription_unit', array("months" => "month(s)","days"=> "days"), $web_invoice_subscription_unit); ?></td>
+		<th><a class="web_invoice_tooltip"  title="<?php _e("This will be the number of times the client will be billed. (ex: 12)", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Bill Every", WEB_INVOICE_TRANS_DOMAIN) ?></a></th>
+		<td><?php echo web_invoice_draw_inputfield('web_invoice_subscription_length', $web_invoice_subscription_length,' size="3" maxlength="3" autocomplete="off" '); ?>
+		<?php echo web_invoice_draw_select('web_invoice_subscription_unit', array("months" => __("month(s)", WEB_INVOICE_TRANS_DOMAIN), "days"=> __("days", WEB_INVOICE_TRANS_DOMAIN)), $web_invoice_subscription_unit); ?></td>
 	</tr>
 
 	<tr>
-		<th><a class="web_invoice_tooltip"  title="Keep it under the maximum of 9999.">Total Billing Cycles</a></th>
+		<th><a class="web_invoice_tooltip"  title="<?php _e("Keep it under the maximum of 9999.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Total Billing Cycles", WEB_INVOICE_TRANS_DOMAIN) ?></a></th>
 		<td><?php echo web_invoice_draw_inputfield('web_invoice_subscription_total_occurances', $web_invoice_subscription_total_occurances,' size="4" maxlength="4" autocomplete="off" '); ?></td>
 	</tr>
 
 	<tr>
 		<th></th>
-		<td>All <b>recurring billing</b> fields must be filled out to activate recurring billing. <span onclick="web_invoice_cancel_recurring()" class="web_invoice_click_me">Cancel Recurring Billing</span></td>
+		<td><?php _e("All <b>recurring billing</b> fields must be filled out to activate recurring billing. ", WEB_INVOICE_TRANS_DOMAIN) ?><span onclick="web_invoice_cancel_recurring()" class="web_invoice_click_me"><?php _e("Cancel Recurring Billing", WEB_INVOICE_TRANS_DOMAIN) ?></span></td>
 	</tr>
 </table>
 
@@ -642,7 +592,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 <div id="web_invoice_main_info" class="metabox-holder">
 <div id="submitdiv" class="postbox" style="">
-<h3 class="hndle"><span>Invoice Details</span></h3>
+<h3 class="hndle"><span><?php _e("Invoice Details", WEB_INVOICE_TRANS_DOMAIN) ?></span></h3>
 <div class="inside">
 
 
@@ -653,7 +603,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 
 	<tr class="invoice_main">
-		<th>Subject</th>
+		<th><?php _e("Subject", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td>
 			<input  id="invoice_subject" class="subject"  name='subject' value='<?php echo $subject; ?>' />
 		</td>
@@ -661,19 +611,19 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 
 
-	<tr class="invoice_main"><th>Description / PO</th><td><textarea class="invoice_description_box" name='description' value=''><?php echo $description; ?></textarea></td></tr>
+	<tr class="invoice_main"><th><?php _e("Description / PO", WEB_INVOICE_TRANS_DOMAIN) ?></th><td><textarea class="invoice_description_box" name='description' value=''><?php echo $description; ?></textarea></td></tr>
 
 	<tr class="invoice_main">
-		<th>Itemized List</th>
+		<th><?php _e("Itemized List", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 		<table id="invoice_list" class="itemized_list">
 		<tr>
-		<th class="id">ID</th>
-		<th class="name">Name</th>
-		<th class="description">Description</th>
-		<th class="quantity">Quantity</th>
-		<th class="price">Unit Price</th>
-		<th class="item_total">Total</th>
+		<th class="id"><?php _e("ID", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<th class="name"><?php _e("Name", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<th class="description"><?php _e("Description", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<th class="quantity"><?php _e("Quantity", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<th class="price"><?php _e("Unit Price", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<th class="item_total"><?php _e("Total", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		</tr>
 
 		<?php
@@ -696,17 +646,17 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 	</tr>
 
 	<tr class="invoice_main">
-		<th style='vertical-align:bottom;text-align:right;'><p><a href="#" id="add_itemized_item">Add Another Item</a><br /><span class='web_invoice_light_text'></span></p></th>
+		<th style='vertical-align:bottom;text-align:right;'><p><a href="#" id="add_itemized_item"><?php _e("Add Another Item", WEB_INVOICE_TRANS_DOMAIN) ?></a><br /><span class='web_invoice_light_text'></span></p></th>
 		<td>
 			<table class="itemized_list">
 
 			<tr>
-			<td align="right">Invoice Total:</td>
+			<td align="right"><?php _e("Invoice Total:", WEB_INVOICE_TRANS_DOMAIN) ?></td>
 			<td class="item_total"><span id='amount'></span></td>
 			</tr>
 
 			<tr>
-			<td align="right">Recurring Invoice Total:</td>
+			<td align="right"><?php _e("Recurring Invoice Total:", WEB_INVOICE_TRANS_DOMAIN) ?></td>
 			<td class="item_total"><span id='recurring_total'></span></td>
 			</tr>
 
@@ -720,7 +670,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 
 <div id="submitdiv" class="postbox" style="">
-<h3 class="hndle"><span>Publish</span></h3>
+<h3 class="hndle"><span><?php _e("Publish", WEB_INVOICE_TRANS_DOMAIN) ?></span></h3>
 <div class="inside">
 <div id="minor-publishing">
 
@@ -729,23 +679,23 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 
 	<tr class="invoice_main">
-		<th>Invoice ID </th>
+		<th><?php _e("Invoice ID ", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td style="font-size: 1.1em; padding-top:7px;">
 		<input class="web_invoice_custom_invoice_id<?php if(empty($web_invoice_custom_invoice_id)) { echo " web_invoice_hidden"; } ?>" name="web_invoice_custom_invoice_id" value="<?php echo $web_invoice_custom_invoice_id;?>" />
-		<?php if(isset($invoice_id)) { echo $invoice_id; } else { echo rand(10000000, 90000000);}  ?> <a class="web_invoice_custom_invoice_id web_invoice_click_me <?php if(!empty($web_invoice_custom_invoice_id)) { echo " web_invoice_hidden"; } ?>" href="#">Custom Invoice ID</a>
+		<?php if(isset($invoice_id)) { echo $invoice_id; } else { echo rand(10000000, 90000000);}  ?> <a class="web_invoice_custom_invoice_id web_invoice_click_me <?php if(!empty($web_invoice_custom_invoice_id)) { echo " web_invoice_hidden"; } ?>" href="#"><?php _e("Custom Invoice ID", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 
 		</td>
 	</tr>
 
 	<tr class="invoice_main">
-		<th>Tax </th>
+		<th><?php _e("Tax ", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td style="font-size: 1.1em; padding-top:7px;">
 			<input style="width: 35px;"  name="web_invoice_tax" id="web_invoice_tax" autocomplete="off" value="<?php echo $web_invoice_tax ?>" />%
 		</td>
 	</tr>
 
 		<tr class="">
-		<th>Currency</th>
+		<th><?php _e("Currency", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td>
 			<select name="web_invoice_currency_code">
 				<?php foreach(web_invoice_currency_array() as $value=>$currency_x) {
@@ -757,29 +707,15 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 	</tr>
 
 	<tr class="">
-		<th>Due Date</th>
+		<th><?php _e("Due Date", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td>
 			<div id="timestampdiv" style="display:block;">
-			<select id="mm" name="web_invoice_due_date_month">
-			<option></option>
-			<option value="1" <?php if($web_invoice_due_date_month == '1') echo " selected='selected'";?>>Jan</option>
-			<option value="2" <?php if($web_invoice_due_date_month == '2') echo " selected='selected'";?>>Feb</option>
-			<option value="3" <?php if($web_invoice_due_date_month == '3') echo " selected='selected'";?>>Mar</option>
-			<option value="4" <?php if($web_invoice_due_date_month == '4') echo " selected='selected'";?>>Apr</option>
-			<option value="5" <?php if($web_invoice_due_date_month == '5') echo " selected='selected'";?>>May</option>
-			<option value="6" <?php if($web_invoice_due_date_month == '6') echo " selected='selected'";?>>Jun</option>
-			<option value="7" <?php if($web_invoice_due_date_month == '7') echo " selected='selected'";?>>Jul</option>
-			<option value="8" <?php if($web_invoice_due_date_month == '8') echo " selected='selected'";?>>Aug</option>
-			<option value="9" <?php if($web_invoice_due_date_month == '9') echo " selected='selected'";?>>Sep</option>
-			<option value="10" <?php if($web_invoice_due_date_month == '10') echo " selected='selected'";?>>Oct</option>
-			<option value="11" <?php if($web_invoice_due_date_month == '11') echo " selected='selected'";?>>Nov</option>
-			<option value="12" <?php if($web_invoice_due_date_month == '12') echo " selected='selected'";?>>Dec</option>
-			</select>
+			<?php echo web_invoice_draw_select('web_invoice_due_date_month', web_invoice_month_array(), $web_invoice_due_date_month); ?>
 			<input type="text" id="jj" name="web_invoice_due_date_day" value="<?php echo $web_invoice_due_date_day; ?>" size="2" maxlength="2" autocomplete="off" />,
 			<input type="text" id="aa" name="web_invoice_due_date_year" value="<?php echo $web_invoice_due_date_year; ?>" size="4" maxlength="5" autocomplete="off" />
-			<span onclick="web_invoice_add_time(7);" class="web_invoice_click_me">In One Week</span> |
-			<span onclick="web_invoice_add_time(30);" class="web_invoice_click_me">In 30 Days</span> |
-			<span onclick="web_invoice_add_time('clear');" class="web_invoice_click_me">Clear</span>
+			<span onclick="web_invoice_add_time(7);" class="web_invoice_click_me"><?php _e("In One Week", WEB_INVOICE_TRANS_DOMAIN) ?></span> |
+			<span onclick="web_invoice_add_time(30);" class="web_invoice_click_me"><?php _e("In 30 Days", WEB_INVOICE_TRANS_DOMAIN) ?></span> |
+			<span onclick="web_invoice_add_time('clear');" class="web_invoice_click_me"><?php _e("Clear", WEB_INVOICE_TRANS_DOMAIN) ?></span>
 			</div>
 		</td>
 	</tr>
@@ -810,7 +746,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 
 <?php if(web_invoice_get_invoice_status($invoice_id,'100')) { ?>
 	<div class="updated web_invoice_status">
-		<h2>This Invoice's History (<a href="admin.php?page=new_web_invoice&invoice_id=<?php echo $invoice_id; ?>&web_invoice_action=clear_log">Clear Log</a>)</h2>
+		<h2><?php _e("This Invoice's History ", WEB_INVOICE_TRANS_DOMAIN) ?>(<a href="admin.php?page=new_web_invoice&invoice_id=<?php echo $invoice_id; ?>&web_invoice_action=clear_log"><?php _e("Clear Log", WEB_INVOICE_TRANS_DOMAIN) ?></a>)</h2>
 		<ul id="invoice_history_log">
 		<?php echo web_invoice_get_invoice_status($invoice_id,'100'); ?>
 		</ul>
@@ -830,7 +766,7 @@ function web_invoice_show_welcome_message() {
 
 global $wpdb; ?>
 
-<h2>Web Invoice Setup Steps</h2>
+<h2><?php _e("Web Invoice Setup Steps", WEB_INVOICE_TRANS_DOMAIN) ?></h2>
 
 	<ol style="list-style-type:decimal;padding-left: 20px;" id="web_invoice_first_time_setup">
 <?php
@@ -845,7 +781,7 @@ global $wpdb; ?>
 	<form action="admin.php?page=new_web_invoice" method='POST'>
 	<input type="hidden" name="web_invoice_action" value="first_setup" />
 <?php if(empty($web_invoice_web_invoice_page) ) { ?>
-	<li><a class="web_invoice_tooltip"  title="Your clients will have to follow their secure link to this page to see their invoice. Opening this page without following a link will result in the standard page content begin shown.">Select a page to display your web invoices</a>:
+	<li><a class="web_invoice_tooltip"  title="<?php _e("Your clients will have to follow their secure link to this page to see their invoice. Opening this page without following a link will result in the standard page content begin shown.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Select a page to display your web invoices", WEB_INVOICE_TRANS_DOMAIN) ?></a>:
 		<select name='web_invoice_web_invoice_page'>
 		<option></option>
 		<?php $list_pages = $wpdb->get_results("SELECT ID, post_title, post_name, guid FROM ". $wpdb->prefix ."posts WHERE post_status = 'publish' AND post_type = 'page' ORDER BY post_title");
@@ -860,72 +796,75 @@ global $wpdb; ?>
 <?php } ?>
 
 <?php if(empty($web_invoice_payment_method)) { ?>
-	<li>Select how you want to accept money:
+	<li><?php _e("Select how you want to accept money:", WEB_INVOICE_TRANS_DOMAIN) ?>
 		<select id="web_invoice_payment_method" name="web_invoice_payment_method[]" multiple="multiple" size="3">
 		<option></option>
-		<option value="paypal" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>>PayPal</option>
-		<option value="moneybookers" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>>Moneybookers</option>
-		<option value="alertpay" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>>AlertPay</option>
-		<option value="cc" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>>Credit Card</option>
+		<option value="paypal" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>><?php _e("PayPal", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<option value="moneybookers" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>><?php _e("Moneybookers", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<option value="alertpay" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>><?php _e("AlertPay", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<option value="cc" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select>
 
-		<li class="paypal_info">Your PayPal username: <input id='web_invoice_paypal_address' name="web_invoice_paypal_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" /></li>
+		<li class="paypal_info"><?php _e("Your PayPal username: ", WEB_INVOICE_TRANS_DOMAIN) ?><input id='web_invoice_paypal_address' name="web_invoice_paypal_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" /></li>
 
 		<li class="moneybookers_info">
-			Your Moneybookers username: <input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
-			<a href="http://keti.ws/27481" alt="moneybookers.com" class="web_invoice_click_me">Do you need a Moneybookers account?</a>
+			<?php _e("Your Moneybookers username: ", WEB_INVOICE_TRANS_DOMAIN) ?><input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
+			<a href="http://keti.ws/27481" alt="moneybookers.com" class="web_invoice_click_me"><?php _e("Do you need a Moneybookers account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</li>
 		<li class="moneybookers_info">
-			Enable Moneybookers payment notifications:
+			<?php _e("Enable Moneybookers payment notifications: ", WEB_INVOICE_TRANS_DOMAIN) ?>
 			<select id='web_invoice_moneybookers_merchant' name="web_invoice_moneybookers_merchant">
-			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> >yes</option>
-			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
+			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> ><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> ><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			</select>
 		</li>
 		<li class="moneybookers_info moneybookers_info_merchant">
-			Moneybookers payment notification secret: <input id='web_invoice_moneybookers_secret' name="web_invoice_moneybookers_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_secret')); ?>" />
+			<?php _e("Moneybookers payment notification secret: ", WEB_INVOICE_TRANS_DOMAIN) ?>
+			<input id='web_invoice_moneybookers_secret' name="web_invoice_moneybookers_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_secret')); ?>" />
 		</li>
 		<li class="moneybookers_info moneybookers_info_merchant">
-			Moneybookers payment notification IP: <input id='web_invoice_moneybookers_ip' name="web_invoice_moneybookers_ip" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" />
+			<?php _e("Moneybookers payment notification IP: ", WEB_INVOICE_TRANS_DOMAIN) ?>
+			<input id='web_invoice_moneybookers_ip' name="web_invoice_moneybookers_ip" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" />
 		</li>
 
 		<li class="alertpay_info">
-			Your AlertPay username: <input id='web_invoice_alertpay_address' name="web_invoice_alertpay_address" class="search-input input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
-			<a href="http://keti.ws/36283" alt="alertpay.com" class="web_invoice_click_me">Do you need an AlertPay account?</a>
+			<?php _e("Your AlertPay username: ", WEB_INVOICE_TRANS_DOMAIN) ?>
+			<input id='web_invoice_alertpay_address' name="web_invoice_alertpay_address" class="search-input input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
+			<a href="http://keti.ws/36283" alt="alertpay.com" class="web_invoice_click_me"><?php _e("Do you need an AlertPay account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</li>
 		<li class="alertpay_info">
-			Enable AlertPay IPN:
+			<?php _e("Enable AlertPay IPN:", WEB_INVOICE_TRANS_DOMAIN) ?>
 			<select id='web_invoice_alertpay_merchant' name="web_invoice_alertpay_merchant">
-			<option value="True" <?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?> >yes</option>
-			<option value="False" <?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
+			<option value="True" <?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?> ><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False" <?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?> ><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			</select>
-			<span class="web_invoice_alertpay_url web_invoice_info">Your alert URL is
-				<a title="Copy this link" href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br/>
-				Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).
+			<span class="web_invoice_alertpay_url web_invoice_info"><?php _e("Your alert URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
+				<a title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>" href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br/>
+				<?php _e("Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).", WEB_INVOICE_TRANS_DOMAIN) ?>
 			</span>
 		</li>
 		<li class="alertpay_info alertpay_info_merchant">
-			AlertPay IPN security code: <input id='web_invoice_alertpay_secret' name="web_invoice_alertpay_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" />
+			<?php _e("AlertPay IPN security code: ", WEB_INVOICE_TRANS_DOMAIN) ?><input id='web_invoice_alertpay_secret' name="web_invoice_alertpay_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" />
 		</li>
 
 		<li class="gateway_info">
-		<a class="web_invoice_tooltip"  title="Your credit card processor will provide you with a gateway username.">Gateway Username</a>
+		<a class="web_invoice_tooltip"  title="<?php _e("Your credit card processor will provide you with a gateway username.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Gateway Username", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		<input AUTOCOMPLETE="off" name="web_invoice_gateway_username" class="input_field search-input" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_username')); ?>" />
 		</li>
 
 		<li class="gateway_info">
-		<a class="web_invoice_tooltip"  title="You will be able to generate this in our credit card processor's control panel.">Gateway Transaction Key</a>
+		<a class="web_invoice_tooltip" title="<?php _e("You will be able to generate this in our credit card processor's control panel.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Gateway Transaction Key", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		<input AUTOCOMPLETE="off" name="web_invoice_gateway_tran_key" class="input_field search-input" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_tran_key')); ?>" />
 		</li>
 
 		<li class="gateway_info">
-		Gateway URL
+		<?php _e("Gateway URL", WEB_INVOICE_TRANS_DOMAIN) ?>
 		<input name="web_invoice_gateway_url" class="input_field search-input" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_url')); ?>" />
 		</li>
 
 <?php } ?>
 
-	<li>Send an invoice:
+	<li><?php _e("Send an invoice:", WEB_INVOICE_TRANS_DOMAIN) ?>
 		<select name='user_id' class='user_selection'>
 		<option ></option>
 		<?php
@@ -946,7 +885,7 @@ global $wpdb; ?>
 	</li>
 	</ol>
 
-	<input type='submit' class='button' value='Save Settings and Create Invoice' />
+	<input type='submit' class='button' value='<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?>' />
 	</form>
 	<?php  if(web_invoice_is_not_merchant()) web_invoice_cc_setup(false); ?>
 
@@ -957,7 +896,6 @@ function web_invoice_show_settings()
 {
 global $wpdb;
 
-
 if(isset($_POST['web_invoice_billing_meta'])) {
 	$web_invoice_billing_meta = explode('
 	',$_POST['web_invoice_billing_meta']);
@@ -967,21 +905,16 @@ if(isset($_POST['web_invoice_billing_meta'])) {
 
 if(get_option('web_invoice_billing_meta') != '') $web_invoice_billing_meta = unserialize(urldecode(get_option('web_invoice_billing_meta')));
 
-
-
 if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) { $warning_message = "The plugin database tables are gone, deactivate and reactivate plugin to re-create them."; }if($warning_message) echo "<div id=\"message\" class='error' ><p>$warning_message</p></div>";
 
-
-
-
 ?>
-<h2>Invoice Settings</h2>
+<h2><?php _e("Invoice Settings", WEB_INVOICE_TRANS_DOMAIN) ?></h2>
 <form method="POST">
 <iframe src="https://secure.mohanjith.com/wp/web-invoice.php" style="float: right; width: 187px; height: 220px;"></iframe>
 <table class="form-table" id="settings_page_table" style="clear: none;">
 
 <tr>
-	<th><a class="web_invoice_tooltip"  title="Select the page where your invoices will be displayed. Clients must follow their secured link, simply opening the page will not show any invoices.">Page to Display Invoices</a>:</th>
+	<th><a class="web_invoice_tooltip"  title="<?php _e("Select the page where your invoices will be displayed. Clients must follow their secured link, simply opening the page will not show any invoices.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Page to Display Invoices", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
 	<select name='web_invoice_web_invoice_page'>
 	<option></option>
@@ -998,7 +931,7 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 </tr>
 
 <tr>
-	<th><a class="web_invoice_tooltip"  title="If your website has an SSL certificate and you want to use it, the link to the invoice will be formatted for https.">Protocol to Use for Invoice URLs</a>:</th>
+	<th><a class="web_invoice_tooltip"  title="<?php _e("If your website has an SSL certificate and you want to use it, the link to the invoice will be formatted for https.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Protocol to Use for Invoice URLs", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
 	<select  name="web_invoice_protocol">
 	<option></option>
@@ -1008,199 +941,196 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 	</td>
 </tr>
 <tr>
-	<th> <a class="web_invoice_tooltip"  title="If enforced, WordPress will automatically reload the invoice page into HTTPS mode even if the user attemps to open it in non-secure mode.">Enforce HTTPS</a>:</th>
+	<th> <a class="web_invoice_tooltip" title="If enforced, WordPress will automatically reload the invoice page into HTTPS mode even if the user attemps to open it in non-secure mode.<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?>">Enforce HTTPS<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
 	<select  name="web_invoice_force_https">
 	<option></option>
-	<option value="true" style="padding-right: 10px;"<?php if(get_option('web_invoice_force_https') == 'true') echo 'selected="yes"';?>>Yes</option>
-	<option value="false" style="padding-right: 10px;"<?php if(get_option('web_invoice_force_https') == 'false') echo 'selected="yes"';?>>No</option>
-	</select> <a href="http://keti.ws/36281" alt="dynadot.com" class="web_invoice_click_me">Do you need an SSL Certificate?</a>
+	<option value="true" style="padding-right: 10px;"<?php if(get_option('web_invoice_force_https') == 'true') echo 'selected="yes"';?>><?php _e("Yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option value="false" style="padding-right: 10px;"<?php if(get_option('web_invoice_force_https') == 'false') echo 'selected="yes"';?>><?php _e("No", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	</select> <a href="http://keti.ws/36281" alt="dynadot.com" class="web_invoice_click_me"><?php _e("Do you need an SSL Certificate?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 	</td>
 </tr>
 
 <tr>
-	<th width="200">Business Name:</th>
+	<th width="200"><?php _e("Business Name:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 	<input name="web_invoice_business_name" type="text" class="input_field" value="<?php echo stripslashes(get_option('web_invoice_business_name')); ?>" />
 	</td>
 </tr>
 <tr>
-	<th width="200"><a class="web_invoice_tooltip"  title="This will display on the invoice page when printed for clients' records.">Business Address</a>:</th>
+	<th width="200"><a class="web_invoice_tooltip"  title="<?php _e("This will display on the invoice page when printed for clients' records.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Business Address", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
 	<textarea name="web_invoice_business_address" ><?php echo stripslashes(get_option('web_invoice_business_address')); ?></textarea>
 	</td>
 </tr>
 
 <tr>
-	<th width="200">Business Phone</th>
+	<th width="200"><?php _e("Business Phone", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 	<input name="web_invoice_business_phone" type="text"  class="input_field" value="<?php echo stripslashes(get_option('web_invoice_business_phone')); ?>" />
 	</td>
 </tr>
 
 <tr>
-	<th><a class="web_invoice_tooltip"  title="Address used to send out e-mail to client with web invoice link.">Return eMail Address</a>:</th>
+	<th><a class="web_invoice_tooltip"  title="<?php _e("Address used to send out e-mail to client with web invoice link.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Return eMail Address", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
 	<input name="web_invoice_email_address" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_email_address')); ?>" />
 	</td>
 </tr>
 
 <tr>
-	<th><a class="web_invoice_tooltip"  title="An email will be sent automatically to client thanking them for their payment.">Send Payment Confirmation</a>:</th>
+	<th><a class="web_invoice_tooltip"  title="<?php _e("An email will be sent automatically to client thanking them for their payment.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Send Payment Confirmation", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
 	<select name="web_invoice_send_thank_you_email">
 	<option></option>
-	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_send_thank_you_email') == 'yes') echo 'selected="yes"';?>>yes</option>
-	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_send_thank_you_email') == 'no') echo 'selected="yes"';?>>no</option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_send_thank_you_email') == 'yes') echo 'selected="yes"';?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_send_thank_you_email') == 'no') echo 'selected="yes"';?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select>
 	</td>
 </tr>
 
 <tr>
-	<th><a class="web_invoice_tooltip"  title="Send a copy of email sent to client thanking them to you.">CC Payment Confirmation</a>:</th>
+	<th><a class="web_invoice_tooltip"  title="<?php _e("Send a copy of email sent to client thanking them to you.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("CC Payment Confirmation", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
 	<select name="web_invoice_cc_thank_you_email">
 	<option></option>
-	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_cc_thank_you_email') == 'yes') echo 'selected="yes"';?>>yes</option>
-	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_cc_thank_you_email') == 'no') echo 'selected="yes"';?>>no</option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_cc_thank_you_email') == 'yes') echo 'selected="yes"';?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_cc_thank_you_email') == 'no') echo 'selected="yes"';?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select>
 	</td>
 </tr>
 
 <tr>
-	<th>Minimum User Level to Manage web-invoice</a>:</th>
+	<th><?php _e("Minimum User Level to Manage web-invoice", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
-	<?php echo web_invoice_draw_select('web_invoice_user_level',array("level_0" => "Subscriber","level_0" => "Contributor","level_2" => "Author","level_5" => "Editor","level_8" => "Administrator"), get_option('web_invoice_user_level')); ?>
+	<?php echo web_invoice_draw_select('web_invoice_user_level',array("level_0" => __("Subscriber", WEB_INVOICE_TRANS_DOMAIN),"level_0" => __("Contributor", WEB_INVOICE_TRANS_DOMAIN),"level_2" => __("Author", WEB_INVOICE_TRANS_DOMAIN),"level_5" => __("Editor", WEB_INVOICE_TRANS_DOMAIN),"level_8" => __("Administrator", WEB_INVOICE_TRANS_DOMAIN)), get_option('web_invoice_user_level')); ?>
 	</td>
 </tr>
 
 <tr>
-<td colspan="2"><h2>Invoice Page Display Settings</h2></td>
+<td colspan="2"><h2><?php _e("Invoice Page Display Settings", WEB_INVOICE_TRANS_DOMAIN) ?></h2></td>
 </tr>
 <tr>
-	<th><a class="web_invoice_tooltip"  title="Disable this if you want to use your own stylesheet.">Use CSS</a>:</th>
+	<th><a class="web_invoice_tooltip"  title="<?php _e("Disable this if you want to use your own stylesheet.", WEB_INVOICE_TRANS_DOMAIN) ?>"><<?php _e("Use CSS", WEB_INVOICE_TRANS_DOMAIN) ?>/a>:</th>
 	<td>
 	<select name="web_invoice_use_css">
 	<option></option>
-	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_use_css') == 'yes') echo 'selected="yes"';?>>yes</option>
-	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_use_css') == 'no') echo 'selected="yes"';?>>no</option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_use_css') == 'yes') echo 'selected="yes"';?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_use_css') == 'no') echo 'selected="yes"';?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select>
 	</td>
 </tr>
 
-
-
-
 <tr>
-	<th><a class="web_invoice_tooltip"  title="Show your business name and address on invoice.">Show Address on Invoice</a>:</th>
+	<th><a class="web_invoice_tooltip" title="<?php _e("Show your business name and address on invoice.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Show Address on Invoice", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 	<td>
 	<select name="web_invoice_show_business_address">
 	<option></option>
-	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_show_business_address') == 'yes') echo 'selected="yes"';?>>yes</option>
-	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_show_business_address') == 'no') echo 'selected="yes"';?>>no</option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_show_business_address') == 'yes') echo 'selected="yes"';?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option style="padding-right: 10px;"<?php if(get_option('web_invoice_show_business_address') == 'no') echo 'selected="yes"';?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select>
 	</td>
 </tr>
 
 
 <tr>
-	<th width="200"><a class="web_invoice_tooltip"  title="Show quantity breakdowns in the itemized list on the front-end.">Quantities on Front End</a></th><td>
+	<th width="200"><a class="web_invoice_tooltip"  title="<?php _e("Show quantity breakdowns in the itemized list on the front-end.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Quantities on Front End", WEB_INVOICE_TRANS_DOMAIN) ?></a></th><td>
 	<select  name="web_invoice_show_quantities">
-		<option  <?php if(get_option('web_invoice_show_quantities') == 'Show') echo 'selected="yes"';?>>Show</option>
-		<option <?php if(get_option('web_invoice_show_quantities') == 'Hide') echo 'selected="yes"';?>>Hide</option>
+		<option <?php if(get_option('web_invoice_show_quantities') == 'Show') echo 'selected="yes"';?>><?php _e("Show", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<option <?php if(get_option('web_invoice_show_quantities') == 'Hide') echo 'selected="yes"';?>><?php _e("Hide", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select>
 	</td>
 </tr>
 
 <tr>
-<td colspan="2"><h2>Payment Settings</h2></td>
+<td colspan="2"><h2><?php _e("Payment Settings", WEB_INVOICE_TRANS_DOMAIN) ?></h2></td>
 </tr>
 
 <tr>
-	<th>Default Currency:</th>
+	<th><?php _e("Default Currency:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 	<?php echo web_invoice_draw_select('web_invoice_default_currency_code',web_invoice_currency_array(),get_option('web_invoice_default_currency_code')); ?>
 	</td>
 </tr>
 
 <tr>
-	<th><a class="web_invoice_tooltip"  title="Special proxy must be used to process credit card transactions on GoDaddy servers.">Using Godaddy Hosting</a></th>
+	<th><a class="web_invoice_tooltip"  title="<?php _e("Special proxy must be used to process credit card transactions on GoDaddy servers.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Using Godaddy Hosting", WEB_INVOICE_TRANS_DOMAIN) ?></a></th>
 	<td>
-	<?php echo web_invoice_draw_select('web_invoice_using_godaddy',array("yes" => "Yes","no" => "No"),get_option('web_invoice_using_godaddy')); ?>
+	<?php echo web_invoice_draw_select('web_invoice_using_godaddy',array("yes" => __("Yes", WEB_INVOICE_TRANS_DOMAIN),"no" => __("No", WEB_INVOICE_TRANS_DOMAIN)),get_option('web_invoice_using_godaddy')); ?>
 	</td>
 </tr>
 
 <tr>
-	<th>Payment Method:</th>
+	<th><?php _e("Payment Method:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 	<select id="web_invoice_payment_method" name="web_invoice_payment_method[]" multiple="multiple" size="3">
-	<option value="paypal" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>>PayPal</option>
-	<option value="moneybookers" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>>Moneybookers</option>
-	<option value="alertpay" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>>AlertPay</option>
-	<option value="cc" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>>Credit Card</option>
+	<option value="paypal" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>><?php _e("PayPal", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option value="moneybookers" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>><?php _e("Moneybookers", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option value="alertpay" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>><?php _e("AlertPay", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option value="cc" style="padding-right: 10px;"<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select>
 	</td>
 </tr>
 
 <tr class="paypal_info">
-	<th width="200">PayPal Username</th>
+	<th width="200"><?php _e("PayPal Username", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td><input id='web_invoice_paypal_address' name="web_invoice_paypal_address" class="input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" />
 	</td>
 </tr>
 
 <tr class="moneybookers_info">
-	<th width="200">Moneybookers Username</th>
+	<th width="200"><?php _e("Moneybookers Username", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 		<input id='web_invoice_moneybookers_address' name="web_invoice_moneybookers_address" class="input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
-		<a id="web_invoice_moneybookers_register_link" href="http://keti.ws/27481" alt="moneybookers.com" class="web_invoice_click_me">Do you need a Moneybookers account?</a>
+		<a id="web_invoice_moneybookers_register_link" href="http://keti.ws/27481" alt="moneybookers.com" class="web_invoice_click_me"><?php _e("Do you need a Moneybookers account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 	</td>
 </tr>
 
 <tr class="moneybookers_info">
-	<th width="200">Enable Moneybookers payment notifications:</th>
+	<th width="200"><?php _e("Enable Moneybookers payment notifications:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td><select id='web_invoice_moneybookers_merchant' name="web_invoice_moneybookers_merchant">
-			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> >yes</option>
-			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
+			<option value="True" <?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?> ><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False" <?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?> ><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select>
 	</td>
 </tr>
 <tr class="moneybookers_info moneybookers_info_merchant">
-	<th>Moneybookers payment notification secret:</th>
+	<th><?php _e("Moneybookers payment notification secret:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td><input id='web_invoice_moneybookers_secret' name="web_invoice_moneybookers_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_secret')); ?>" /></td>
 </tr>
 <tr class="moneybookers_info moneybookers_info_merchant">
-	<th>Moneybookers payment notification IP:</th>
+	<th><?php _e("Moneybookers payment notification IP:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td><input id='web_invoice_moneybookers_ip' name="web_invoice_moneybookers_ip" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" /></td>
 </tr>
 
 <tr class="alertpay_info">
-	<th>Your AlertPay username:</th>
+	<th><?php _e("Your AlertPay username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 		<input id='web_invoice_alertpay_address' name="web_invoice_alertpay_address" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
-		<a id="web_invoice_alertpay_register_link" href="http://keti.ws/36283" alt="alertpay.com" class="web_invoice_click_me">Do you need an AlertPay account?</a>
+		<a id="web_invoice_alertpay_register_link" href="http://keti.ws/36283" alt="alertpay.com" class="web_invoice_click_me"><?php _e("Do you need an AlertPay account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 	</td>
 </tr>
 <tr class="alertpay_info">
-	<th>Enable AlertPay IPN:</th>
+	<th><?php _e("Enable AlertPay IPN:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td><select id='web_invoice_alertpay_merchant' name="web_invoice_alertpay_merchant">
-			<option value="True" <?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?> >yes</option>
-			<option value="False" <?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?> >no</option>
+			<option value="True" <?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?> ><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False" <?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?> ><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select>
-		<span class="web_invoice_alertpay_url web_invoice_info">Your alert URL is
-			<a title="Copy this link" href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br/>
-			Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).
+		<span class="web_invoice_alertpay_url web_invoice_info"><?php _e("Your alert URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
+			<a title="Copy this link<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?>" href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br/>
+			<?php _e("Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).", WEB_INVOICE_TRANS_DOMAIN) ?>
 		</span>
 	</td>
 <tr class="alertpay_info alertpay_info_merchant">
-	<th>AlertPay IPN security code:</th
+	<th><?php _e("AlertPay IPN security code:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td><input id='web_invoice_alertpay_secret' name="web_invoice_alertpay_secret" class="search-input input_field"  type="text" value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" /></td>
 </tr>
 <tr class="alertpay_info alertpay_info_merchant">
-	<th>Test / Live Mode:</th>
+	<th><?php _e("Test / Live Mode:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 	<td>
 	<select name="web_invoice_alertpay_test_mode">
-	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_alertpay_test_mode') == 'TRUE') echo 'selected="yes"';?>>Test - Do Not Process Transactions</option>
-	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_alertpay_test_mode') == 'FALSE') echo 'selected="yes"';?>>Live - Process Transactions</option>
+	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_alertpay_test_mode') == 'TRUE') echo 'selected="yes"';?>><?php _e("Test - Do Not Process Transactions", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_alertpay_test_mode') == 'FALSE') echo 'selected="yes"';?>><?php _e("Live - Process Transactions", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select>
 	</td>
 </tr>
@@ -1212,14 +1142,14 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 </tr>
 
 <tr class="gateway_info">
-	<th width="200"><a class="web_invoice_tooltip"  title="Your credit card processor will provide you with a gateway username.">Gateway Username</a></th>
+	<th width="200"><a class="web_invoice_tooltip" title="<?php _e('Your credit card processor will provide you with a gateway username.', WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Gateway Username', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
 	<td>
 	<input AUTOCOMPLETE="off" name="web_invoice_gateway_username" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_username')); ?>" />
 	</td>
 </tr>
 
 <tr class="gateway_info">
-	<th width="200"><a class="web_invoice_tooltip"  title="You will be able to generate this in your credit card processor's control panel.">Gateway Transaction Key</a></th>
+	<th width="200"><a class="web_invoice_tooltip" title="<?php _e("You will be able to generate this in your credit card processor's control panel.", WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Gateway Transaction Key', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
 	<td>
 	<input AUTOCOMPLETE="off" name="web_invoice_gateway_tran_key" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_tran_key')); ?>" />
 	</td>
@@ -1227,54 +1157,54 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 
 
 <tr class="gateway_info">
-	<th width="200"><a class="web_invoice_tooltip"  title="This is the URL provided to you by your credit card processing company.">Gateway URL</a></th>
+	<th width="200"><a class="web_invoice_tooltip"  title="<?php _e('This is the URL provided to you by your credit card processing company.', WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Gateway URL', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
 	<td>
 	<input name="web_invoice_gateway_url" id="web_invoice_gateway_url" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_url')); ?>" />
-	<br /><span class="web_invoice_click_me" onclick="jQuery('#web_invoice_gateway_url').val('https://gateway.merchantplus.com/cgi-bin/PAWebClient.cgi');">MerchantPlus</span> |
-	<span class="web_invoice_click_me" onclick="jQuery('#web_invoice_gateway_url').val('https://secure.authorize.net/gateway/transact.dll');">Authorize.Net</span> |
-	<span class="web_invoice_click_me" onclick="jQuery('#web_invoice_gateway_url').val('https://test.authorize.net/gateway/transact.dll');">Authorize.Net Developer</span>
+	<br /><span class="web_invoice_click_me" onclick="jQuery('#web_invoice_gateway_url').val('https://gateway.merchantplus.com/cgi-bin/PAWebClient.cgi');"><?php _e('MerchantPlus', WEB_INVOICE_TRANS_DOMAIN); ?></span> |
+	<span class="web_invoice_click_me" onclick="jQuery('#web_invoice_gateway_url').val('https://secure.authorize.net/gateway/transact.dll');"><?php _e('Authorize.Net', WEB_INVOICE_TRANS_DOMAIN); ?></span> |
+	<span class="web_invoice_click_me" onclick="jQuery('#web_invoice_gateway_url').val('https://test.authorize.net/gateway/transact.dll');"><?php _e('Authorize.Net Developer', WEB_INVOICE_TRANS_DOMAIN); ?></span>
 	</td>
 </tr>
 
 <tr class="gateway_info">
-	<th width="200"><a class="web_invoice_tooltip"  title="Recurring billing gateway URL is most likely different from the Gateway URL, and will almost always be with Authorize.net. Be advised - test credit card numbers will be declined even when in test mode.">Recurring Billing Gateway URL</a></th>
+	<th width="200"><a class="web_invoice_tooltip"  title="<?php _e('Recurring billing gateway URL is most likely different from the Gateway URL, and will almost always be with Authorize.net. Be advised - test credit card numbers will be declined even when in test mode.', WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Recurring Billing Gateway URL', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
 	<td>
 	<input name="web_invoice_recurring_gateway_url" id="web_invoice_recurring_gateway_url" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_recurring_gateway_url')); ?>" />
-	<br /><span class="web_invoice_click_me" onclick="jQuery('#web_invoice_recurring_gateway_url').val('https://api.authorize.net/xml/v1/request.api');">Authorize.net ARB</span> |
-	<span class="web_invoice_click_me" onclick="jQuery('#web_invoice_recurring_gateway_url').val('https://apitest.authorize.net/xml/v1/request.api');">Authorize.Net ARB Testing</span>
+	<br /><span class="web_invoice_click_me" onclick="jQuery('#web_invoice_recurring_gateway_url').val('https://api.authorize.net/xml/v1/request.api');"><?php _e('Authorize.net ARB', WEB_INVOICE_TRANS_DOMAIN); ?></span> |
+	<span class="web_invoice_click_me" onclick="jQuery('#web_invoice_recurring_gateway_url').val('https://apitest.authorize.net/xml/v1/request.api');"><?php _e('Authorize.Net ARB Testing', WEB_INVOICE_TRANS_DOMAIN); ?></span>
 	</td>
 </tr>
 
 <tr class="gateway_info">
-	<th>Test / Live Mode:</th>
+	<th><?php _e('Test / Live Mode:', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 	<td>
 	<select name="web_invoice_gateway_test_mode">
-	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_test_mode') == 'TRUE') echo 'selected="yes"';?>>Test - Do Not Process Transactions</option>
-	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_test_mode') == 'FALSE') echo 'selected="yes"';?>>Live - Process Transactions</option>
+	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_test_mode') == 'TRUE') echo 'selected="yes"';?>><?php _e('Test - Do Not Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_test_mode') == 'FALSE') echo 'selected="yes"';?>><?php _e('Live - Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	</select>
 	</td>
 </tr>
 
 <tr  class="gateway_info">
-<td colspan="2"><h2>Advanced Gateway Settings</h2></td>
+<td colspan="2"><h2><?php _e('Advanced Gateway Settings', WEB_INVOICE_TRANS_DOMAIN); ?></h2></td>
 </tr>
 
 <tr class="gateway_info">
-	<th width="200"><a class="web_invoice_tooltip"  title="Get this from your credit card processor. If the transactions are not going through, this character is most likely wrong.">Delimiter Character</a></th>
+	<th width="200"><a class="web_invoice_tooltip"  title="<?php _e('Get this from your credit card processor. If the transactions are not going through, this character is most likely wrong.', WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Delimiter Character', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
 	<td>
 	<input name="web_invoice_gateway_delim_char" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_delim_char')); ?>" />
 	</td>
 </tr>
 
 <tr class="gateway_info">
-	<th width="200"><a class="web_invoice_tooltip"  title="Authorize.net default is blank.  Otherwise, get this from your credit card processor. If the transactions are going through, but getting strange responses, this character is most likely wrong.">Encapsulation Character</a></th>
+	<th width="200"><a class="web_invoice_tooltip" title="<?php _e('Authorize.net default is blank. Otherwise, get this from your credit card processor. If the transactions are going through, but getting strange responses, this character is most likely wrong.', WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Encapsulation Character', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
 	<td>
 	<input name="web_invoice_gateway_encap_char" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_encap_char')); ?>" />
 	</td>
 </tr>
 
 <tr class="gateway_info">
-	<th width="200">Merchant Email</th>
+	<th width="200"><?php _e('Merchant Email', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 	<td>
 	<input name="web_invoice_gateway_merchant_email" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_merchant_email')); ?>" />
 	</td>
@@ -1283,17 +1213,17 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 
 
 <tr class="gateway_info">
-	<th>Email Customer (on success):</th>
+	<th><?php _e('Email Customer (on success):', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 	<td>
 	<select name="web_invoice_gateway_email_customer">
-	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_email_customer') == 'TRUE') echo 'selected="yes"';?>>True</option>
-	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_email_customer') == 'FALSE') echo 'selected="yes"';?>>False</option>
+	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_email_customer') == 'TRUE') echo 'selected="yes"';?>><?php _e('True', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_email_customer') == 'FALSE') echo 'selected="yes"';?>><?php _e('False', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	</select>
 	</td>
 </tr>
 
 <tr class="gateway_info">
-	<th width="200">Customer Receipt Email Header</th>
+	<th width="200"><?php _e('Customer Receipt Email Header', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 	<td>
 	<input name="web_invoice_gateway_header_email_receipt" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_header_email_receipt')); ?>" />
 	</td>
@@ -1301,51 +1231,43 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 
 
 <tr class="gateway_info">
-	<th width="200">Security: MD5 Hash</th>
+	<th width="200"><?php _e('Security: MD5 Hash', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 	<td>
 	<input name="web_invoice_gateway_MD5Hash" class="input_field" type="text" value="<?php echo stripslashes(get_option('web_invoice_gateway_MD5Hash')); ?>" />
 	</td>
 </tr>
 
 <tr class="gateway_info">
-	<th>Delim Data:</th>
+	<th><?php _e('Delim Data:', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 	<td>
 	<select name="web_invoice_gateway_delim_data">
-	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_delim_data') == 'TRUE') echo 'selected="yes"';?>>True</option>
-	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_delim_data') == 'FALSE') echo 'selected="yes"';?>>False</option>
+	<option value="TRUE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_delim_data') == 'TRUE') echo 'selected="yes"';?>><?php _e('True', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+	<option value="FALSE" style="padding-right: 10px;"<?php if(get_option('web_invoice_gateway_delim_data') == 'FALSE') echo 'selected="yes"';?>><?php _e('False', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	</select>
 	</td>
 </tr>
 
 <tr>
 	<td></td>
-	<td><input type="submit" value="update" class="button" />
+	<td><input type="submit" value="<?php _e('Update', WEB_INVOICE_TRANS_DOMAIN); ?>" class="button" />
 	</td>
 </tr>
 </table>
 
 <table class="form-table" >
 
-<td colspan="2"><a id="delete_all_web_invoice_databases" href="admin.php?page=new_web_invoice&web_invoice_action=complete_removal">Remove All Web Invoice Databases</a> - Only do this if you want to completely remove the plugin.  All invoices and logs will be gone... forever.</td>
+<td colspan="2"><a id="delete_all_web_invoice_databases" href="admin.php?page=new_web_invoice&web_invoice_action=complete_removal"><?php _e('Remove All Web Invoice Databases', WEB_INVOICE_TRANS_DOMAIN); ?></a> - <?php _e('Only do this if you want to completely remove the plugin.  All invoices and logs will be gone... forever.', WEB_INVOICE_TRANS_DOMAIN); ?></td>
 </table>
 </form>
 </div>
 <?php
 }
 
-
-
 function web_invoice_cc_setup($show_title = TRUE) {
-if($show_title) { ?> 	<div id="web_invoice_need_mm" style="border-top: 1px solid #DFDFDF; ">Do you need to accept credit cards?</div> <?php } ?>
-	<?php
+	if($show_title) { ?>
+		<div id="web_invoice_need_mm" style="border-top: 1px solid #DFDFDF; "><?php _e('Do you need to accept credit cards?', WEB_INVOICE_TRANS_DOMAIN); ?></div> <?php
+	}
 }
-
-function web_invoice_dashboard() {
-	// Daten lesen von Funktion fs_getfeeds()
-	$content ="helo";
-	echo $content;
-}
-
 
 function web_invoice_show_invoice($invoice_id) {
 	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
@@ -1425,7 +1347,7 @@ function web_invoice_draw_itemized_table($invoice_id) {
 		$response .= "<table id=\"web_invoice_itemized_table\">
 		<tr>\n";
 		if(get_option('web_invoice_show_quantities') == "Show") { $response .= '<th style="width: 40px; text-align: right;">Quantity</th>'; }
-		$response .="<th>Item</th><th style=\"width: 70px; text-align: right;\">Cost</th>
+		$response .="<th>".__('Item', WEB_INVOICE_TRANS_DOMAIN)."</th><th style=\"width: 70px; text-align: right;\">".__('Cost', WEB_INVOICE_TRANS_DOMAIN)."</th>
 		</tr> ";
 		$i = 1;
 		foreach($itemized_array as $itemized_item){
@@ -1507,63 +1429,60 @@ function web_invoice_draw_itemized_table_plaintext($invoice_id) {
 
 }
 
-
-
 function web_invoice_user_profile_fields()
 {
 	global $wpdb;
-	$user_id =  $_REQUEST['user_id'];
 
-	$profileuser = get_user_to_edit($user_id);
+	if (isset($_REQUEST['user_id'])) {
+		$user_id = $_REQUEST['user_id'];
+	} else {
+		global $current_user;
+		$user_id = $current_user->ID;
+	}
+
 	?>
-
-	<h3>Billing / Invoicing Info</h3>
+	<h3><?php _e('Billing / Invoicing Info', WEB_INVOICE_TRANS_DOMAIN); ?></h3>
 	<a name="billing_info"></a>
 	<table class="form-table" >
 
 	<tr>
-	<th><label for="streetaddress">Street Address</label></th>
+	<th><label for="streetaddress"><?php _e('Street Address', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
 	<td><input type="text" name="streetaddress" id="streetaddress" value="<?php echo get_usermeta($user_id,'streetaddress'); ?>" /></td>
 	</tr>
 
 	<tr>
-	<th><label for="city">City</label></th>
+	<th><label for="city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
 	<td><input type="text" name="city" id="city" value="<?php echo get_usermeta($user_id,'city'); ?>" /></td>
 	</tr>
 
 	<tr>
-	<th><label for="state">State</label></th>
+	<th><label for="state"><?php _e('State', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
 	<td><input type="text" name="state" id="state" value="<?php echo get_usermeta($user_id,'state'); ?>" /><br />
-	<p class="note">Use two-letter state codes for safe credit card processing.</p></td>
+	<p class="note"><?php _e('Use two-letter state codes for safe credit card processing.', WEB_INVOICE_TRANS_DOMAIN); ?></p></td>
 	</tr>
 
 	<tr>
-	<th><label for="streetaddress">ZIP Code</label></th>
+	<th><label for="streetaddress"><?php _e('ZIP Code', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
 	<td><input type="text" name="zip" id="zip" value="<?php echo get_usermeta($user_id,'zip'); ?>" /></td>
 	</tr>
 
 	<tr>
-	<th><label for="phonenumber">Phone Number</label></th>
+	<th><label for="phonenumber"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
 	<td><input type="text" name="phonenumber" id="phonenumber" value="<?php echo get_usermeta($user_id,'phonenumber'); ?>" />
-	<p class="note">Enforce 555-555-5555 format if you are using PayPal.</p></td>
+	<p class="note"><?php _e('Enforce 555-555-5555 format if you are using PayPal.', WEB_INVOICE_TRANS_DOMAIN); ?></p></td>
 	</tr>
 
 	<tr>
-	<th><label for="country">Country</label></th>
-	<td><input type="text" name="country" id="country" value="<?php echo get_usermeta($user_id,'country'); ?>" />
-	<p class="note">Two letter country code, like US.</p></td>
+	<th><label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+	<td><?php echo web_invoice_draw_select('country',web_invoice_country_array(),get_usermeta($user_id,'country')); ?></td>
 	</tr>
 
 	<tr>
 	<th></th>
 	<td>
-
-	<input type='button' onclick="window.location='admin.php?page=new_web_invoice&user_id=<?PHP echo $_REQUEST['user_id']; ?>';" class='button' value='Create New Invoice For This User' />
-
+	<input type='button' onclick="window.location='admin.php?page=new_web_invoice&user_id=<?PHP echo $_REQUEST['user_id']; ?>';" class='button' value='<?php _e('Create New Invoice For This User', WEB_INVOICE_TRANS_DOMAIN); ?>' />
 	</td>
 	</tr>
-
-
 </table>
 <?php
 }
@@ -1578,30 +1497,30 @@ function web_invoice_show_paypal_receipt($invoice_id) {
 	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
 
 	web_invoice_paid($invoice_id);
-	web_invoice_update_log($invoice_id,'paid',"PayPal Receipt: (" . $_REQUEST['receipt_id']. ")");
+	web_invoice_update_log($invoice_id,'paid', "PayPal Receipt: (" . $_REQUEST['receipt_id']. ")");
 	if(isset($_REQUEST['payer_email'])) web_invoice_update_log($invoice_id,'paid',"PayPal payee user email: (" . $_REQUEST['payer_email']. ")");
 
 
 	return '<div id="invoice_page" class="clearfix">
 	<div id="invoice_overview" class="cleafix">
-	<h2 class="invoice_page_subheading">'.$invoice->recipient("callsign"). ', thank you for your payment!</h2>
-	<p><strong>Invoice ' . $invoice->display("display_id") . ' has been paid.</strong></p>
+	<h2 class="invoice_page_subheading">'.sprintf(__('%s, thank you for your payment!',  WEB_INVOICE_TRANS_DOMAIN), $invoice->recipient("callsign")).'</h2>
+	<p><strong>'.sprintf(__('Invoice %s has been paid.',  WEB_INVOICE_TRANS_DOMAIN), $invoice->display("display_id")).'</strong></p>
 	</div>
 	</div>';
 }
 
 function web_invoice_show_already_paid($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
-	return '<p>This invoice was paid on '. $invoice->display('paid_date').'.</p>';
+	return '<p>'.sprintf(__('This invoice was paid on %s.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('paid_date')).'</p>';
 }
 
 function web_invoice_show_invoice_overview($invoice_id) {
 $invoice = new Web_Invoice_GetInfo($invoice_id);
 ?>
 <div id="invoice_overview" class="clearfix">
-	<h2 id="web_invoice_welcome_message" class="invoice_page_subheading">Welcome, <?php echo $invoice->recipient('callsign'); ?>!</h2>
-	<p class="web_invoice_main_description">We have sent you invoice <b><?php echo $invoice->display('display_id'); ?></b> with a total amount of <?php echo $invoice->display('display_amount'); ?>.</p>
-	<?php if($invoice->display('due_date')) { ?> <p class="web_invoice_due_date">Due Date: <?php echo $invoice->display('due_date'); } ?>
+	<h2 id="web_invoice_welcome_message" class="invoice_page_subheading"><?php printf(__('Welcome, %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->recipient('callsign')); ?>!</h2>
+	<p class="web_invoice_main_description"><?php printf(__('We have sent you invoice <b>%1$s</b> with a total amount of %2$s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id'), $invoice->display('display_amount')); ?>.</p>
+	<?php if($invoice->display('due_date')) { ?> <p class="web_invoice_due_date"><?php printf(__('Due Date: %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?>
 	<?php if($invoice->display('description')) { ?><p><?php echo $invoice->display('description');  ?></p><?php  } ?>
 	<?php echo web_invoice_draw_itemized_table($invoice_id); ?>
 </div>
@@ -1611,7 +1530,7 @@ $invoice = new Web_Invoice_GetInfo($invoice_id);
 function web_invoice_show_business_address() {
 ?>
 <div id="invoice_business_info" class="clearfix">
-	<h2 class="invoice_page_subheading">Bill From:</h2>
+	<h2 class="invoice_page_subheading"><?php _e('Bill From:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 	<p class="web_invoice_business_name"><?php echo get_option('web_invoice_business_name'); ?></p>
 	<p class="web_invoice_business_address"><?php echo nl2br(get_option('web_invoice_business_address')); ?></p>
 </div>
@@ -1634,20 +1553,20 @@ if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true;}
 
 <div id="billing_overview" class="clearfix noprint">
 	<div id="payment_methods">
-		Pay with: <br/>
+		<p><?php _e('Pay with:', WEB_INVOICE_TRANS_DOMAIN); ?> <br/>
 		    <?php if ($cc) { ?>
-		    <a href="#cc_payment_form" title="Visa Master American Express"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/cc_logo.png" alt="Visa Master American Express" width="265" height="45" /></a>
+		    <a href="#cc_payment_form" title="<?php _e('Visa Master American Express', WEB_INVOICE_TRANS_DOMAIN); ?>"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/cc_logo.png" alt="Visa Master American Express" width="265" height="45" /></a>
 		    <?php } ?>
 		    <?php if ($alertpay) { ?>
-		    <a href="#alertpay_payment_form" title="AlertPay"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/alertpay_logo.png" alt="AlertPay" width="81" height="45" /></a>
+		    <a href="#alertpay_payment_form" title="<?php _e('AlertPay', WEB_INVOICE_TRANS_DOMAIN); ?>"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/alertpay_logo.png" alt="AlertPay" width="81" height="45" /></a>
 		    <?php } ?>
 		    <?php if ($mb) { ?>
-		    <a href="#moneybookers_payment_form" title="Moneybookers"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/moneybookers_logo.png" alt="Moneybookers" width="75" height="42" /></a>
+		    <a href="#moneybookers_payment_form" title="<?php _e('Moneybookers', WEB_INVOICE_TRANS_DOMAIN); ?>"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/moneybookers_logo.png" alt="Moneybookers" width="75" height="42" /></a>
 		    <?php } ?>
 		    <?php if ($pp) { ?>
-		    <a href="#paypal_payment_form" title="PayPal"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png" alt="PayPal" width="80" height="45" /></a>
+		    <a href="#paypal_payment_form" title="<?php _e('PayPal', WEB_INVOICE_TRANS_DOMAIN); ?>"><img src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png" alt="PayPal" width="80" height="45" /></a>
 		    <?php } ?>
-		<p></p>
+		</p>
 	</div>
 <?php
 
@@ -1691,7 +1610,7 @@ function web_invoice_show_alertpay_form($invoice_id, $invoice) {
 function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 ?>
 <div id="moneybookers_payment_form" class="payment_form">
-<h2 class="invoice_page_subheading">Billing Information</h2>
+<h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <form action="https://www.moneybookers.com/app/payment.pl" method="post" class="clearfix" target="_moneybookers">
 	<input type="hidden" name="currency" value="<?php echo $invoice->display('currency'); ?>" />
 	<input type="hidden" name="no_shipping" value="1" />
@@ -1708,47 +1627,47 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 	<fieldset id="credit_card_information">
 	<ol>
 		<li>
-		<label for="firstname">First Name</label>
+		<label for="firstname"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("firstname",$invoice->recipient('first_name')); ?>
 		</li>
 
 		<li>
-		<label for="lastname">Last Name</label>
+		<label for="lastname"><?php _e('Last Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("lastname",$invoice->recipient('last_name')); ?>
 		</li>
 
 		<li>
-		<label for="pay_from_email">Email Address</label>
+		<label for="pay_from_email"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("pay_from_email",$invoice->recipient('email_address')); ?>
 		</li>
 
 		<li>
-		<label class="inputLabel" for="phone_number">Phone Number</label>
+		<label class="inputLabel" for="phone_number"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<input name="phone_number" class="input_field"  type="text" id="phone_number" size="40" maxlength="50" value="<?php print $invoice->recipient('phonenumber'); ?>" />
 		</li>
 
 		<li>
-		<label for="address">Address</label>
+		<label for="address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
 		</li>
 
 		<li>
-		<label for="city">City</label>
+		<label for="city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
 		</li>
 
 		<li>
-		<label for="state">State/Province</label>
+		<label for="state"><?php _e('State', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
 		</li>
 
 		<li>
-		<label for="postal_code">Zip/Postal Code</label>
+		<label for="postal_code"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("postal_code",$invoice->recipient('zip')); ?>
 		</li>
 
 		<li>
-		<label for="country">Country</label>
+		<label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
 		</li>
 
@@ -1767,15 +1686,15 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 function web_invoice_show_paypal_form($invoice_id, $invoice) {
 ?>
 <div id="paypal_payment_form" class="payment_form">
-<h2 class="invoice_page_subheading">Billing Information</h2>
+<h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <form action="https://www.paypal.com/us/cgi-bin/webscr" method="post" class="clearfix">
 	<input type="hidden" name="currency_code" value="<?php echo $invoice->display('currency'); ?>" />
-	<input type="hidden" name="no_shipping" value="1">
-	<input type="hidden" name="upload" value="1">
+	<input type="hidden" name="no_shipping" value="1" />
+	<input type="hidden" name="upload" value="1" />
 	<input type="hidden" name="business" value="<?php echo get_option('web_invoice_paypal_address'); ?>" />
 	<input type="hidden" name="return" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
-	<input type="hidden" name="rm" value="2">
-	<input type="hidden" name="amount"  value="<?php echo $invoice->display('amount'); ?>">
+	<input type="hidden" name="rm" value="2" />
+	<input type="hidden" name="amount"  value="<?php echo $invoice->display('amount'); ?>" />
 	<input  type="hidden" name="invoice" id="invoice_num"  value="<?php echo  $invoice->display('display_id'); ?>" />
 	<?php
 	// Convert Itemized List into PayPal Item List
@@ -1784,17 +1703,17 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	<fieldset id="credit_card_information">
 	<ol>
 		<li>
-		<label for="first_name">First Name</label>
+		<label for="first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("first_name",$invoice->recipient('first_name')); ?>
 		</li>
 
 		<li>
-		<label for="last_name">Last Name</label>
+		<label for="last_name"><?php _e('Last Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("last_name",$invoice->recipient('last_name')); ?>
 		</li>
 
 		<li>
-		<label for="email">Email Address</label>
+		<label for="email"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("email_address",$invoice->recipient('email_address')); ?>
 		</li>
 
@@ -1802,34 +1721,34 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 		list($day_phone_a, $day_phone_b, $day_phone_c) = split('[/.-]', $invoice->recipient('paypal_phonenumber'));
 		?>
 		<li>
-		<label for="day_phone_a">Phone Number</label>
+		<label for="day_phone_a"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("night_phone_a",$day_phone_a,' style="width:25px;" size="3" maxlength="3" '); ?>-
 		<?php echo web_invoice_draw_inputfield("night_phone_b",$day_phone_b,' style="width:25px;" size="3" maxlength="3" '); ?>-
 		<?php echo web_invoice_draw_inputfield("night_phone_c",$day_phone_c,' style="width:35px;" size="4" maxlength="4" '); ?>
 		</li>
 
 		<li>
-		<label for="address">Address</label>
+		<label for="address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
 		</li>
 
 		<li>
-		<label for="city">City</label>
+		<label for="city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
 		</li>
 
 		<li>
-		<label for="state">State/Province</label>
+		<label for="state"><?php _e('State', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
 		</li>
 
 		<li>
-		<label for="zip">Zip/Postal Code</label>
+		<label for="zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("zip",$invoice->recipient('zip')); ?>
 		</li>
 
 		<li>
-		<label for="country">Country</label>
+		<label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
 		</li>
 
@@ -1848,7 +1767,7 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 function web_invoice_show_cc_form($invoice_id, $invoice) {
 ?>
 <div id="cc_payment_form" class="payment_form">
-<h2 class="invoice_page_subheading">Billing Information</h2>
+<h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <form method="post" name="checkout_form" id="checkout_form" class="online_payment_form" onsubmit="process_cc_checkout(); return false;" class="clearfix">
 	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
 	<input type="hidden" name="user_id" value="<?php echo $invoice->recipient('user_id'); ?>" />
@@ -1859,52 +1778,52 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 	<fieldset id="credit_card_information">
 	<ol>
 		<li>
-		<label for="first_name">First Name</label>
+		<label for="first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("first_name",$invoice->recipient('first_name')); ?>
 		</li>
 
 		<li>
-		<label for="last_name">Last Name</label>
+		<label for="last_name"><?php _e('Last Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("last_name",$invoice->recipient('last_name')); ?>
 		</li>
 
 		<li>
-		<label for="email">Email Address</label>
+		<label for="email"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("email_address",$invoice->recipient('email_address')); ?>
 		</li>
 
 		<li>
-		<label class="inputLabel" for="phonenumber">Phone Number</label>
+		<label class="inputLabel" for="phonenumber"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<input name="phonenumber" class="input_field"  type="text" id="phonenumber" size="40" maxlength="50" value="<?php print $invoice->recipient('phonenumber'); ?>" />
 		</li>
 
 		<li>
-		<label for="address">Address</label>
+		<label for="address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
 		</li>
 
 		<li>
-		<label for="city">City</label>
+		<label for="city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
 		</li>
 
 		<li>
-		<label for="state">State/Province</label>
+		<label for="state"><?php _e('State', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
 		</li>
 
 		<li>
-		<label for="zip">Zip/Postal Code</label>
+		<label for="zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_inputfield("zip",$invoice->recipient('zip')); ?>
 		</li>
 
 		<li>
-		<label for="country">Country</label>
+		<label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
 		</li>
 
 		<li class="hide_after_success">
-		<label class="inputLabel" for="card_num">Credit Card Number</label>
+		<label class="inputLabel" for="card_num"><?php _e('Credit Card Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<input name="card_num" autocomplete="off" onkeyup="cc_card_pick();"  id="card_num" class="credit_card_number input_field"  type="text"  size="22"  maxlength="22" />
 		</li>
 
@@ -1912,20 +1831,19 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 		</li>
 
 		<li class="hide_after_success">
-		<label class="inputLabel" for="exp_month">Expiration Date</label>
-		Month <select name="exp_month" id="exp_month"><?php print web_invoice_printMonthDropdown(); ?></select>
-		Year <select name="exp_year" id="exp_year"><?php print web_invoice_printYearDropdown(); ?></select>
+		<label class="inputLabel" for="exp_month"><?php _e('Expiration Date', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+		<?php _e('Month', WEB_INVOICE_TRANS_DOMAIN); ?> <select name="exp_month" id="exp_month"><?php print web_invoice_printMonthDropdown(); ?></select>
+		<?php _e('Year', WEB_INVOICE_TRANS_DOMAIN); ?> <select name="exp_year" id="exp_year"><?php print web_invoice_printYearDropdown(); ?></select>
 		</li>
 
 		<li class="hide_after_success">
-		<label class="inputLabel" for="card_code">Security Code</label>
+		<label class="inputLabel" for="card_code"><?php _e('Security Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 		<input id="card_code" autocomplete="off"  name="card_code" class="input_field"  style="width: 70px;" type="text" size="4" maxlength="4" />
 		</li>
 
 		<li id="web_invoice_process_wait">
 		<label for="submit"><span></span>&nbsp;</label>
-		<button type="submit" id="cc_pay_button" class="hide_after_success submit_button">
-		Pay <?php echo $invoice->display('display_amount'); ?></button>
+		<button type="submit" id="cc_pay_button" class="hide_after_success submit_button"><?php printf(__('Pay %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_amount')); ?></button>
 		</li>
 
 	<br class="cb" />
@@ -1940,21 +1858,19 @@ function web_invoice_show_recurring_info($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 ?>
 <div id="recurring_info" class="clearfix">
-	<?php if($invoice->display('due_date')) { ?> <p class="web_invoice_due_date">Due Date: <?php echo $invoice->display('due_date'); } ?>
-	<h2 id="web_invoice_welcome_message" class="invoice_page_subheading">Welcome, <?php echo $invoice->recipient('callsign'); ?>!</h2>
+	<?php if($invoice->display('due_date')) { ?> <p class="web_invoice_due_date"><?php printf(__("Due Date: %s", WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?>
+	<h2 id="web_invoice_welcome_message" class="invoice_page_subheading"><?php printf(__('Welcome, %s!', WEB_INVOICE_TRANS_DOMAIN), $invoice->recipient('callsign')); ?></h2>
 	<?php if($invoice->display('description')) { ?><p><?php echo $invoice->display('description');  ?></p><?php  } ?>
 
-	<p class="recurring_info_breakdown">This is a recurring bill, id: <b><?php echo $invoice->display('display_id'); ?></b>.</p>
-	<p>You will be billed <?php echo $invoice->display('display_billing_rate'); ?> in the amount of <?php echo $invoice->display('display_amount');
+	<p class="recurring_info_breakdown"><?php printf(__('This is a recurring bill, id: <b>%s</b>.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id')); ?></p>
+	<p><?php printf(__('You will be billed %1$s in the amount of %2$s ', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_billing_rate'), $invoice->display('display_amount'));
 
-	// Determine if startning now or t a set date
+	// Determine if starting now or t a set date
 	if (web_invoice_meta($invoice_id,'web_invoice_subscription_start_day') != '' && web_invoice_meta($invoice_id,'web_invoice_subscription_start_month')  != '' && web_invoice_meta($invoice_id,'web_invoice_subscription_start_year'  != ''))
 	echo web_invoice_meta($invoice_id,'web_invoice_subscription_start_day') .", ". web_invoice_meta($invoice_id,'web_invoice_subscription_start_month') .", ".  web_invoice_meta($invoice_id,'web_invoice_subscription_start_year');
 	?>.</p>
-
 	<?php echo web_invoice_draw_itemized_table($invoice_id); ?>
-
-</div
+</div>
 <?php
 }
 
@@ -1967,9 +1883,8 @@ function web_invoice_draw_user_selection_form($user_id) {
 	<form action="admin.php?page=new_web_invoice" method='POST'>
 		<table class="form-table" id="get_user_info">
 			<tr class="invoice_main">
-				<th><?php if(isset($user_id)) { ?>Start New Invoice For: <?php } else { ?>Create New Invoice For:<?php } ?></th>
+				<th><?php if(isset($user_id)) { _e("Start New Invoice For: ", WEB_INVOICE_TRANS_DOMAIN); } else { _e("Create New Invoice For: ", WEB_INVOICE_TRANS_DOMAIN); } ?></th>
 				<td>
-
 					<select name='user_id' class='user_selection'>
 					<option></option>
 					<?php
@@ -1987,33 +1902,34 @@ function web_invoice_draw_user_selection_form($user_id) {
 					}
 					?>
 					</select>
-					<input type='submit' class='button' id="web_invoice_create_new_web_invoice" value='Create New Invoice' />
+					<input type='submit' class='button' id="web_invoice_create_new_web_invoice" value='<?php _e("Create New Invoice", WEB_INVOICE_TRANS_DOMAIN); ?>' />
 
 
-					<?php if(web_invoice_number_of_invoices() > 0) { ?><span id="web_invoice_copy_invoice" class="web_invoice_click_me">copy from another</span>
+					<?php if(web_invoice_number_of_invoices() > 0) { ?><span id="web_invoice_copy_invoice" class="web_invoice_click_me"><?php _e("copy from another", WEB_INVOICE_TRANS_DOMAIN); ?></span>
 					<br />
 
 
 			<div class="web_invoice_copy_invoice">
 			<?php 	$all_invoices = $wpdb->get_results("SELECT * FROM ".Web_Invoice::tablename('main')); ?>
 			<select name="copy_from_template">
-<option SELECTED value=""></option>
+				<option SELECTED value=""></option>
 		<?php 	foreach ($all_invoices as $invoice) {
 		$profileuser = get_user_to_edit($invoice->user_id);
 		?>
-
-		<option value="<?php echo $invoice->invoice_num; ?>"><?php if(web_invoice_recurring($invoice->invoice_num)) {?>(recurring)<?php } ?> <?php echo $invoice->subject . " - $" .$invoice->amount; ?> </option>
+			<option value="<?php echo $invoice->invoice_num; ?>"><?php if(web_invoice_recurring($invoice->invoice_num)) { _e("(recurring)", WEB_INVOICE_TRANS_DOMAIN); } ?> <?php echo $invoice->subject . " - $" .$invoice->amount; ?> </option>
 
 		<?php } ?>
 
-		</select><input type='submit' class='button' value='New Invoice from Template' /> <span id="web_invoice_copy_invoice_cancel" class="web_invoice_click_me">cancel</span>
+		</select><input type='submit' class='button' value='<?php _e("New Invoice from Template", WEB_INVOICE_TRANS_DOMAIN); ?>' /> <span id="web_invoice_copy_invoice_cancel" class="web_invoice_click_me"><?php _e("cancel", WEB_INVOICE_TRANS_DOMAIN); ?></span>
 			</div>
-<?php } ?>
+<?php }
 
-					<?php if(!isset($user_id)) { ?>User must have a profile to receive invoices.
+					if(!isset($user_id)) { _e("User must have a profile to receive invoices.", WEB_INVOICE_TRANS_DOMAIN);
 
-					<?php if(current_user_can('create_users')) { if($GLOBALS['wp_version'] < '2.7') { echo "<a href=\"users.php\">Create a new user account.</a>";  }
-					else { echo "<a href=\"user-new.php\">Create a new user account.</a>"; } } }	 ?>
+					if(current_user_can('create_users')) { if($GLOBALS['wp_version'] < '2.7') { echo "<a href=\"users.php\">".__("Create a new user account.", WEB_INVOICE_TRANS_DOMAIN)."</a>";  }
+					else {
+						echo "<a href=\"user-new.php\">".__("Create a new user account.", WEB_INVOICE_TRANS_DOMAIN)."</a>";
+					} } }	 ?>
 
 				</td>
 			</tr>
@@ -2022,8 +1938,137 @@ function web_invoice_draw_user_selection_form($user_id) {
 	</form>
 </div>
 </div>
-
-
 <?php
 }
-?>
+
+function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	$tax = $invoice->display('tax_percent');
+	$amount = $invoice->display('amount');
+	$display_id = $invoice->display('display_id');
+
+	$tax_free_sum = 0;
+	$counter = 1;
+	foreach($itemized_array as $itemized_item) {
+
+		// If we have a negative item, PayPal will not accept, we must group everything into one amount
+		if($itemized_item[price] * $itemized_item[quantity] < 0) {
+
+		unset($output);
+		unset($tax);
+
+		// In case this isn't the first loop, unset anything we've done so far
+		$output = "
+		<input type='hidden' name='item_name' value='Reference Invoice #$display_id' /> \n
+		<input type='hidden' name='amount' value='$amount' />\n";
+
+		$single_item = true;
+
+		break;
+		}
+
+		$output .= "<input type='hidden' name='item_name_$counter' value='".$itemized_item[name]."' />\n";
+		$output .= "<input type='hidden' name='amount_$counter' value='".$itemized_item[price] * $itemized_item[quantity]."' />\n";
+
+		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
+		$counter++;
+	}
+
+	// Add tax onnly by using tax_free_sum (which is the sums of all the individual items * quantities.
+	if(!empty($tax)) {
+	$tax_cart = round($tax_free_sum * ($tax / 100),2);
+		$output .= "<input type='hidden' name='tax_cart' value='". $tax_cart ."' />\n";
+		}
+
+	if($single_item) $output .= "<input type='hidden' name='cmd' value='_xclick' />\n";
+	if(!$single_item) $output .= "
+	<input type='hidden' name='cmd' value='_ext-enter' />
+	<input type='hidden' name='redirect_cmd' value='_cart' />\n";
+	return $output;
+}
+
+function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_id) {
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	$tax = $invoice->display('tax_percent');
+	$amount = $invoice->display('amount');
+	$display_id = $invoice->display('display_id');
+
+	$tax_free_sum = 0;
+	$counter = 1;
+	foreach($itemized_array as $itemized_item) {
+
+		// If we have a negative item, Moneybookers will not accept, we must group everything into one amount
+		if($itemized_item[price] * $itemized_item[quantity] < 0) {
+
+		unset($output);
+		unset($tax);
+
+		// In case this isn't the first loop, unset anything we've done so far
+		$output = "
+		<input type='hidden' name='item_name' value='Reference Invoice # $display_id' /> \n
+		<input type='hidden' name='amount' value='$amount' />\n";
+
+		$single_item = true;
+
+
+		break;
+		}
+
+		$output .= "<input type='hidden' name='detail{$counter}_description' value='".$itemized_item[description]."' />\n";
+		$output .= "<input type='hidden' name='detail{$counter}_text' value='".$itemized_item[name]."' />\n";
+
+		$counter++;
+
+		$output .= "<input type='hidden' name='amount{$counter}' value='".$itemized_item[price] * $itemized_item[quantity]."' />\n";
+
+		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
+	}
+
+	// Add tax only by using tax_free_sum (which is the sums of all the individual items * quantities.
+	if(!empty($tax)) {
+	$tax_cart = round($tax_free_sum * ($tax / 100),2);
+		$output .= "<input type='hidden' name='detail{$counter}_text' value='Tax ({$tax} %)' />\n";
+		$output .= "<input type='hidden' name='amount{$counter}' value='". $tax_cart ."' />\n";
+	}
+
+	return $output;
+}
+
+function web_invoice_create_alertpay_itemized_list($itemized_array,$invoice_id) {
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	$tax = $invoice->display('tax_percent');
+	$amount = $invoice->display('amount');
+	$display_id = $invoice->display('display_id');
+
+	$tax_free_sum = 0;
+	$counter = 1;
+	foreach($itemized_array as $itemized_item) {
+
+		// If we have a negative item, Moneybookers will not accept, we must group everything into one amount
+		if($itemized_item[price] * $itemized_item[quantity] < 0) {
+
+		unset($output);
+		unset($tax);
+
+		// In case this isn't the first loop, unset anything we've done so far
+		$single_item = true;
+
+		break;
+		}
+		$counter++;
+		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
+	}
+
+	$output = "
+		<input type='hidden' name='ap_description' value='Reference Invoice # $display_id' /> \n
+		<input type='hidden' name='ap_amount' value='$tax_free_sum' />\n
+		<input type='hidden' name='ap_quantity' value='1' />\n";
+
+	// Add tax only by using tax_free_sum (which is the sums of all the individual items * quantities.
+	if(!empty($tax)) {
+		$tax_cart = round($tax_free_sum * ($tax / 100),2);
+		$output .= "<input type='hidden' name='ap_taxamount' value='". $tax_cart ."' />\n";
+	}
+
+	return $output;
+}

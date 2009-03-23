@@ -91,7 +91,7 @@ link_id = 'wp_cc_response';
 
 			var explode = html.toString().split('\n');
 			var shown = false;
-			var msg = '<b>There are problems with your transaction:</b><ol>';
+			var msg = '<?php _e('<b>There are problems with your transaction:</b>', WEB_INVOICE_TRANS_DOMAIN); ?><ol>';
 
 
 			for ( var i in explode )
@@ -118,7 +118,7 @@ link_id = 'wp_cc_response';
 			if(html == 'Transaction okay.') {
 
 				jQuery('#wp_cc_response').fadeIn("slow");
-				jQuery('#wp_cc_response').html("Thank you! <br />Payment processed successfully!");
+				jQuery('#wp_cc_response').html("<?php _e('Thank you! <br />Payment processed successfully!', WEB_INVOICE_TRANS_DOMAIN); ?>");
 				jQuery("#credit_card_information").hide();
 
 				jQuery("#welcome_message").html('Invoice Paid!');
@@ -170,5 +170,3 @@ function web_invoice_frontend_css() {
 		}
 	}
 }
-
-?>
