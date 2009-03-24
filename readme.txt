@@ -64,7 +64,7 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
-**Version 1.5.0**
+**Version 1.5.1**
 
 * Added translations for en, en_US, en_GB
 * Fixed issue with Moneybookers when there are more than 5 items
