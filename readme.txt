@@ -64,6 +64,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.5.2**
+
+* Fixed display issue with MB
+
 **Version 1.5.1**
 
 * Added translations for en, en_US, en_GB

@@ -2000,8 +2000,8 @@ function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_
 
 	foreach($itemized_array as $itemized_item) {
 		if (!$single_item) {
-			$output .= "<input type='hidden' name='detail{$counter}_description' value='".$itemized_item[description]."' />\n";
-			$output .= "<input type='hidden' name='detail{$counter}_text' value='".$itemized_item[name]."' />\n";
+			$output .= "<input type='hidden' name='detail{$counter}_description' value='".$itemized_item[name]."' />\n";
+			$output .= "<input type='hidden' name='detail{$counter}_text' value='".$itemized_item[description]."' />\n";
 
 			$counter++;
 
