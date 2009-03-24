@@ -35,7 +35,8 @@ Some features:
 * Interfaces are internationalized
 
 Would you like to see this plugin in other languages? Please show your interest in
-the [Web Invoice community forum](http://mohanjith.com/forum/).
+the [Web Invoice community forum](http://mohanjith.com/forum/). You could also help us
+translate this plugin to your language.
 
 If you like this plugin please give it a good rating, and consider saying thanks or making a donation.
 
@@ -62,6 +63,18 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.5.0**
+
+* Added translations for en, en_US, en_GB
+* Fixed issue with Moneybookers when there are more than 5 items
+  and itemized details are sent to MB.
+* Fixed issue with negative quantity or price in any payment
+  processor
+
+**Version 1.5.0**
+
+* Internationalization
 
 **Version 1.4.0**
 

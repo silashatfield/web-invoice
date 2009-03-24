@@ -710,7 +710,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 		<th><?php _e("Due Date", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td>
 			<div id="timestampdiv" style="display:block;">
-			<?php echo web_invoice_draw_select('web_invoice_due_date_month', web_invoice_month_array(), $web_invoice_due_date_month); ?>
+			<?php echo web_invoice_draw_select('mm', web_invoice_month_array(), $web_invoice_due_date_month); ?>
 			<input type="text" id="jj" name="web_invoice_due_date_day" value="<?php echo $web_invoice_due_date_day; ?>" size="2" maxlength="2" autocomplete="off" />,
 			<input type="text" id="aa" name="web_invoice_due_date_year" value="<?php echo $web_invoice_due_date_year; ?>" size="4" maxlength="5" autocomplete="off" />
 			<span onclick="web_invoice_add_time(7);" class="web_invoice_click_me"><?php _e("In One Week", WEB_INVOICE_TRANS_DOMAIN) ?></span> |
@@ -1583,7 +1583,7 @@ if ($pp) web_invoice_show_paypal_form($invoice_id, $invoice);
 function web_invoice_show_alertpay_form($invoice_id, $invoice) {
 ?>
 <div id="alertpay_payment_form" class="payment_form">
-<form action="https://www.alertpay.com/PayProcess.aspx" method="post" class="clearfix" target="_moneybookers">
+<form action="https://www.alertpay.com/PayProcess.aspx" method="post" class="clearfix" >
 	<input type="hidden" name="ap_currency" value="<?php echo $invoice->display('currency'); ?>" />
 	<input type="hidden" name="ap_purchasetype" value="Service">
 	<input type="hidden" name="ap_merchant" value="<?php echo get_option('web_invoice_alertpay_address'); ?>" />
@@ -1611,7 +1611,7 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 ?>
 <div id="moneybookers_payment_form" class="payment_form">
 <h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
-<form action="https://www.moneybookers.com/app/payment.pl" method="post" class="clearfix" target="_moneybookers">
+<form action="https://www.moneybookers.com/app/payment.pl" method="post" class="clearfix">
 	<input type="hidden" name="currency" value="<?php echo $invoice->display('currency'); ?>" />
 	<input type="hidden" name="no_shipping" value="1" />
 	<input type="hidden" name="rid" value="5413099" />
@@ -1952,19 +1952,14 @@ function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
 	foreach($itemized_array as $itemized_item) {
 
 		// If we have a negative item, PayPal will not accept, we must group everything into one amount
-		if($itemized_item[price] * $itemized_item[quantity] < 0) {
+		if($itemized_item[price] * $itemized_item[quantity] <= 0) {
+			$tax = 0;
+			$output = "
+			<input type='hidden' name='item_name' value='Reference Invoice #$display_id' /> \n
+			<input type='hidden' name='amount' value='$amount' />\n";
 
-		unset($output);
-		unset($tax);
-
-		// In case this isn't the first loop, unset anything we've done so far
-		$output = "
-		<input type='hidden' name='item_name' value='Reference Invoice #$display_id' /> \n
-		<input type='hidden' name='amount' value='$amount' />\n";
-
-		$single_item = true;
-
-		break;
+			$single_item = true;
+			break;
 		}
 
 		$output .= "<input type='hidden' name='item_name_$counter' value='".$itemized_item[name]."' />\n";
@@ -1976,9 +1971,9 @@ function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
 
 	// Add tax onnly by using tax_free_sum (which is the sums of all the individual items * quantities.
 	if(!empty($tax)) {
-	$tax_cart = round($tax_free_sum * ($tax / 100),2);
+		$tax_cart = round($tax_free_sum * ($tax / 100),2);
 		$output .= "<input type='hidden' name='tax_cart' value='". $tax_cart ."' />\n";
-		}
+	}
 
 	if($single_item) $output .= "<input type='hidden' name='cmd' value='_xclick' />\n";
 	if(!$single_item) $output .= "
@@ -1992,44 +1987,41 @@ function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_
 	$tax = $invoice->display('tax_percent');
 	$amount = $invoice->display('amount');
 	$display_id = $invoice->display('display_id');
+	$single_item = false;
 
 	$tax_free_sum = 0;
 	$counter = 1;
-	foreach($itemized_array as $itemized_item) {
 
-		// If we have a negative item, Moneybookers will not accept, we must group everything into one amount
-		if($itemized_item[price] * $itemized_item[quantity] < 0) {
-
-		unset($output);
-		unset($tax);
-
-		// In case this isn't the first loop, unset anything we've done so far
-		$output = "
-		<input type='hidden' name='item_name' value='Reference Invoice # $display_id' /> \n
-		<input type='hidden' name='amount' value='$amount' />\n";
-
+	if (empty($tax) && count($itemized_array) >  3) {
 		$single_item = true;
+	} else if (count($itemized_array) >  2) {
+		$single_item = true;
+	}
 
+	foreach($itemized_array as $itemized_item) {
+		if (!$single_item) {
+			$output .= "<input type='hidden' name='detail{$counter}_description' value='".$itemized_item[description]."' />\n";
+			$output .= "<input type='hidden' name='detail{$counter}_text' value='".$itemized_item[name]."' />\n";
 
-		break;
+			$counter++;
+
+			$output .= "<input type='hidden' name='amount{$counter}' value='".$itemized_item[price] * $itemized_item[quantity]."' />\n";
 		}
-
-		$output .= "<input type='hidden' name='detail{$counter}_description' value='".$itemized_item[description]."' />\n";
-		$output .= "<input type='hidden' name='detail{$counter}_text' value='".$itemized_item[name]."' />\n";
-
-		$counter++;
-
-		$output .= "<input type='hidden' name='amount{$counter}' value='".$itemized_item[price] * $itemized_item[quantity]."' />\n";
 
 		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
 	}
 
 	// Add tax only by using tax_free_sum (which is the sums of all the individual items * quantities.
-	if(!empty($tax)) {
-	$tax_cart = round($tax_free_sum * ($tax / 100),2);
-		$output .= "<input type='hidden' name='detail{$counter}_text' value='Tax ({$tax} %)' />\n";
+	if(!$single_item && !empty($tax)) {
+		$tax_cart = round($tax_free_sum * ($tax / 100),2);
+		$output .= "<input type='hidden' name='detail{$counter}_description' value='Tax' />\n";
+		$output .= "<input type='hidden' name='detail{$counter}_text' value='({$tax} %)' />\n";
+		$counter++;
 		$output .= "<input type='hidden' name='amount{$counter}' value='". $tax_cart ."' />\n";
 	}
+
+	$output .= "<input type='hidden' name='detail1_description' value='Reference Invoice #:' />\n";
+	$output .= "<input type='hidden' name='detail1_text' value='$display_id' />\n";
 
 	return $output;
 }
@@ -2043,18 +2035,6 @@ function web_invoice_create_alertpay_itemized_list($itemized_array,$invoice_id) 
 	$tax_free_sum = 0;
 	$counter = 1;
 	foreach($itemized_array as $itemized_item) {
-
-		// If we have a negative item, Moneybookers will not accept, we must group everything into one amount
-		if($itemized_item[price] * $itemized_item[quantity] < 0) {
-
-		unset($output);
-		unset($tax);
-
-		// In case this isn't the first loop, unset anything we've done so far
-		$single_item = true;
-
-		break;
-		}
 		$counter++;
 		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
 	}

@@ -15,28 +15,28 @@ if (!Array.indexOf)
 
 
 function web_invoice_add_time(add_days) {
+	function formatNum(num){
+		var mynum = num * 1;
+		var retVal = mynum<10?'0':'';
+		return (retVal + mynum)
+	}
 
 	if(add_days == 'clear') {
+		jQuery("#new_web_invoice_form #mm").val('');
+		jQuery("#new_web_invoice_form #jj").val('');
+		jQuery("#new_web_invoice_form #aa").val('');
+	} else {
 
-	jQuery("#new_web_invoice_form #mm").val('');
-	jQuery("#new_web_invoice_form #jj").val('');
-	jQuery("#new_web_invoice_form #aa").val('');
+		myDate = new Date();
+		var week_from_now = new Date(myDate.getTime() + add_days*24*60*60*1000);;
+		month = week_from_now.getMonth() + 1;
+
+		jQuery("#new_web_invoice_form #mm").val(formatNum(month));
+		jQuery("#new_web_invoice_form #jj").val(week_from_now.getDate());
+		jQuery("#new_web_invoice_form #aa").val(week_from_now.getFullYear());
 	}
-	 else
-	 {
-
-	myDate = new Date();
-	var week_from_now = new Date(myDate.getTime() + add_days*24*60*60*1000);;
-	month = week_from_now.getMonth() + 1;
-
-	jQuery("#new_web_invoice_form #mm").val(month);
-	jQuery("#new_web_invoice_form #jj").val(week_from_now.getDate());
-	jQuery("#new_web_invoice_form #aa").val(week_from_now.getFullYear());
-		}
-
 
 	return false;
-
 }
 
 function web_invoice_cancel_recurring() {
@@ -60,9 +60,9 @@ function web_invoice_cancel_recurring() {
 function web_invoice_subscription_start_time(add_days) {
 
 	function formatNum(num){
-	var mynum = num * 1;
-	var retVal = mynum<10?'0':'';
-	return (retVal + mynum)
+		var mynum = num * 1;
+		var retVal = mynum<10?'0':'';
+		return (retVal + mynum)
 	}
 
 	if(add_days == 'clear') {
