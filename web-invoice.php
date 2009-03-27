@@ -4,9 +4,10 @@ Plugin Name: Web Invoice
 Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
 Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
 Author: S H Mohanjith
-Version: 1.5.2
+Version: 1.5.3
 Author URI: http://mohanjith.com/
 Text Domain: web-invoice
+License: GPL
 
 Copyright 2009  S H Mohanjith.   (email : moha@mohanjith.net)
 */
@@ -204,7 +205,7 @@ class Web_Invoice {
 			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.4.0');
 		} else {
 
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.4.0');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.5.3');
 			// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
 			if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);
 			$_GET['invoice_id'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['invoice_id']);
@@ -297,9 +298,9 @@ class Web_Invoice {
 		$all_users_with_meta = $wpdb->get_col("SELECT DISTINCT user_id FROM $wpdb->usermeta");
 		if(!empty($all_users_with_meta)) {
 			foreach ($all_users_with_meta as $user) {
-				if(get_usermeta($user, 'street_address')) { update_usermeta($user, 'streetaddress',get_usermeta($user, 'street_address')); delete_usermeta($user, 'street_address',''); }
-				if(get_usermeta($user, 'phone_number')) { update_usermeta($user, 'phonenumber',get_usermeta($user, 'phone_number')); delete_usermeta($user, 'phone_number',''); }
-				if(get_usermeta($user, 'country')) { update_usermeta($user, 'country',get_usermeta($user, 'country')); delete_usermeta($user, 'country',''); }
+				if(get_usermeta($user, 'street_address')) { update_usermeta($user, 'streetaddress',get_usermeta($user, 'street_address')); }
+				if(get_usermeta($user, 'phone_number')) { update_usermeta($user, 'phonenumber',get_usermeta($user, 'phone_number')); }
+				if(get_usermeta($user, 'country')) { update_usermeta($user, 'country',get_usermeta($user, 'country')); }
 			}
 		}
 

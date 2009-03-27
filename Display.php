@@ -710,7 +710,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 		<th><?php _e("Due Date", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td>
 			<div id="timestampdiv" style="display:block;">
-			<?php echo web_invoice_draw_select('mm', web_invoice_month_array(), $web_invoice_due_date_month); ?>
+			<?php echo web_invoice_draw_select('web_invoice_due_date_month', web_invoice_month_array(), $web_invoice_due_date_month, 'mm'); ?>
 			<input type="text" id="jj" name="web_invoice_due_date_day" value="<?php echo $web_invoice_due_date_day; ?>" size="2" maxlength="2" autocomplete="off" />,
 			<input type="text" id="aa" name="web_invoice_due_date_year" value="<?php echo $web_invoice_due_date_year; ?>" size="4" maxlength="5" autocomplete="off" />
 			<span onclick="web_invoice_add_time(7);" class="web_invoice_click_me"><?php _e("In One Week", WEB_INVOICE_TRANS_DOMAIN) ?></span> |
@@ -1001,7 +1001,7 @@ if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$
 </tr>
 
 <tr>
-	<th><?php _e("Minimum User Level to Manage web-invoice", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
+	<th><?php _e("Minimum User Level to Manage web-invoice", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
 	<td>
 	<?php echo web_invoice_draw_select('web_invoice_user_level',array("level_0" => __("Subscriber", WEB_INVOICE_TRANS_DOMAIN),"level_0" => __("Contributor", WEB_INVOICE_TRANS_DOMAIN),"level_2" => __("Author", WEB_INVOICE_TRANS_DOMAIN),"level_5" => __("Editor", WEB_INVOICE_TRANS_DOMAIN),"level_8" => __("Administrator", WEB_INVOICE_TRANS_DOMAIN)), get_option('web_invoice_user_level')); ?>
 	</td>

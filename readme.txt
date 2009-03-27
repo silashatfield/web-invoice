@@ -64,6 +64,12 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.5.3**
+
+* Fixed issue with street address, phone number and country of clients
+  being reset every upgrade.
+* Bug fixes (Due date)
+
 **Version 1.5.2**
 
 * Fixed display issue with MB

@@ -386,9 +386,11 @@ function web_invoice_draw_inputfield($name,$value,$special = '') {
 	return "<input id='$name' class='$name'  name='$name' value='$value' $special />";
 }
 
-function web_invoice_draw_select($name,$values,$current_value = '') {
-
-	$output = "<select id='$name' name='$name' class='$name'>";
+function web_invoice_draw_select($name,$values,$current_value = '', $id=null) {
+	if ($id == null) {
+		$id = $name;
+	}
+	$output = "<select id='$id' name='$name' class='$name'>";
 	$output .= "<option></option>";
 	foreach($values as $key => $value) {
 	$output .=  "<option value='$key'";
