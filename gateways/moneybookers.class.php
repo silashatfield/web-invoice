@@ -20,6 +20,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/**
+ * Please note that this class is experimental at the moment. I'm waiting for a
+ * test account from Moneybookers.
+ * 
+ * @author moha
+ *
+ */
 class Web_Invoice_Moneybookers {
 
 	var $invoice;
@@ -39,6 +46,9 @@ class Web_Invoice_Moneybookers {
 	var $md5sig;
 	var $amount;
 	var $currency;
+	
+	var $recurring_payment_type;
+	var $recurring_payment_id;
 
     function Web_Invoice_Moneybookers($invoice_id) {
     	$this->invoice = new Web_Invoice_GetInfo($invoice_id);
@@ -101,6 +111,14 @@ class Web_Invoice_Moneybookers {
 		$this->md5sig = $request['md5sig'];
 		$this->amount = $request['amount'];
 		$this->currency = $request['currency'];
+		
+		if (isset($request['rec_payment_id'])) {
+			$this->recurring_payment_id = $request['rec_payment_id'];
+		}
+		
+    	if (isset($request['rec_payment_type'])) {
+			$this->recurring_payment_type = $request['rec_payment_type'];
+		}
 
 		if (!$this->_allowedIp()) {
 			$this->_logFailure('Invalid IP');

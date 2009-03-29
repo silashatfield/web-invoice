@@ -183,12 +183,12 @@ function web_invoice_recurring_overview($message='')
 	<input type="hidden" name="web_invoice_recurring_billing" value="true" />
 	<h2><?php _e('Recurring Billing Overview', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 
-	<?php if(web_invoice_is_not_merchant()) { ?>
+	<?php if(web_invoice_is_not_merchant() && (get_option('web_invoice_moneybookers_merchant') == 'False')) { ?>
 	<div class="web_invoice_rounded_box">
-		<p><?php printf(__('You need a credit card processing account to use recurring billing. </b>
+		<p><?php printf(__('You need a %4$s account with Merchant status or a credit card processing account to use recurring billing. </b>
 			You may get an ARB (Automated Recurring Billing) account from %1$s (800-546-1997),
 			%2$s (888-845-9457) or
-			%3$s (866-400-9706).', WEB_INVOICE_TRANS_DOMAIN), '<a href="http://keti.ws/37281">MerchantPlus</a>', '<a href="http://keti.ws/37282">MerchantExpress.com</a>', '<a href="http://keti.ws/36282">MerchantWarehouse</a>'); ?><b></p>
+			%3$s (866-400-9706).', WEB_INVOICE_TRANS_DOMAIN), '<a href="http://keti.ws/37281">MerchantPlus</a>', '<a href="http://keti.ws/37282">MerchantExpress.com</a>', '<a href="http://keti.ws/36282">MerchantWarehouse</a>', '<a href="http://keti.ws/27481" alt="moneybookers.com">Moneybookers</a>'); ?><b></p>
 		<p><?php _e('Once you have an account, enter in your username and transaction key into the ', WEB_INVOICE_TRANS_DOMAIN); ?><a href="admin.php?page=web_invoice_settings"><?php _e('settings page', WEB_INVOICE_TRANS_DOMAIN); ?></a>.</p>
 	</div>
 	<?php } ?>
@@ -1629,12 +1629,30 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 	<input type="hidden" name="rid" value="5413099" />
 	<input type="hidden" name="pay_to_email" value="<?php echo get_option('web_invoice_moneybookers_address'); ?>" />
 	<input type="hidden" name="return_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+	<input type="hidden" name="cancel_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
 	<input type="hidden" name="status_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
-	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
 	<input type="hidden" name="transaction_id" id="invoice_num" value="<?php echo  $invoice->display('display_id'); ?>" />
 	<?php
-	// Convert Itemized List into Moneybookers Item List
-	if(is_array($invoice->display('itemized'))) echo web_invoice_create_moneybookers_itemized_list($invoice->display('itemized'),$invoice_id);
+	if (web_invoice_recurring($invoice_id)) {
+	?>
+	<input type="hidden" name="rec_payment_id" value="<?php echo $invoice->display('display_id').date('YMD'); ?>" />
+	<input type="hidden" name="rec_payment_type" value="recurring" />
+	<input type="hidden" name="rec_status_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+	<input type="hidden" name="rec_cycle" value="<?php echo preg_replace('/s$/', '', $invoice->display('interval_unit')); ?>" />
+	<input type="hidden" name="rec_period" value="<?php echo $invoice->display('interval_length'); ?>" />
+	<input type="hidden" name="rec_start_date" value="<?php echo $invoice->display('startDate'); ?>" />
+	<input type="hidden" name="rec_end_date" value="<?php echo $invoice->display('endDate'); ?>" />
+	<input type="hidden" name="rec_amount" value="<?php echo $invoice->display('amount'); ?>" />
+	<?php
+	} else {
+	?>
+	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" />
+	<?php 
+		// Convert Itemized List into Moneybookers Item List
+		if(is_array($invoice->display('itemized'))) {
+			echo web_invoice_create_moneybookers_itemized_list($invoice->display('itemized'),$invoice_id);
+		}
+	}
 	?>
 	<fieldset id="credit_card_information">
 	<ol>

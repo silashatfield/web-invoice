@@ -23,7 +23,7 @@ Some features:
 * Send invoice notifications to customers with a secured link back to the web invoice
 * Accept credit card payment via Authorize.net or MerchantPlus NaviGate
 * Moneybookers, AlertPay or PayPal available if you don't have a credit card processing account
-* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature
+* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature or Moneybookers
 * Force web invoice pages to be viewed in SSL mode
 * Archive old invoices
 * Easily use old invoices as templates for new ones
@@ -63,6 +63,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.6.0**
+
+* Moneybookers recurring billing support
 
 **Version 1.5.4**
 
