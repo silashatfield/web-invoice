@@ -414,6 +414,8 @@ function web_invoice_send_email_receipt($invoice_id) {
 	if (get_option('web_invoice_cc_thank_you_email') == 'yes') {
 		$headers .= "Bcc: {$from}\r\n";
 	}
+	
+	$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
 
 	if(mail($invoice_info->recipient('email_address'), "Receipt", $message, $headers))
 	{ web_invoice_update_log($invoice_id,'contact','Receipt eMailed'); }
