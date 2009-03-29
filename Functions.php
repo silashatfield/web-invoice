@@ -520,12 +520,20 @@ function web_invoice_send_email($invoice_array,$reminder = false)
 		$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$invoice_id."'");
 
 		$profileuser = get_user_to_edit($invoice_info->user_id);
-		$subject = $invoice_info->subject;
-		$message = strip_tags(web_invoice_show_email($invoice_id,$reminder));
+		
+		if ($reminder) {
+			$message = strip_tags(web_invoice_show_reminder_email($invoice_id));
+			$subject = "[Reminder] {$invoice_info->subject}";
+		} else {
+			$message = strip_tags(web_invoice_show_email($invoice_id));
+			$subject = $invoice_info->subject;
+		}
 
 		$from = get_option("web_invoice_email_address");
 		$headers = "From: $from";
 
+		$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
+		
 		if(mail($profileuser->user_email, $subject, $message, $headers))
 		{
 			$counter++; // Success in sending quantified.
@@ -541,10 +549,19 @@ function web_invoice_send_email($invoice_array,$reminder = false)
 		$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$invoice_array."'");
 
 		$profileuser = get_user_to_edit($invoice_info->user_id);
-		$subject = $invoice_info->subject;
-		$message = strip_tags(web_invoice_show_email($invoice_id,$reminder));
+		
+		if ($reminder) {
+			$message = strip_tags(web_invoice_show_reminder_email($invoice_id));
+			$subject = "[Reminder] {$invoice_info->subject}";
+		} else {
+			$message = strip_tags(web_invoice_show_email($invoice_id));
+			$subject = $invoice_info->subject;
+		}
+		
 		$from = get_option("web_invoice_email_address");
 		$headers = "From: $from";
+		
+		$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
 
 		if(mail($profileuser->user_email, $subject, $message, $headers))
 		{
@@ -556,8 +573,6 @@ function web_invoice_send_email($invoice_array,$reminder = false)
 
 	}
 }
-
-
 
 function web_invoice_array_stripslashes($slash_array = array())
 {

@@ -1282,12 +1282,27 @@ function web_invoice_show_email($invoice_id) {
 	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
 	$recipient = new Web_Invoice_GetInfo($invoice_id);
 
-	// Determine currency. First we check invoice-specific, then default code, and then we settle on USD
-//	$currency_code = web_invoice_determine_currency($invoice_id);
-
-
 	$message = "Dear ". $recipient->recipient('callsign') . ", \n\n";
  	$message .= stripslashes(get_option("web_invoice_business_name")) . " has sent you a ";
+	$message .= (web_invoice_recurring($invoice_id) ? " recurring " : " ");
+	$message .= "web invoice in the amount of ".  $invoice_info->display('display_amount') . ".\n\n";
+
+	if($invoice_info->display('description')) $message .= $invoice_info->display('description') . "\n\n";
+
+	$message .= "You may pay, view and print the invoice online by visiting the following link: \n";
+	$message .= $invoice_info->display('link') . "\n\n";
+	$message .= "Best regards,\n";
+	$message .= stripslashes(get_option("web_invoice_business_name")) . "(" .  get_option("web_invoice_email_address")  . ")";
+
+	return $message;
+}
+
+function web_invoice_show_reminder_email($invoice_id) {
+	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
+	$recipient = new Web_Invoice_GetInfo($invoice_id);
+
+	$message = "Dear ". $recipient->recipient('callsign') . ", \n\n";
+ 	$message .= stripslashes(get_option("web_invoice_business_name")) . " has sent you a reminder for the ";
 	$message .= (web_invoice_recurring($invoice_id) ? " recurring " : " ");
 	$message .= "web invoice in the amount of ".  $invoice_info->display('display_amount') . ".\n\n";
 
@@ -1304,9 +1319,6 @@ function web_invoice_show_email($invoice_id) {
 function web_invoice_show_receipt_email($invoice_id) {
 	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
 	$recipient = new Web_Invoice_GetInfo($invoice_id);
-
-	// Determine currency. First we check invoice-specific, then default code, and then we settle on USD
-	// $currency_code = web_invoice_determine_currency($invoice_id);
 
 	$message = "Dear ". $recipient->recipient('callsign') . ", \n\n";
  	$message .= stripslashes(get_option("web_invoice_business_name")) . " has sent you a receipt for the ";

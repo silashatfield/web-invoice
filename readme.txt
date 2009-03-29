@@ -64,6 +64,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.5.4**
+
+* Currency symbol shown as html entity in the mailed invoice
+* MB API interop fix
+
 **Version 1.5.3**
 
 * Fixed issue with street address, phone number and country of clients

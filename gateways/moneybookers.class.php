@@ -146,7 +146,7 @@ class Web_Invoice_Moneybookers {
 		}
 
 		$secret_word = strtoupper(md5(get_option('web_invoice_moneybookers_secret')));
-		$our_signature =  strtoupper(md5("{$this->merchant_id}{$this->transaction_id}{$this->secret_word}{$this->mb_amount}{$this->mb_currency}{$this->status}"));
+		$our_signature =  strtoupper(md5("{$this->merchant_id}{$this->transaction_id}{$secret_word}{$this->mb_amount}{$this->mb_currency}{$this->status}"));
 
 		if ($this->md5sig != $our_signature) {
 			$this->_logFailure('Invalid signature, we calculated '.$our_signature);

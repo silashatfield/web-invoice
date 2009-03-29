@@ -169,4 +169,3 @@ class Web_Invoice_Authnet
     }
 }
 
-?>

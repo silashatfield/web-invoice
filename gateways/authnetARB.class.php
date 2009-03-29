@@ -238,5 +238,3 @@ class Web_Invoice_AuthnetARB
         return $this->subscrId;
     }
 }
-
-?>
