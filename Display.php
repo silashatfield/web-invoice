@@ -1126,8 +1126,8 @@ function web_invoice_show_settings()
 	</tr>
 	<tr>
 		<th><a class="web_invoice_tooltip"
-			title="<?php _e("Disable this if you want to use your own stylesheet.", WEB_INVOICE_TRANS_DOMAIN) ?>"><<?php
-		_e("Use CSS", WEB_INVOICE_TRANS_DOMAIN) ?>/a>:</th>
+			title="<?php _e("Disable this if you want to use your own stylesheet.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php
+		_e("Use CSS", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 		<td><select name="web_invoice_use_css">
 			<option></option>
 			<option style="padding-right: 10px;"
@@ -1536,7 +1536,9 @@ function web_invoice_draw_itemized_table($invoice_id) {
 	if(is_array($itemized_array)) {
 		$response .= "<table id=\"web_invoice_itemized_table\">
 		<tr>\n";
-		if(get_option('web_invoice_show_quantities') == "Show") { $response .= '<th style="width: 40px; text-align: right;">Quantity</th>'; }
+		if(get_option('web_invoice_show_quantities') == "Show") { 
+			$response .= '<th style="width: 40px; text-align: right;">Quantity</th><th style=\"width: 50px; text-align: right;\">'.__('Unit price', WEB_INVOICE_TRANS_DOMAIN).'</th>';
+		}
 		$response .="<th>".__('Item', WEB_INVOICE_TRANS_DOMAIN)."</th><th style=\"width: 70px; text-align: right;\">".__('Cost', WEB_INVOICE_TRANS_DOMAIN)."</th>
 		</tr> ";
 		$i = 1;
@@ -1555,17 +1557,15 @@ function web_invoice_draw_itemized_table($invoice_id) {
 
 				//Quantities
 				if($show_quantity) {
-					$response .= "<td style=\"width: 70px; text-align: right;\">" . $itemized_item[quantity] . "</td>";	}
+					$response .= "<td style=\"width: 70px; text-align: right;\">" . $itemized_item[quantity] . "</td>";	
+					$response .= "<td style=\"width: 50px; text-align: right;\">" . web_invoice_currency_format($itemized_item[price]) . "</td>";	
+				}
 
 					//Item Name
 					$response .= "<td>" . stripslashes($itemized_item[name]) . " <br /><span class='description_text'>" . stripslashes($itemized_item[description]) . "</span></td>";
 
 					//Item Price
-					if(!$show_quantity) {
-						$response .= "<td style=\"width: 70px; text-align: right;\">" . web_invoice_currency_symbol($currency_code) .  web_invoice_currency_format($itemized_item[quantity] * $itemized_item[price]) . "</td>";
-					} else {
-						$response .= "<td style=\"width: 70px; text-align: right;\">". web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($itemized_item[price]) . "</td>";
-					}
+					$response .= "<td style=\"width: 70px; text-align: right;\">" . web_invoice_currency_symbol($currency_code) .  web_invoice_currency_format($itemized_item[quantity] * $itemized_item[price]) . "</td>";
 
 					$response .="</tr>";
 					$i++;
