@@ -1127,7 +1127,7 @@ function web_invoice_show_settings()
 	<tr>
 		<th><a class="web_invoice_tooltip"
 			title="<?php _e("Disable this if you want to use your own stylesheet.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php
-		_e("Use CSS", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
+			_e("Use CSS", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 		<td><select name="web_invoice_use_css">
 			<option></option>
 			<option style="padding-right: 10px;"
@@ -1536,7 +1536,7 @@ function web_invoice_draw_itemized_table($invoice_id) {
 	if(is_array($itemized_array)) {
 		$response .= "<table id=\"web_invoice_itemized_table\">
 		<tr>\n";
-		if(get_option('web_invoice_show_quantities') == "Show") { 
+		if(get_option('web_invoice_show_quantities') == "Show") {
 			$response .= '<th style="width: 40px; text-align: right;">Quantity</th><th style=\"width: 50px; text-align: right;\">'.__('Unit price', WEB_INVOICE_TRANS_DOMAIN).'</th>';
 		}
 		$response .="<th>".__('Item', WEB_INVOICE_TRANS_DOMAIN)."</th><th style=\"width: 70px; text-align: right;\">".__('Cost', WEB_INVOICE_TRANS_DOMAIN)."</th>
@@ -1557,31 +1557,45 @@ function web_invoice_draw_itemized_table($invoice_id) {
 
 				//Quantities
 				if($show_quantity) {
-					$response .= "<td style=\"width: 70px; text-align: right;\">" . $itemized_item[quantity] . "</td>";	
-					$response .= "<td style=\"width: 50px; text-align: right;\">" . web_invoice_currency_format($itemized_item[price]) . "</td>";	
+					$response .= "<td style=\"width: 70px; text-align: right;\">" . $itemized_item[quantity] . "</td>";
+					$response .= "<td style=\"width: 50px; text-align: right;\">" . web_invoice_currency_format($itemized_item[price]) . "</td>";
 				}
 
-					//Item Name
-					$response .= "<td>" . stripslashes($itemized_item[name]) . " <br /><span class='description_text'>" . stripslashes($itemized_item[description]) . "</span></td>";
+				//Item Name
+				$response .= "<td>" . stripslashes($itemized_item[name]) . " <br /><span class='description_text'>" . stripslashes($itemized_item[description]) . "</span></td>";
 
-					//Item Price
-					$response .= "<td style=\"width: 70px; text-align: right;\">" . web_invoice_currency_symbol($currency_code) .  web_invoice_currency_format($itemized_item[quantity] * $itemized_item[price]) . "</td>";
+				//Item Price
+				$response .= "<td style=\"width: 70px; text-align: right;\">" . web_invoice_currency_symbol($currency_code) .  web_invoice_currency_format($itemized_item[quantity] * $itemized_item[price]) . "</td>";
 
-					$response .="</tr>";
-					$i++;
+				$response .="</tr>";
+				$i++;
 			}
 
 		}
 		if($tax_percent) {
 			$response .= "<tr>";
-			if(get_option('web_invoice_show_quantities') == "Show") { $response .= "<td></td>"; }
-			$response .= "<td>Tax (". round($tax_percent,2). "%) </td><td style='text-align:right;' colspan='2'>" . web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($tax_value)."</td></tr>";
+			if(get_option('web_invoice_show_quantities') == "Show") { 
+				$response .= "<td></td><td></td>"; 
+			}
+			$response .= "<td>Tax (". round($tax_percent,2). "%) </td>";
+			if(get_option('web_invoice_show_quantities') == "Show") { 
+				$response .= "<td style='text-align:right;' colspan='2'>" . web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($tax_value)."</td></tr>";
+			} else {
+				$response .= "<td style='text-align:right;'>" . web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($tax_value)."</td></tr>";
+			}
 		}
 
-		$response .="
-		<tr class=\"web_invoice_bottom_line\">
-		<td align=\"right\">Invoice Total:</td>
-		<td  colspan=\"2\" style=\"text-align: right;\" class=\"grand_total\">";
+		$response .= "
+		<tr class=\"web_invoice_bottom_line\">";
+		if(get_option('web_invoice_show_quantities') == "Show") { 
+			$response .="
+			<td align=\"right\" colspan=\"2\">Invoice Total:</td>
+			<td  colspan=\"2\" style=\"text-align: right;\" class=\"grand_total\">";
+		} else {
+			$response .="
+			<td align=\"right\">Invoice Total:</td>
+			<td style=\"text-align: right;\" class=\"grand_total\">";
+		}
 
 		$response .= web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($amount);
 		$response .= "</td></table>";

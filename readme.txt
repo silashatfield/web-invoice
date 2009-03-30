@@ -64,6 +64,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.6.2**
+
+* Formatting issue in invoice display
+
 **Version 1.6.1**
 
 * Show unit price when displaying quantity. Change cost to the product of quantity and unti price
