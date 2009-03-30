@@ -1,24 +1,24 @@
 <?php
 /*
-	Created by S H Mohanjith
-	(website: mohanjith.com       email : support@mohanjith.com)
+ Created by S H Mohanjith
+ (website: mohanjith.com       email : support@mohanjith.com)
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; version 3 of the License, with the
-    exception of the JQuery JavaScript framework which is released
-    under it's own license.  You may view the details of that license in
-    the prototype.js file.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 3 of the License, with the
+ exception of the JQuery JavaScript framework which is released
+ under it's own license.  You may view the details of that license in
+ the prototype.js file.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 class Web_Invoice_AlertPay {
 
@@ -47,20 +47,20 @@ class Web_Invoice_AlertPay {
 	var $ap_test;
 
 
-    function Web_Invoice_AlertPay($invoice_id) {
-    	$this->invoice = new Web_Invoice_GetInfo($invoice_id);
-    }
+	function Web_Invoice_AlertPay($invoice_id) {
+		$this->invoice = new Web_Invoice_GetInfo($invoice_id);
+	}
 
-    function _logFailure($ref) {
+	function _logFailure($ref) {
 		web_invoice_update_log($this->invoice->id,'alertpay_api_fail',"Failed AlertPay API request from {$this->ip}. REF: {$ref}. Serialized object ".serialize($this));
-    }
+	}
 
-    function _logSuccess($ref) {
+	function _logSuccess($ref) {
 		web_invoice_update_log($this->invoice->id,'alertpay_api_success',"Successful AlertPay API request from {$this->ip}. REF: {$ref}");
-    }
+	}
 
-    function updateContactInfo() {
-    	$user_id = $this->invoice->recipient('user_id');
+	function updateContactInfo() {
+		$user_id = $this->invoice->recipient('user_id');
 		$updated = false;
 
 		if (!empty($this->ap_custaddress)) {
@@ -95,11 +95,11 @@ class Web_Invoice_AlertPay {
 		if ($updated) {
 			$this->_logSuccess('Updated user information with details from AlertPay');
 		}
-    }
+	}
 
-    function processRequest($ip, $request) {
+	function processRequest($ip, $request) {
 
-    	$this->ip = $ip;
+		$this->ip = $ip;
 
 		$this->ap_custemailaddress = $request['ap_custemailaddress'];
 		$this->ap_custfirstname = $request['ap_custfirstname'];
@@ -122,8 +122,8 @@ class Web_Invoice_AlertPay {
 		$this->ap_status = $request['ap_status'];
 		$this->ap_test = $request['ap_test'];
 
-    	if (!$this->invoice->id) {
-    		$this->_logFailure('Invoice not found');
+		if (!$this->invoice->id) {
+			$this->_logFailure('Invoice not found');
 
 			header('HTTP/1.0 404 Not Found');
 			header('Content-type: text/plain; charset=UTF-8');
@@ -188,5 +188,5 @@ class Web_Invoice_AlertPay {
 		header('Content-type: text/plain; charset=UTF-8');
 		print 'Thank you very much for letting us know';
 		exit(0);
-    }
+	}
 }

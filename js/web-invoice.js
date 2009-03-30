@@ -1,34 +1,36 @@
-if (!Array.indexOf)
-{
-  Array.indexOf = [].indexOf ?
-      function (arr, obj, from) { return arr.indexOf(obj, from); }:
-      function (arr, obj, from) { // (for IE6)
-        var l = arr.length,
-            i = from ? parseInt( (1*from) + (from<0 ? l:0), 10) : 0;
-        i = i<0 ? 0 : i;
-        for (; i<l; i++) {
-          if (i in arr  &&  arr[i] === obj) { return i; }
-        }
-        return -1;
-      };
+if (!Array.indexOf) {
+	Array.indexOf = [].indexOf ? function(arr, obj, from) {
+		return arr.indexOf(obj, from);
+	} : function(arr, obj, from) { // (for IE6)
+				var l = arr.length, i = from ? parseInt((1 * from)
+						+ (from < 0 ? l : 0), 10) : 0;
+				i = i < 0 ? 0 : i;
+				for (; i < l; i++) {
+					if (i in arr && arr[i] === obj) {
+						return i;
+					}
+				}
+				return -1;
+			};
 }
 
-
 function web_invoice_add_time(add_days) {
-	function formatNum(num){
+	function formatNum(num) {
 		var mynum = num * 1;
-		var retVal = mynum<10?'0':'';
+		var retVal = mynum < 10 ? '0' : '';
 		return (retVal + mynum)
 	}
 
-	if(add_days == 'clear') {
+	if (add_days == 'clear') {
 		jQuery("#new_web_invoice_form #mm").val('');
 		jQuery("#new_web_invoice_form #jj").val('');
 		jQuery("#new_web_invoice_form #aa").val('');
 	} else {
 
 		myDate = new Date();
-		var week_from_now = new Date(myDate.getTime() + add_days*24*60*60*1000);;
+		var week_from_now = new Date(myDate.getTime() + add_days * 24 * 60 * 60
+				* 1000);
+		;
 		month = week_from_now.getMonth() + 1;
 
 		jQuery("#new_web_invoice_form #mm").val(formatNum(month));
@@ -48,267 +50,454 @@ function web_invoice_cancel_recurring() {
 	jQuery("#web_invoice_subscription_start_year").val('');
 	jQuery("#web_invoice_subscription_total_occurances").val('');
 
-	//jQuery(".web_invoice_enable_recurring_billing").toggle();
+	// jQuery(".web_invoice_enable_recurring_billing").toggle();
 	jQuery("#web_invoice_enable_recurring_billing").toggle();
 	jQuery(".web_invoice_enable_recurring_billing").toggle();
 
-
-
 }
-
 
 function web_invoice_subscription_start_time(add_days) {
 
-	function formatNum(num){
+	function formatNum(num) {
 		var mynum = num * 1;
-		var retVal = mynum<10?'0':'';
+		var retVal = mynum < 10 ? '0' : '';
 		return (retVal + mynum)
 	}
 
-	if(add_days == 'clear') {
+	if (add_days == 'clear') {
 
-	jQuery("#web_invoice_subscription_start_month").val('');
-	jQuery("#web_invoice_subscription_start_day").val('');
-	jQuery("#web_invoice_subscription_start_year").val('');
+		jQuery("#web_invoice_subscription_start_month").val('');
+		jQuery("#web_invoice_subscription_start_day").val('');
+		jQuery("#web_invoice_subscription_start_year").val('');
+	} else {
+
+		myDate = new Date();
+		var week_from_now = new Date(myDate.getTime() + add_days * 24 * 60 * 60
+				* 1000);
+		;
+		month = week_from_now.getMonth() + 1;
+
+		jQuery("#web_invoice_subscription_start_month").val(formatNum(month));
+		jQuery("#web_invoice_subscription_start_day").val(
+				week_from_now.getDate());
+		jQuery("#web_invoice_subscription_start_year").val(
+				week_from_now.getFullYear());
 	}
-	 else
-	 {
-
-	myDate = new Date();
-	var week_from_now = new Date(myDate.getTime() + add_days*24*60*60*1000);;
-	month = week_from_now.getMonth() + 1;
-
-	jQuery("#web_invoice_subscription_start_month").val(formatNum(month));
-	jQuery("#web_invoice_subscription_start_day").val(week_from_now.getDate());
-	jQuery("#web_invoice_subscription_start_year").val(week_from_now.getFullYear());
-		}
-
 
 	return false;
 
 }
 
+jQuery(document)
+		.ready(
+				function() {
 
-jQuery(document).ready(function(){
+					tooltip();
 
+					jQuery("#submit_bulk_action")
+							.click(
+									function() {
+										if (jQuery(
+												"#web_invoice_action :selected")
+												.text() == 'Delete') {
 
-	tooltip();
+											var r = confirm("Are you sure you want to delete the selected invoice(s)?");
+											if (r == true) {
+												return true;
+											} else {
+												return false;
+											}
+										}
 
-	jQuery("#submit_bulk_action").click( function(){
-	if(jQuery("#web_invoice_action :selected").text() == 'Delete') {
+									});
 
-	var r=confirm("Are you sure you want to delete the selected invoice(s)?");
-	if (r==true)
-	  {
-	  return true;
-	  }
-	else
-	  {
-	  return false;
-	  }
-}
+					jQuery(".web_invoice_make_editable")
+							.click(
+									function() {
+										var element_name = jQuery(this).attr(
+												'id');
+										var width = jQuery(this).width() * 2;
+										var original_content = jQuery(this)
+												.html();
+										var draw_input_field = "<input style='width: "
+												+ width
+												+ "px;' value='"
+												+ jQuery(this).html()
+												+ "' name='"
+												+ element_name
+												+ "' class='"
+												+ element_name
+												+ "'/>";
 
-	});
+										if (!jQuery("input." + element_name).length > 0) {
+											jQuery("#" + element_name).html(
+													draw_input_field);
+											jQuery("input." + element_name)
+													.focus();
+										}
 
-	jQuery(".web_invoice_make_editable").click( function() {
-	var element_name = jQuery(this).attr('id');
-	var width = jQuery(this).width() * 2;
-	var original_content = jQuery(this).html();
-	var draw_input_field = "<input style='width: " + width +"px;' value='" + jQuery(this).html() +"' name='" + element_name +"' class='" + element_name +"'/>";
+										jQuery("input." + element_name)
+												.blur(
+														function() {
+															if (jQuery(
+																	"input."
+																			+ element_name)
+																	.val() == original_content
+																	|| jQuery(
+																			"input."
+																					+ element_name)
+																			.val() == '')
+																jQuery(
+																		"#"
+																				+ element_name)
+																		.html(
+																				original_content);
 
-	if(!jQuery("input." + element_name).length > 0) { jQuery("#" + element_name).html(draw_input_field);  jQuery("input." + element_name).focus(); }
+														});
+									})
 
-	jQuery("input." + element_name).blur(function() {
-		if(jQuery("input." + element_name).val() == original_content || jQuery("input." + element_name).val() == '') jQuery("#" + element_name).html(original_content);
+					jQuery("#invoices-filter").submit( function() {
+						if (jQuery("#invoices-filter select").val() == '-1') {
+							return false;
+						}
+					})
 
-	}  );
-	})
+					jQuery("#web_invoice_tax").keyup( function() {
+						recalc();
+					})
+					jQuery("#invoice_list").delegate("keyup", "input",
+							function(event) {
+								recalc();
+							});
+					jQuery("#web_invoice_subscription_total_occurances ")
+							.delegate("keyup", "input", function(event) {
+								recalc();
+							});
 
-	jQuery("#invoices-filter").submit(function() {  if(jQuery("#invoices-filter select").val() == '-1') { return false;} })
+					jQuery("a.web_invoice_custom_invoice_id").click(
+							function() {
+								jQuery("input.web_invoice_custom_invoice_id")
+										.toggle();
+								return false;
+							})
 
-	jQuery("#web_invoice_tax").keyup(function() { recalc(); })
-	jQuery("#invoice_list").delegate("keyup", "input", function(event) {recalc();});
-	jQuery("#web_invoice_subscription_total_occurances ").delegate("keyup", "input", function(event) {recalc();});
+					jQuery("#web_invoice_show_archived").click( function() {
+						jQuery(".web_invoice_archived").toggle();
+						return false;
+					})
+					jQuery("#web_invoice_enable_recurring_billing").click(
+							function() {
+								jQuery(".web_invoice_enable_recurring_billing")
+										.toggle();
+								jQuery("#web_invoice_enable_recurring_billing")
+										.toggle();
+							})
+					jQuery("#web_invoice_need_mm").click( function() {
+						jQuery(".web_invoice_credit_card_processors").toggle();
+					})
+					jQuery("#web_invoice_copy_invoice").click( function() {
+						jQuery(".web_invoice_copy_invoice").toggle();
+						jQuery("#web_invoice_create_new_web_invoice").toggle();
+						jQuery("#web_invoice_copy_invoice").toggle();
+					})
+					jQuery("#web_invoice_copy_invoice_cancel").click(
+							function() {
+								jQuery(".web_invoice_copy_invoice").toggle();
+								jQuery("#web_invoice_create_new_web_invoice")
+										.toggle();
+								jQuery("#web_invoice_copy_invoice").toggle();
+							})
 
-	jQuery("a.web_invoice_custom_invoice_id").click(function() { jQuery("input.web_invoice_custom_invoice_id").toggle(); return false;})
+					jQuery("#web_invoice_merchantexpress_prefill").click(
+							function() {
+								jQuery("#web_invoice_gateway_url").val(
+										'https://gateway.merchantexpress.com');
+							})
+					jQuery("#web_invoice_merchantwarehouse_prefill")
+							.click(
+									function() {
+										jQuery("#web_invoice_gateway_url")
+												.val(
+														'https://gateway.merchantwarehouse.com');
+									})
 
-	jQuery("#web_invoice_show_archived").click(function() { jQuery(".web_invoice_archived").toggle(); return false;})
-	jQuery("#web_invoice_enable_recurring_billing").click(function() { jQuery(".web_invoice_enable_recurring_billing").toggle(); jQuery("#web_invoice_enable_recurring_billing").toggle();  })
-	jQuery("#web_invoice_need_mm").click(function() { jQuery(".web_invoice_credit_card_processors").toggle();  })
-	jQuery("#web_invoice_copy_invoice").click(function() { jQuery(".web_invoice_copy_invoice").toggle();jQuery("#web_invoice_create_new_web_invoice").toggle();jQuery("#web_invoice_copy_invoice").toggle();  })
-	jQuery("#web_invoice_copy_invoice_cancel").click(function() { jQuery(".web_invoice_copy_invoice").toggle();jQuery("#web_invoice_create_new_web_invoice").toggle();jQuery("#web_invoice_copy_invoice").toggle();  })
+					payment_method_array = (jQuery(
+							"#web_invoice_payment_method").val() + "")
+							.split(",");
 
+					if (payment_method_array.indexOf('cc') != -1) {
+						jQuery('.gateway_info').show();
+					}
+					if (payment_method_array.indexOf('paypal') != -1) {
+						jQuery('.paypal_info').show();
+					}
+					if (payment_method_array.indexOf('moneybookers') != -1) {
+						jQuery('.moneybookers_info').show();
 
-	jQuery("#web_invoice_merchantexpress_prefill").click(function() { jQuery("#web_invoice_gateway_url").val('https://gateway.merchantexpress.com');  })
-	jQuery("#web_invoice_merchantwarehouse_prefill").click(function() { jQuery("#web_invoice_gateway_url").val('https://gateway.merchantwarehouse.com');  })
+						if (jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {
+							jQuery('.moneybookers_info_merchant').hide();
+						}
+						if (jQuery('#web_invoice_moneybookers_address').val() != '') {
+							jQuery('#web_invoice_moneybookers_register_link')
+									.hide();
+						}
+					}
+					if (payment_method_array.indexOf('alertpay') != -1) {
+						jQuery('.alertpay_info').show();
 
-	payment_method_array = (jQuery("#web_invoice_payment_method").val()+"").split(",");
+						if (jQuery('#web_invoice_alertpay_merchant').val() == 'False') {
+							jQuery('.alertpay_info_merchant').hide();
+						}
+						if (jQuery('#web_invoice_alertpay_address').val() != '') {
+							jQuery('#web_invoice_alertpay_register_link')
+									.hide();
+						}
+					}
 
-	if(payment_method_array.indexOf('cc') != -1) { jQuery('.gateway_info').show();  }
-	if(payment_method_array.indexOf('paypal') != -1) {  jQuery('.paypal_info').show();  }
-	if(payment_method_array.indexOf('moneybookers') != -1) {
-		jQuery('.moneybookers_info').show();
+					jQuery('#web_invoice_payment_method')
+							.change(
+									function() {
+										payment_method_array = (jQuery(this)
+												.val() + "").split(",");
 
-		if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
-		if(jQuery('#web_invoice_moneybookers_address').val() != '') { jQuery('#web_invoice_moneybookers_register_link').hide(); }
-	}
-	if(payment_method_array.indexOf('alertpay') != -1) {
-		jQuery('.alertpay_info').show();
+										jQuery('.paypal_info').hide();
+										jQuery('.moneybookers_info').hide();
+										jQuery('.alertpay_info').hide();
+										jQuery('.gateway_info').hide();
+										if (payment_method_array
+												.indexOf('paypal') != -1) {
+											jQuery('.paypal_info').show();
+										}
+										if (payment_method_array
+												.indexOf('moneybookers') != -1) {
+											jQuery('.moneybookers_info').show();
 
-		if(jQuery('#web_invoice_alertpay_merchant').val() == 'False') {  jQuery('.alertpay_info_merchant').hide();  }
-		if(jQuery('#web_invoice_alertpay_address').val() != '') { jQuery('#web_invoice_alertpay_register_link').hide(); }
-	}
+											if (jQuery(
+													'#web_invoice_moneybookers_merchant')
+													.val() == 'False') {
+												jQuery(
+														'.moneybookers_info_merchant')
+														.hide();
+											}
+											if (jQuery(
+													'#web_invoice_moneybookers_address')
+													.val() != '') {
+												jQuery(
+														'#web_invoice_moneybookers_register_link')
+														.hide();
+											}
+										}
+										if (payment_method_array
+												.indexOf('alertpay') != -1) {
+											jQuery('.alertpay_info').show();
 
-	jQuery('#web_invoice_payment_method').change(function(){
-		payment_method_array = (jQuery(this).val()+"").split(",");
+											if (jQuery(
+													'#web_invoice_alertpay_merchant')
+													.val() == 'False') {
+												jQuery(
+														'.alertpay_info_merchant')
+														.hide();
+											}
+											if (jQuery(
+													'#web_invoice_alertpay_address')
+													.val() != '') {
+												jQuery(
+														'#web_invoice_alertpay_register_link')
+														.hide();
+											}
+										}
+										if (payment_method_array.indexOf('cc') != -1) {
+											jQuery('.gateway_info').show();
+										}
+									});
 
-		jQuery('.paypal_info').hide();
-		jQuery('.moneybookers_info').hide();
-		jQuery('.alertpay_info').hide();
-		jQuery('.gateway_info').hide();
-		if(payment_method_array.indexOf('paypal') != -1) {
-			jQuery('.paypal_info').show();
-		}
-		if(payment_method_array.indexOf('moneybookers') != -1) {
-			jQuery('.moneybookers_info').show();
+					jQuery('#web_invoice_moneybookers_merchant').change(
+							function() {
+								if (jQuery(this).val() == 'True') {
+									jQuery('.moneybookers_info_merchant')
+											.show();
+								}
+								if (jQuery(this).val() == 'False') {
+									jQuery('.moneybookers_info_merchant')
+											.hide();
+								}
+							});
 
-			if(jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {  jQuery('.moneybookers_info_merchant').hide();  }
-			if(jQuery('#web_invoice_moneybookers_address').val() != '') { jQuery('#web_invoice_moneybookers_register_link').hide(); }
-		}
-		if(payment_method_array.indexOf('alertpay') != -1) {
-			jQuery('.alertpay_info').show();
+					jQuery('#web_invoice_alertpay_merchant').change(
+							function() {
+								if (jQuery(this).val() == 'True') {
+									jQuery('.alertpay_info_merchant').show();
+								}
+								if (jQuery(this).val() == 'False') {
+									jQuery('.alertpay_info_merchant').hide();
+								}
+							});
 
-			if(jQuery('#web_invoice_alertpay_merchant').val() == 'False') {  jQuery('.alertpay_info_merchant').hide();  }
-			if(jQuery('#web_invoice_alertpay_address').val() != '') { jQuery('#web_invoice_alertpay_register_link').hide(); }
-		}
-		if(payment_method_array.indexOf('cc') != -1) {
-			jQuery('.gateway_info').show();
-		}
-	});
+					if (jQuery('#first_name').val() == '') {
+						jQuery('#first_name').addClass("error");
+					}
+					if (jQuery('#last_name').val() == '') {
+						jQuery('#last_name').addClass("error");
+					}
+					if (jQuery('#streetaddress').val() == '') {
+						jQuery('#streetaddress').addClass("error");
+					}
+					if (jQuery('#state').val() == '') {
+						jQuery('#state').addClass("error");
+					}
+					if (jQuery('#city').val() == '') {
+						jQuery('#city').addClass("error");
+					}
+					if (jQuery('#zip').val() == '') {
+						jQuery('#zip').addClass("error");
+					}
 
-	jQuery('#web_invoice_moneybookers_merchant').change(function(){
-		if(jQuery(this).val() == 'True') {
-			jQuery('.moneybookers_info_merchant').show();
-		}
-		if(jQuery(this).val() == 'False') {
-			jQuery('.moneybookers_info_merchant').hide();
-		}
-	});
+					jQuery('#delete_all_web_invoice_databases')
+							.click(
+									function() {
+										var txt = 'Are you sure you want to delete all the databases?  All your invoice and log data will be lost forever. ';
+										jQuery
+												.prompt(
+														txt,
+														{
+															buttons : {
+																Delete :true,
+																Cancel :false
+															},
+															callback : function(
+																	v, m) {
+																if (v) {
+																	document.location = "admin.php?page=new_web_invoice&web_invoice_action=complete_removal";
+																}
+															}
+														});
+										return false
+									});
 
-	jQuery('#web_invoice_alertpay_merchant').change(function(){
-		if(jQuery(this).val() == 'True') {
-			jQuery('.alertpay_info_merchant').show();
-		}
-		if(jQuery(this).val() == 'False') {
-			jQuery('.alertpay_info_merchant').hide();
-		}
-	});
+					var tog = false; // or true if they are checked on load
+					jQuery('#invoice_sorter_table #CheckAll').click(
+							function() {
+								jQuery("input[type=checkbox]").attr("checked",
+										!tog);
+								tog = !tog;
+							});
 
-	if(jQuery('#first_name').val() == '') {jQuery('#first_name').addClass("error"); }
-	if(jQuery('#last_name').val() == '') {jQuery('#last_name').addClass("error"); }
-	if(jQuery('#streetaddress').val() == '') {jQuery('#streetaddress').addClass("error"); }
-	if(jQuery('#state').val() == '') {jQuery('#state').addClass("error"); }
-	if(jQuery('#city').val() == '') {jQuery('#city').addClass("error"); }
-	if(jQuery('#zip').val() == '') {jQuery('#zip').addClass("error"); }
+					jQuery('#web_invoice_main_info .invoice_description_box')
+							.autogrow();
+					jQuery('#web_invoice_main_info .autogrow').autogrow();
+					jQuery('#web_invoice_main_info #add_itemized_item').bind(
+							'click', add_itemized_list_row);
 
-	jQuery('#delete_all_web_invoice_databases').click(function() {
-		var txt = 'Are you sure you want to delete all the databases?  All your invoice and log data will be lost forever. ';
-		jQuery.prompt(txt,{	buttons:{Delete:true, Cancel:false}, callback: function(v,m){ if(v){  document.location = "admin.php?page=new_web_invoice&web_invoice_action=complete_removal"; }	}
-	});
-	return false
-	});
+					jQuery('#invoices-filter .subsubsub a').click(
+							function() {
+								jQuery("#FilterTextBox").val(
+										jQuery(this).attr('class'));
+								var s = jQuery(this).attr('class')
+										.toLowerCase().split(" ");
+								jQuery("#invoice_sorter_table tr:hidden")
+										.show();
+								jQuery.each(s, function() {
+									jQuery(
+											"#invoice_sorter_table tr:visible .indexColumn:not(:contains('"
+													+ this + "'))").parent()
+											.hide();
+								});
+								return false;
+							});
 
-	var tog = false; // or true if they are checked on load
-	 jQuery('#invoice_sorter_table #CheckAll').click(function() {
-	    jQuery("input[type=checkbox]").attr("checked",!tog);
-	  tog = !tog;
-	 });
+					jQuery("#invoice_sorter_table tr:has(td)").each(
+							function() {
+								var t = jQuery(this).text().toLowerCase(); // all
+																			// row
+																			// text
+								jQuery("<td class='indexColumn'></td>").hide()
+										.text(t).appendTo(this);
+							});// each tr
 
-	jQuery('#web_invoice_main_info .invoice_description_box').autogrow();
-	jQuery('#web_invoice_main_info .autogrow').autogrow();
-	jQuery('#web_invoice_main_info #add_itemized_item').bind('click', add_itemized_list_row);
+					jQuery("#FilterTextBox").keyup( function() {
+						var s = jQuery(this).val().toLowerCase().split(" ");
+						// show all rows.
 
-	jQuery('#invoices-filter .subsubsub a').click(function() {
-		jQuery("#FilterTextBox").val(jQuery(this).attr('class'));
-		var s = jQuery(this).attr('class').toLowerCase().split(" ");
-		jQuery("#invoice_sorter_table tr:hidden").show();
-		jQuery.each(s, function(){
-		   jQuery("#invoice_sorter_table tr:visible .indexColumn:not(:contains('"
-			  + this + "'))").parent().hide();
-		});
-		return false;
-	});
+							jQuery("#invoice_sorter_table tr:hidden").show();
+							jQuery.each(s,
+									function() {
+										jQuery(
+												"#invoice_sorter_table tr:visible .indexColumn:not(:contains('"
+														+ this + "'))")
+												.parent().hide();
+									});// each
+						});// key up.
 
-	jQuery("#invoice_sorter_table tr:has(td)").each(function(){
-	   var t = jQuery(this).text().toLowerCase(); //all row text
-	   jQuery("<td class='indexColumn'></td>")
-		.hide().text(t).appendTo(this);
-	});//each tr
+					jQuery('#new_web_invoice_form').submit( function() {
+						if (jQuery("#invoice_subject").val() == '') {
+							jQuery("#invoice_subject").addClass("error");
+							jQuery("#invoice_subject").blur();
+							return false;
+						}
+					});
 
-	jQuery("#FilterTextBox").keyup(function(){
-	   var s = jQuery(this).val().toLowerCase().split(" ");
-	   //show all rows.
+					jQuery("#invoice_sorter_table").tablesorter( {
+						headers : {
+							0 : {
+								sorter :false
+							},
+							6 : {
+								sorter :false
+							}
+						}
+					});
+					recalc();
+				});
 
-	   jQuery("#invoice_sorter_table tr:hidden").show();
-	   jQuery.each(s, function(){
-		   jQuery("#invoice_sorter_table tr:visible .indexColumn:not(:contains('"
-			  + this + "'))").parent().hide();
-	   });//each
-	 });//key up.
-
-
-	jQuery('#new_web_invoice_form').submit(function() {
-	      if(jQuery("#invoice_subject").val() == '') { jQuery("#invoice_subject").addClass("error"); jQuery("#invoice_subject").blur(); return false; }
-	});
-
-	jQuery("#invoice_sorter_table").tablesorter({headers:{0:{sorter:false},6:{sorter:false}}});
-	recalc();
-});
-
-
-function recalc(){
+function recalc() {
 	jQuery("[@id^=total_item]").calc(
-		// the equation to use for the calculation
-		"qty * price",
-		// define the variables used in the equation, these can be a jQuery object
-		{
-			qty: 	jQuery("[@id^=qty_item_]"),
-			price: 	jQuery("[@id^=price_item_]")
-		},
-		// define the formatting callback, the results of the calculation are passed to this function
-		function (s){
-			// return the number as a dollar amount
+	// the equation to use for the calculation
+			"qty * price",
+			// define the variables used in the equation, these can be a jQuery
+			// object
+			{
+				qty :jQuery("[@id^=qty_item_]"),
+				price :jQuery("[@id^=price_item_]")
+			},
+			// define the formatting callback, the results of the calculation
+			// are passed to this function
+			function(s) {
+				// return the number as a dollar amount
 
-
-			return s.toFixed(2);
-		},
-		// define the finish callback, this runs after the calculation has been complete
-		function ($this){
-			// sum the total of the $("[@id^=total_item]") selector
-			var tax = jQuery('#web_invoice_tax').val() / 100;
-			var sum = $this.sum() + ($this.sum() * tax);
-			var total_occurances = jQuery("#web_invoice_subscription_total_occurances").val();
-			if(total_occurances) {
-				var total_overtime = sum*total_occurances;
-				jQuery("#recurring_total").html(total_overtime.toFixed(2));
-			}
-			jQuery("#amount").html(sum.toFixed(2));
-			jQuery("#total_amount").val(sum.toFixed(2));
-		}
-	);
-
+				return s.toFixed(2);
+			},
+			// define the finish callback, this runs after the calculation has
+			// been complete
+			function($this) {
+				// sum the total of the $("[@id^=total_item]") selector
+				var tax = jQuery('#web_invoice_tax').val() / 100;
+				var sum = $this.sum() + ($this.sum() * tax);
+				var total_occurances = jQuery(
+						"#web_invoice_subscription_total_occurances").val();
+				if (total_occurances) {
+					var total_overtime = sum * total_occurances;
+					jQuery("#recurring_total").html(total_overtime.toFixed(2));
+				}
+				jQuery("#amount").html(sum.toFixed(2));
+				jQuery("#total_amount").val(sum.toFixed(2));
+			});
 
 }
 
 function add_itemized_list_row() {
 	var lastRow = jQuery('#invoice_list tr:last').clone();
-	var id = parseInt(jQuery('.id', lastRow).html()) + 1;;
+	var id = parseInt(jQuery('.id', lastRow).html()) + 1;
+	;
 
 	jQuery('.id', lastRow).html(id);
-	jQuery('.item_name', lastRow).attr('name', 'itemized_list[' + id + '][name]');
-	jQuery('.item_description', lastRow).attr('name', 'itemized_list[' + id + '][description]');
-	jQuery('.item_quantity', lastRow).attr('name', 'itemized_list[' + id + '][quantity]');
-	jQuery('.item_price', lastRow).attr('name', 'itemized_list[' + id + '][price]');
+	jQuery('.item_name', lastRow).attr('name',
+			'itemized_list[' + id + '][name]');
+	jQuery('.item_description', lastRow).attr('name',
+			'itemized_list[' + id + '][description]');
+	jQuery('.item_quantity', lastRow).attr('name',
+			'itemized_list[' + id + '][quantity]');
+	jQuery('.item_price', lastRow).attr('name',
+			'itemized_list[' + id + '][price]');
 	jQuery('.item_total', lastRow).attr('id', 'total_item_' + id + '');
 
 	jQuery('.item_name', lastRow).val('');
@@ -321,38 +510,34 @@ function add_itemized_list_row() {
 
 	recalc();
 
-
 	return false;
 
 }
 
-
-this.tooltip = function(){
+this.tooltip = function() {
 
 	/* CONFIG */
-		xOffset = 10;
-		yOffset = 20;
-		// these 2 variable determine popup's distance from the cursor
-		// you might want to adjust to get the right result
+	xOffset = 10;
+	yOffset = 20;
+	// these 2 variable determine popup's distance from the cursor
+	// you might want to adjust to get the right result
 	/* END CONFIG */
-	jQuery(".web_invoice_tooltip").hover(function(e) {
-		this.t = this.title;
-		this.title = "";
-		jQuery("body").append("<p id='web_invoice_tooltip'>"+ this.t +"</p>");
-		jQuery("#web_invoice_tooltip")
-			.css("top",(e.pageY - xOffset) + "px")
-			.css("left",(e.pageX + yOffset) + "px")
-			.fadeIn("fast");
-    },
-	function(){
-		this.title = this.t;
-		jQuery("#web_invoice_tooltip").remove();
-    });
-	jQuery("a.web_invoice_tooltip").mousemove(function(e){
-		jQuery("#tooltip")
-			.css("top",(e.pageY - xOffset) + "px")
-			.css("left",(e.pageX + yOffset) + "px");
-	});
+	jQuery(".web_invoice_tooltip").hover(
+			function(e) {
+				this.t = this.title;
+				this.title = "";
+				jQuery("body").append(
+						"<p id='web_invoice_tooltip'>" + this.t + "</p>");
+				jQuery("#web_invoice_tooltip").css("top",
+						(e.pageY - xOffset) + "px").css("left",
+						(e.pageX + yOffset) + "px").fadeIn("fast");
+			}, function() {
+				this.title = this.t;
+				jQuery("#web_invoice_tooltip").remove();
+			});
+	jQuery("a.web_invoice_tooltip").mousemove(
+			function(e) {
+				jQuery("#tooltip").css("top", (e.pageY - xOffset) + "px").css(
+						"left", (e.pageX + yOffset) + "px");
+			});
 };
-
-

@@ -1,2 +1,8 @@
-.noprint {display:none; visibility: hidden; }
-#invoice_page #invoice_overview {width: 100% !important;}
+.noprint {
+	display: none;
+	visibility: hidden;
+}
+
+#invoice_page #invoice_overview {
+	width: 100% !important;
+}

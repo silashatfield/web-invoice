@@ -1,27 +1,27 @@
 <?php
 /*
-	Created by TwinCitiesTech.com
-	(website: twincitiestech.com       email : support@twincitiestech.com)
+ Created by TwinCitiesTech.com
+ (website: twincitiestech.com       email : support@twincitiestech.com)
 
-	Modified by S H Mohanjith
-	(website: mohanjith.com       email : support@mohanjith.com)
+ Modified by S H Mohanjith
+ (website: mohanjith.com       email : support@mohanjith.com)
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; version 3 of the License, with the
-    exception of the JQuery JavaScript framework which is released
-    under it's own license.  You may view the details of that license in
-    the prototype.js file.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 3 of the License, with the
+ exception of the JQuery JavaScript framework which is released
+ under it's own license.  You may view the details of that license in
+ the prototype.js file.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 setlocale(LC_MONETARY, 'en_US');
 
@@ -40,50 +40,50 @@ function web_invoice_does_invoice_exist($invoice_id) {
 }
 
 function web_invoice_validate_cc_number($cc_number) {
-   /* Validate; return value is card type if valid. */
-   $false = false;
-   $card_type = "";
-   $card_regexes = array(
+	/* Validate; return value is card type if valid. */
+	$false = false;
+	$card_type = "";
+	$card_regexes = array(
       "/^4\d{12}(\d\d\d){0,1}$/" => "visa",
       "/^5[12345]\d{14}$/"       => "mastercard",
       "/^3[47]\d{13}$/"          => "amex",
       "/^6011\d{12}$/"           => "discover",
       "/^30[012345]\d{11}$/"     => "diners",
       "/^3[68]\d{12}$/"          => "diners",
-   );
+	);
 
-   foreach ($card_regexes as $regex => $type) {
-       if (preg_match($regex, $cc_number)) {
-           $card_type = $type;
-           break;
-       }
-   }
+	foreach ($card_regexes as $regex => $type) {
+		if (preg_match($regex, $cc_number)) {
+			$card_type = $type;
+			break;
+		}
+	}
 
-   if (!$card_type) {
-       return $false;
-   }
+	if (!$card_type) {
+		return $false;
+	}
 
-   /*  mod 10 checksum algorithm  */
-   $revcode = strrev($cc_number);
-   $checksum = 0;
+	/*  mod 10 checksum algorithm  */
+	$revcode = strrev($cc_number);
+	$checksum = 0;
 
-   for ($i = 0; $i < strlen($revcode); $i++) {
-       $current_num = intval($revcode[$i]);
-       if($i & 1) {  /* Odd  position */
-          $current_num *= 2;
-       }
-       /* Split digits and add. */
-           $checksum += $current_num % 10; if
-       ($current_num >  9) {
-           $checksum += 1;
-       }
-   }
+	for ($i = 0; $i < strlen($revcode); $i++) {
+		$current_num = intval($revcode[$i]);
+		if($i & 1) {  /* Odd  position */
+			$current_num *= 2;
+		}
+		/* Split digits and add. */
+		$checksum += $current_num % 10; if
+		($current_num >  9) {
+			$checksum += 1;
+		}
+	}
 
-   if ($checksum % 10 == 0) {
-       return $card_type;
-   } else {
-       return $false;
-   }
+	if ($checksum % 10 == 0) {
+		return $card_type;
+	} else {
+		return $false;
+	}
 }
 
 function web_invoice_update_log($invoice_id,$action_type,$value)
@@ -91,8 +91,8 @@ function web_invoice_update_log($invoice_id,$action_type,$value)
 	global $wpdb;
 	if(isset($invoice_id))
 	{
-	$time_stamp = date("Y-m-d h-i-s");
-	$wpdb->query("INSERT INTO ".Web_Invoice::tablename('log')."
+		$time_stamp = date("Y-m-d h-i-s");
+		$wpdb->query("INSERT INTO ".Web_Invoice::tablename('log')."
 	(invoice_id , action_type , value, time_stamp)
 	VALUES ('$invoice_id', '$action_type', '$value', '$time_stamp');");
 	}
@@ -146,142 +146,142 @@ function web_invoice_delete_invoice_meta($invoice_id,$meta_key='')
 
 
 function web_invoice_delete($invoice_id) {
-global $wpdb;
+	global $wpdb;
 
-// Check to see if array is passed or single.
-if(is_array($invoice_id))
-{
-	$counter=0;
-	foreach ($invoice_id as $single_invoice_id) {
-		$counter++;
-		$wpdb->query("DELETE FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '$single_invoice_id'");
+	// Check to see if array is passed or single.
+	if(is_array($invoice_id))
+	{
+		$counter=0;
+		foreach ($invoice_id as $single_invoice_id) {
+			$counter++;
+			$wpdb->query("DELETE FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '$single_invoice_id'");
 
-		web_invoice_update_log($single_invoice_id, "deleted", "Deleted on ");
+			web_invoice_update_log($single_invoice_id, "deleted", "Deleted on ");
 
-		// Get all meta keys for this invoice, then delete them
+			// Get all meta keys for this invoice, then delete them
 
-		$all_invoice_meta_values = $wpdb->get_col("SELECT invoice_id FROM ".Web_Invoice::tablename('meta')." WHERE invoice_id = '$single_invoice_id'");
+			$all_invoice_meta_values = $wpdb->get_col("SELECT invoice_id FROM ".Web_Invoice::tablename('meta')." WHERE invoice_id = '$single_invoice_id'");
 
-		//print_r($all_invoice_meta_values);
-		foreach ($all_invoice_meta_values as $meta_key) {
-			web_invoice_delete_invoice_meta($single_invoice_id);
+			//print_r($all_invoice_meta_values);
+			foreach ($all_invoice_meta_values as $meta_key) {
+				web_invoice_delete_invoice_meta($single_invoice_id);
 
+			}
 		}
-	}
-	return $counter . " invoice(s) uccessfully deleted.";
+		return $counter . " invoice(s) uccessfully deleted.";
 
-}
-else
-{
-	// Delete Single
-	$wpdb->query("DELETE FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '$invoice_id'");
-	// Make log entry
-	web_invoice_update_log($invoice_id, "deleted", "Deleted on ");
-	return "Invoice successfully deleted.";
-}
+	}
+	else
+	{
+		// Delete Single
+		$wpdb->query("DELETE FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '$invoice_id'");
+		// Make log entry
+		web_invoice_update_log($invoice_id, "deleted", "Deleted on ");
+		return "Invoice successfully deleted.";
+	}
 }
 
 function web_invoice_archive($invoice_id) {
-global $wpdb;
+	global $wpdb;
 
-// Check to see if array is passed or single.
-if(is_array($invoice_id))
-{
-	$counter=0;
-	foreach ($invoice_id as $single_invoice_id) {
-	$counter++;
-	web_invoice_update_invoice_meta($single_invoice_id, "archive_status", "archived");
+	// Check to see if array is passed or single.
+	if(is_array($invoice_id))
+	{
+		$counter=0;
+		foreach ($invoice_id as $single_invoice_id) {
+			$counter++;
+			web_invoice_update_invoice_meta($single_invoice_id, "archive_status", "archived");
+		}
+		return $counter . " invoice(s) archived.";
+
 	}
-	return $counter . " invoice(s) archived.";
-
-}
-else
-{
-	web_invoice_update_invoice_meta($invoice_id, "archive_status", "archived");
-	return "Invoice successfully archived.";
-}
+	else
+	{
+		web_invoice_update_invoice_meta($invoice_id, "archive_status", "archived");
+		return "Invoice successfully archived.";
+	}
 }
 
 function web_invoice_mark_as_paid($invoice_id) {
-global $wpdb;
+	global $wpdb;
 
-$counter=0;
-// Check to see if array is passed or single.
-if(is_array($invoice_id))
-{
-	foreach ($invoice_id as $single_invoice_id) {
-	$counter++;
-	web_invoice_update_invoice_meta($single_invoice_id,'paid_status','paid');
- 	web_invoice_update_log($single_invoice_id,'paid',"Invoice marked as paid");
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($single_invoice_id);
-	}
+	$counter=0;
+	// Check to see if array is passed or single.
+	if(is_array($invoice_id))
+	{
+		foreach ($invoice_id as $single_invoice_id) {
+			$counter++;
+			web_invoice_update_invoice_meta($single_invoice_id,'paid_status','paid');
+			web_invoice_update_log($single_invoice_id,'paid',"Invoice marked as paid");
+			if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($single_invoice_id);
+		}
 
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') {
-	return $counter . " invoice(s) marked as paid, and thank you email sent to customer.";
+		if(get_option('web_invoice_send_thank_you_email') == 'yes') {
+			return $counter . " invoice(s) marked as paid, and thank you email sent to customer.";
+		}
+		else{
+			return $counter . " invoice(s) marked as paid.";
+		}
 	}
-	else{
-	return $counter . " invoice(s) marked as paid.";
-	}
-}
-else
-{
-	$counter++;
-	web_invoice_update_invoice_meta($invoice_id,'paid_status','paid');
- 	web_invoice_update_log($invoice_id,'paid',"Invoice marked as paid");
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
+	else
+	{
+		$counter++;
+		web_invoice_update_invoice_meta($invoice_id,'paid_status','paid');
+		web_invoice_update_log($invoice_id,'paid',"Invoice marked as paid");
+		if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
 
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') {
-	return $counter . " invoice marked as paid, and thank you email sent to customer.";
-	}
-	else{
-	return $counter . " invoice marked as paid.";
-	}}
+		if(get_option('web_invoice_send_thank_you_email') == 'yes') {
+			return $counter . " invoice marked as paid, and thank you email sent to customer.";
+		}
+		else{
+			return $counter . " invoice marked as paid.";
+		}}
 }
 
 function web_invoice_unarchive($invoice_id) {
-global $wpdb;
+	global $wpdb;
 
-// Check to see if array is passed or single.
-if(is_array($invoice_id))
-{
-	$counter=0;
-	foreach ($invoice_id as $single_invoice_id) {
-	$counter++;
-	web_invoice_delete_invoice_meta($single_invoice_id, "archive_status");
+	// Check to see if array is passed or single.
+	if(is_array($invoice_id))
+	{
+		$counter=0;
+		foreach ($invoice_id as $single_invoice_id) {
+			$counter++;
+			web_invoice_delete_invoice_meta($single_invoice_id, "archive_status");
+		}
+		return $counter . " invoice(s) unarchived.";
+
 	}
-	return $counter . " invoice(s) unarchived.";
-
-}
-else
-{
-	web_invoice_delete_invoice_meta($invoice_id, "archive_status");
-	return "Invoice successfully unarchived.";
-}
+	else
+	{
+		web_invoice_delete_invoice_meta($invoice_id, "archive_status");
+		return "Invoice successfully unarchived.";
+	}
 }
 
 function web_invoice_mark_as_sent($invoice_id) {
-global $wpdb;
+	global $wpdb;
 
-// Check to see if array is passed or single.
-if(is_array($invoice_id))
-{
-	$counter=0;
-	foreach ($invoice_id as $single_invoice_id) {
-	$counter++;
-	web_invoice_update_invoice_meta($single_invoice_id, "sent_date", date("Y-m-d", time()));
-	web_invoice_update_log($single_invoice_id,'contact','Invoice Maked as eMailed'); //make sent entry
+	// Check to see if array is passed or single.
+	if(is_array($invoice_id))
+	{
+		$counter=0;
+		foreach ($invoice_id as $single_invoice_id) {
+			$counter++;
+			web_invoice_update_invoice_meta($single_invoice_id, "sent_date", date("Y-m-d", time()));
+			web_invoice_update_log($single_invoice_id,'contact','Invoice Maked as eMailed'); //make sent entry
+
+		}
+		return $counter . " invoice(s) marked as sent.";
 
 	}
-	return $counter . " invoice(s) marked as sent.";
+	else
+	{
+		web_invoice_update_invoice_meta($invoice_id, "sent_date", date("Y-m-d", time()));
+		web_invoice_update_log($invoice_id,'contact','Invoice Maked as eMailed'); //make sent entry
 
-}
-else
-{
-	web_invoice_update_invoice_meta($invoice_id, "sent_date", date("Y-m-d", time()));
-	web_invoice_update_log($invoice_id,'contact','Invoice Maked as eMailed'); //make sent entry
-
-	return "Invoice market as sent.";
-}
+		return "Invoice market as sent.";
+	}
 }
 
 function web_invoice_get_invoice_attrib($invoice_id,$attribute)
@@ -293,21 +293,21 @@ function web_invoice_get_invoice_attrib($invoice_id,$attribute)
 
 function web_invoice_get_invoice_status($invoice_id,$count='1')
 {
-if($invoice_id != '') {
-	global $wpdb;
-	$query = "SELECT * FROM ".Web_Invoice::tablename('log')."
+	if($invoice_id != '') {
+		global $wpdb;
+		$query = "SELECT * FROM ".Web_Invoice::tablename('log')."
 	WHERE invoice_id = $invoice_id
 	ORDER BY time_stamp DESC
 	LIMIT 0 , $count";
 
-	$status_update = $wpdb->get_results($query);
+		$status_update = $wpdb->get_results($query);
 
-	foreach ($status_update as $single_status)
-	{
-		$message .= "<li>" . $single_status->value . " on <span class='web_invoice_tamp_stamp'>" . $single_status->time_stamp . "</span></li>";
-	}
+		foreach ($status_update as $single_status)
+		{
+			$message .= "<li>" . $single_status->value . " on <span class='web_invoice_tamp_stamp'>" . $single_status->time_stamp . "</span></li>";
+		}
 
-	return $message;
+		return $message;
 	}
 }
 
@@ -315,8 +315,8 @@ function web_invoice_clear_invoice_status($invoice_id)
 {
 	global $wpdb;
 	if(isset($invoice_id)) {
-	if($wpdb->query("DELETE FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = $invoice_id"))
-	return "Logs for invoice #$invoice_id cleared.";
+		if($wpdb->query("DELETE FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = $invoice_id"))
+		return "Logs for invoice #$invoice_id cleared.";
 	}
 }
 
@@ -337,7 +337,7 @@ function web_invoice_paid($invoice_id) {
 	global $wpdb;
 	//$wpdb->query("UPDATE  ".Web_Invoice::tablename('main')." SET status = 1 WHERE  invoice_num = '$invoice_id'");
 	web_invoice_update_invoice_meta($invoice_id,'paid_status','paid');
- 	web_invoice_update_log($invoice_id,'paid',"Invoice successfully processed by ". $_SERVER['REMOTE_ADDR']);
+	web_invoice_update_log($invoice_id,'paid',"Invoice successfully processed by ". $_SERVER['REMOTE_ADDR']);
 
 }
 
@@ -393,9 +393,9 @@ function web_invoice_draw_select($name,$values,$current_value = '', $id=null) {
 	$output = "<select id='$id' name='$name' class='$name'>";
 	$output .= "<option></option>";
 	foreach($values as $key => $value) {
-	$output .=  "<option value='$key'";
-	if($key == $current_value) $output .= " selected";
-	$output .= ">$value</option>";
+		$output .=  "<option value='$key'";
+		if($key == $current_value) $output .= " selected";
+		$output .= ">$value</option>";
 	}
 	$output .= "</select>";
 
@@ -414,7 +414,7 @@ function web_invoice_send_email_receipt($invoice_id) {
 	if (get_option('web_invoice_cc_thank_you_email') == 'yes') {
 		$headers .= "Bcc: {$from}\r\n";
 	}
-	
+
 	$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
 
 	if(mail($invoice_info->recipient('email_address'), "Receipt", $message, $headers))
@@ -428,11 +428,11 @@ function web_invoice_format_phone($phone)
 	$phone = preg_replace("/[^0-9]/", "", $phone);
 
 	if(strlen($phone) == 7)
-		return preg_replace("/([0-9]{3})([0-9]{4})/", "$1-$2", $phone);
+	return preg_replace("/([0-9]{3})([0-9]{4})/", "$1-$2", $phone);
 	elseif(strlen($phone) == 10)
-		return preg_replace("/([0-9]{3})([0-9]{3})([0-9]{4})/", "($1) $2-$3", $phone);
+	return preg_replace("/([0-9]{3})([0-9]{3})([0-9]{4})/", "($1) $2-$3", $phone);
 	else
-		return $phone;
+	return $phone;
 }
 
 
@@ -519,29 +519,29 @@ function web_invoice_send_email($invoice_array,$reminder = false)
 		foreach ($invoice_array as $invoice_id)
 		{
 
-		$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$invoice_id."'");
+			$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$invoice_id."'");
 
-		$profileuser = get_user_to_edit($invoice_info->user_id);
-		
-		if ($reminder) {
-			$message = strip_tags(web_invoice_show_reminder_email($invoice_id));
-			$subject = "[Reminder] {$invoice_info->subject}";
-		} else {
-			$message = strip_tags(web_invoice_show_email($invoice_id));
-			$subject = $invoice_info->subject;
-		}
+			$profileuser = get_user_to_edit($invoice_info->user_id);
 
-		$from = get_option("web_invoice_email_address");
-		$headers = "From: $from";
+			if ($reminder) {
+				$message = strip_tags(web_invoice_show_reminder_email($invoice_id));
+				$subject = "[Reminder] {$invoice_info->subject}";
+			} else {
+				$message = strip_tags(web_invoice_show_email($invoice_id));
+				$subject = $invoice_info->subject;
+			}
 
-		$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
-		
-		if(mail($profileuser->user_email, $subject, $message, $headers))
-		{
-			$counter++; // Success in sending quantified.
-			web_invoice_update_log($invoice_id,'contact','Invoice eMailed'); //make sent entry
-			web_invoice_update_invoice_meta($invoice_id, "sent_date", date("Y-m-d", time()));
-		}
+			$from = get_option("web_invoice_email_address");
+			$headers = "From: $from";
+
+			$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
+
+			if(mail($profileuser->user_email, $subject, $message, $headers))
+			{
+				$counter++; // Success in sending quantified.
+				web_invoice_update_log($invoice_id,'contact','Invoice eMailed'); //make sent entry
+				web_invoice_update_invoice_meta($invoice_id, "sent_date", date("Y-m-d", time()));
+			}
 		}
 		return "Successfully sent $counter Web Invoices(s).";
 	}
@@ -551,7 +551,7 @@ function web_invoice_send_email($invoice_array,$reminder = false)
 		$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$invoice_array."'");
 
 		$profileuser = get_user_to_edit($invoice_info->user_id);
-		
+
 		if ($reminder) {
 			$message = strip_tags(web_invoice_show_reminder_email($invoice_id));
 			$subject = "[Reminder] {$invoice_info->subject}";
@@ -559,18 +559,18 @@ function web_invoice_send_email($invoice_array,$reminder = false)
 			$message = strip_tags(web_invoice_show_email($invoice_id));
 			$subject = $invoice_info->subject;
 		}
-		
+
 		$from = get_option("web_invoice_email_address");
 		$headers = "From: $from";
-		
+
 		$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
 
 		if(mail($profileuser->user_email, $subject, $message, $headers))
 		{
 			web_invoice_update_invoice_meta($invoice_id, "sent_date", date("Y-m-d", time()));
 			web_invoice_update_log($invoice_id,'contact','Invoice eMailed'); return "Web invoice sent successfully."; }
-		else
-		{ return "There was a problem sending the invoice."; }
+			else
+			{ return "There was a problem sending the invoice."; }
 
 
 	}
@@ -623,84 +623,84 @@ class web_invoice_Date
 			'Y' => 'YYYY',
 			'm' => 'mm',
 			'd' => 'dd'
-		);
+			);
 
-		// this will give us a mask with full length fields
-		$from_mask = str_replace(array_keys($all), $all, $from_mask);
+			// this will give us a mask with full length fields
+			$from_mask = str_replace(array_keys($all), $all, $from_mask);
 
-		$vals = array();
-		foreach($all as $type => $chars)
-		{
-			// get the position of the current character
-			if(($pos = strpos($from_mask, $chars)) === false)
+			$vals = array();
+			foreach($all as $type => $chars)
+			{
+				// get the position of the current character
+				if(($pos = strpos($from_mask, $chars)) === false)
 				continue;
 
-			// find the value in the original string
-			$val = substr($string, $pos, strlen($chars));
+				// find the value in the original string
+				$val = substr($string, $pos, strlen($chars));
 
-			// store it for later processing
-			$vals[$type] = $val;
-		}
-
-		foreach($vals as $type => $val)
-		{
-			switch($type)
-			{
-				case 's' :
-					$seconds = $val;
-				break;
-				case 'i' :
-					$minutes = $val;
-				break;
-				case 'H':
-					$hours = $val;
-				break;
-				case 'y':
-					$year = '20'.$val; // Year 3k bug right here
-				break;
-				case 'Y':
-					$year = $val;
-				break;
-				case 'm':
-					$month = $val;
-				break;
-				case 'd':
-					$day = $val;
-				break;
+				// store it for later processing
+				$vals[$type] = $val;
 			}
-		}
 
-		$unix_time = mktime(
+			foreach($vals as $type => $val)
+			{
+				switch($type)
+				{
+					case 's' :
+						$seconds = $val;
+						break;
+					case 'i' :
+						$minutes = $val;
+						break;
+					case 'H':
+						$hours = $val;
+						break;
+					case 'y':
+						$year = '20'.$val; // Year 3k bug right here
+						break;
+					case 'Y':
+						$year = $val;
+						break;
+					case 'm':
+						$month = $val;
+						break;
+					case 'd':
+						$day = $val;
+						break;
+				}
+			}
+
+			$unix_time = mktime(
 			(int)$hours, (int)$minutes, (int)$seconds,
 			(int)$month, (int)$day, (int)$year);
 
-		if($return_unix)
+			if($return_unix)
 			return $unix_time;
 
-		return date($to_mask, $unix_time);
+			return date($to_mask, $unix_time);
 	}
 }
 
 
 function web_invoice_fix_billing_meta_array($arr){
-    $narr = array();
+	$narr = array();
 	$counter = 1;
-    while(list($key, $val) = each($arr)){
-        if (is_array($val)){
-            $val = array_remove_empty($val);
-            if (count($val)!=0){
-                $narr[$counter] = $val;$counter++;
-            }
-        }
-        else {
-            if (trim($val) != ""){
-                $narr[$counter] = $val;$counter++;
-            }
-        }
+	while(list($key, $val) = each($arr)){
+		if (is_array($val)){
+			$val = array_remove_empty($val);
+			if (count($val)!=0){
+				$narr[$counter] = $val;$counter++;
+			}
+		}
+		else {
+			if (trim($val) != ""){
+				$narr[$counter] = $val;$counter++;
+			}
+		}
 
-    }
-    unset($arr);
-    return $narr;
+	}
+	unset($arr);
+	return $narr;
 }
 
 function web_invoice_printYearDropdown($sel='')
@@ -709,12 +709,12 @@ function web_invoice_printYearDropdown($sel='')
 	$minYear = $localDate["year"];
 	$maxYear = $minYear + 15;
 
-	  $output =  "<option value=''>--</option>";
-	  for($i=$minYear; $i<$maxYear; $i++) {
-	    $output .= "<option value='". substr($i, 2, 2) ."'".($sel==(substr($i, 2, 2))?' selected':'').
+	$output =  "<option value=''>--</option>";
+	for($i=$minYear; $i<$maxYear; $i++) {
+		$output .= "<option value='". substr($i, 2, 2) ."'".($sel==(substr($i, 2, 2))?' selected':'').
 		">". $i ."</option>";
-	  }
-	  return($output);
+	}
+	return($output);
 }
 
 function web_invoice_printMonthDropdown($sel='')
@@ -740,7 +740,7 @@ function web_invoice_printMonthDropdown($sel='')
 
 function web_invoice_state_array($sel='')
 {
-$StateProvinceTwoToFull = array(
+	$StateProvinceTwoToFull = array(
    'AL' => 'Alabama',
    'AK' => 'Alaska',
    'AS' => 'American Samoa',
@@ -814,7 +814,7 @@ $StateProvinceTwoToFull = array(
    'YT' => 'Yukon Territory',
 	);
 
-  return($StateProvinceTwoToFull);
+	return($StateProvinceTwoToFull);
 }
 
 function web_invoice_country_array() {
@@ -838,8 +838,8 @@ function web_invoice_month_array() {
 }
 
 function web_invoice_go_secure($destination) {
-    $reload = 'Location: ' . $destination;
-    header($reload);
+	$reload = 'Location: ' . $destination;
+	header($reload);
 }
 
 
@@ -848,179 +848,179 @@ function web_invoice_process_cc_transaction($cc_data) {
 
 
 
-$errors = array ();
-$errors_msg = null;
-$_POST['processing_problem'] = '';
-unset($stop_transaction);
-$invoice_id = preg_replace("/[^0-9]/","", $_POST['invoice_num']); /* this is the real invoice id */
+	$errors = array ();
+	$errors_msg = null;
+	$_POST['processing_problem'] = '';
+	unset($stop_transaction);
+	$invoice_id = preg_replace("/[^0-9]/","", $_POST['invoice_num']); /* this is the real invoice id */
 
-if(web_invoice_recurring($invoice_id)) $recurring = true;
+	if(web_invoice_recurring($invoice_id)) $recurring = true;
 
-$invoice = new Web_Invoice_GetInfo($invoice_id);
-
-
-
-// Accomodate Custom Invoice IDs by changing the post value, this is passed to Authorize.net account
-$web_invoice_custom_invoice_id = web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id');
-// If there is a custom invoice id, we're setting the $_POST['invoice_num'] to the custom id, because that is what's getting passed to authorize.net
-if($web_invoice_custom_invoice_id) { $_POST['invoice_num'] = $web_invoice_custom_invoice_id; }
-
-$wp_users_id = get_web_invoice_user_id($invoice_id);
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
 
 
-if(empty($_POST['first_name'])){$errors [ 'first_name' ] [] = "Please enter your first name.";$stop_transaction = true;}
-if(empty($_POST['last_name'])){$errors [ 'last_name' ] [] = "Please enter your last name. ";$stop_transaction = true;}
-if(empty($_POST['email_address'])){$errors [ 'email_address' ] [] = "Please provide an email address.";$stop_transaction = true;}
-if(empty($_POST['phonenumber'])){$errors [ 'phonenumber' ] [] = "Please enter your phone number.";$stop_transaction = true;}
-if(empty($_POST['address'])){$errors [ 'address' ] [] = "Please enter your address.";$stop_transaction = true;}
-if(empty($_POST['city'])){$errors [ 'city' ] [] = "Please enter your city.";$stop_transaction = true;}
-if(empty($_POST['state'])){$errors [ 'state' ] [] = "Please select your state.";$stop_transaction = true;}
-if(empty($_POST['zip'])){$errors [ 'zip' ] [] = "Please enter your ZIP code.";$stop_transaction = true;}
-if(empty($_POST['country'])){$errors [ 'country' ] [] = "Please enter your country.";$stop_transaction = true;}
-if(empty($_POST['card_num'])) {	$errors [ 'card_num' ] []  = "Please enter your credit card number.";	$stop_transaction = true;} else { if (!web_invoice_validate_cc_number($_POST['card_num'])){$errors [ 'card_num' ] [] = "Please enter a valid credit card number."; $stop_transaction = true; } }
-if(empty($_POST['exp_month'])){$errors [ 'exp_month' ] [] = "Please enter your credit card's expiration month.";$stop_transaction = true;}
-if(empty($_POST['exp_year'])){$errors [ 'exp_year' ] [] = "Please enter your credit card's expiration year.";$stop_transaction = true;}
-if(empty($_POST['card_code'])){$errors [ 'card_code' ] [] = "The <b>Security Code</b> is the code on the back of your card.";$stop_transaction = true;}
 
-// Charge Card
-if(!$stop_transaction) {
+	// Accomodate Custom Invoice IDs by changing the post value, this is passed to Authorize.net account
+	$web_invoice_custom_invoice_id = web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id');
+	// If there is a custom invoice id, we're setting the $_POST['invoice_num'] to the custom id, because that is what's getting passed to authorize.net
+	if($web_invoice_custom_invoice_id) { $_POST['invoice_num'] = $web_invoice_custom_invoice_id; }
 
-	require_once('gateways/authnet.class.php');
-	require_once('gateways/authnetARB.class.php');
+	$wp_users_id = get_web_invoice_user_id($invoice_id);
 
-	$payment = new Web_Invoice_Authnet(true);
-	$payment->transaction($_POST['card_num']);
 
-	// Billing Info
-	$payment->setParameter("x_card_code", $_POST['card_code']);
-	$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
-	$payment->setParameter("x_amount", $invoice->display('amount'));
-	if($recurring) $payment->setParameter("x_web_invoice_recurring_billing", true);
+	if(empty($_POST['first_name'])){$errors [ 'first_name' ] [] = "Please enter your first name.";$stop_transaction = true;}
+	if(empty($_POST['last_name'])){$errors [ 'last_name' ] [] = "Please enter your last name. ";$stop_transaction = true;}
+	if(empty($_POST['email_address'])){$errors [ 'email_address' ] [] = "Please provide an email address.";$stop_transaction = true;}
+	if(empty($_POST['phonenumber'])){$errors [ 'phonenumber' ] [] = "Please enter your phone number.";$stop_transaction = true;}
+	if(empty($_POST['address'])){$errors [ 'address' ] [] = "Please enter your address.";$stop_transaction = true;}
+	if(empty($_POST['city'])){$errors [ 'city' ] [] = "Please enter your city.";$stop_transaction = true;}
+	if(empty($_POST['state'])){$errors [ 'state' ] [] = "Please select your state.";$stop_transaction = true;}
+	if(empty($_POST['zip'])){$errors [ 'zip' ] [] = "Please enter your ZIP code.";$stop_transaction = true;}
+	if(empty($_POST['country'])){$errors [ 'country' ] [] = "Please enter your country.";$stop_transaction = true;}
+	if(empty($_POST['card_num'])) {	$errors [ 'card_num' ] []  = "Please enter your credit card number.";	$stop_transaction = true;} else { if (!web_invoice_validate_cc_number($_POST['card_num'])){$errors [ 'card_num' ] [] = "Please enter a valid credit card number."; $stop_transaction = true; } }
+	if(empty($_POST['exp_month'])){$errors [ 'exp_month' ] [] = "Please enter your credit card's expiration month.";$stop_transaction = true;}
+	if(empty($_POST['exp_year'])){$errors [ 'exp_year' ] [] = "Please enter your credit card's expiration year.";$stop_transaction = true;}
+	if(empty($_POST['card_code'])){$errors [ 'card_code' ] [] = "The <b>Security Code</b> is the code on the back of your card.";$stop_transaction = true;}
 
-	// Order Info
-	$payment->setParameter("x_description", $invoice->display('subject'));
-	$payment->setParameter("x_invoice_num",  $invoice->display('display_id'));
-	$payment->setParameter("x_test_request", false);
-	$payment->setParameter("x_duplicate_window", 30);
+	// Charge Card
+	if(!$stop_transaction) {
 
-	//Customer Info
-	$payment->setParameter("x_first_name", $_POST['first_name']);
-	$payment->setParameter("x_last_name", $_POST['last_name']);
-	$payment->setParameter("x_address", $_POST['address']);
-	$payment->setParameter("x_city", $_POST['city']);
-	$payment->setParameter("x_state", $_POST['state']);
-	$payment->setParameter("x_country", $_POST['country']);
-	$payment->setParameter("x_zip", $_POST['zip']);
-	$payment->setParameter("x_phone", $_POST['phonenumber']);
-	$payment->setParameter("x_email", $_POST['email_address']);
-	$payment->setParameter("x_cust_id", "WP User - " . $invoice->recipient('user_id'));
-	$payment->setParameter("x_customer_ip ", $_SERVER['REMOTE_ADDR']);
+		require_once('gateways/authnet.class.php');
+		require_once('gateways/authnetARB.class.php');
 
-	$payment->process();
-
-	if($payment->isApproved()) {
-	echo "Transaction okay.";
-
-	update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
-	update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
-	update_usermeta($wp_users_id,'first_name',$_POST['first_name']);
-	update_usermeta($wp_users_id,'city',$_POST['city']);
-	update_usermeta($wp_users_id,'state',$_POST['state']);
-	update_usermeta($wp_users_id,'zip',$_POST['zip']);
-	update_usermeta($wp_users_id,'streetaddress',$_POST['address']);
-	update_usermeta($wp_users_id,'phonenumber',$_POST['phonenumber']);
-	update_usermeta($wp_users_id,'country',$_POST['country']);
-
-	//Mark invoice as paid
-	web_invoice_paid($invoice_id);
-	if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
-
-	if($recurring) {
-
-		$arb = new Web_Invoice_AuthnetARB();
-		// Customer Info
-		$arb->setParameter('customerId', "WP User - " . $invoice->recipient('user_id'));
-		$arb->setParameter('firstName', $_POST['first_name']);
-		$arb->setParameter('lastName', $_POST['last_name']);
-		$arb->setParameter('address', $_POST['address']);
-		$arb->setParameter('city', $_POST['city']);
-		$arb->setParameter('state', $_POST['state']);
-		$arb->setParameter('zip', $_POST['zip']);
-		$arb->setParameter('country', $_POST['country']);
-		$arb->setParameter('customerEmail', $_POST['email_address']);
-		$arb->setParameter('customerPhoneNumber', $_POST['phonenumber']);
+		$payment = new Web_Invoice_Authnet(true);
+		$payment->transaction($_POST['card_num']);
 
 		// Billing Info
-		$arb->setParameter('amount', $invoice->display('amount'));
-		$arb->setParameter('cardNumber', $_POST['card_num']);
-		$arb->setParameter('expirationDate', $_POST['exp_month'].$_POST['exp_year']);
+		$payment->setParameter("x_card_code", $_POST['card_code']);
+		$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
+		$payment->setParameter("x_amount", $invoice->display('amount'));
+		if($recurring) $payment->setParameter("x_web_invoice_recurring_billing", true);
 
-		//Subscription Info
-		$arb->setParameter('refID',  $invoice->display('display_id'));
-		$arb->setParameter('subscrName', $invoice->display('subscription_name'));
-		$arb->setParameter('interval_length', $invoice->display('interval_length'));
-		$arb->setParameter('interval_unit', $invoice->display('interval_unit'));
-		$arb->setParameter('startDate', $invoice->display('startDate'));
-		$arb->setParameter('totalOccurrences', $invoice->display('totalOccurrences'));
+		// Order Info
+		$payment->setParameter("x_description", $invoice->display('subject'));
+		$payment->setParameter("x_invoice_num",  $invoice->display('display_id'));
+		$payment->setParameter("x_test_request", false);
+		$payment->setParameter("x_duplicate_window", 30);
 
-		// First billing cycle is taken care off with initial payment
-		$arb->setParameter('trialOccurrences', '1');
-		$arb->setParameter('trialAmount', '0.00');
+		//Customer Info
+		$payment->setParameter("x_first_name", $_POST['first_name']);
+		$payment->setParameter("x_last_name", $_POST['last_name']);
+		$payment->setParameter("x_address", $_POST['address']);
+		$payment->setParameter("x_city", $_POST['city']);
+		$payment->setParameter("x_state", $_POST['state']);
+		$payment->setParameter("x_country", $_POST['country']);
+		$payment->setParameter("x_zip", $_POST['zip']);
+		$payment->setParameter("x_phone", $_POST['phonenumber']);
+		$payment->setParameter("x_email", $_POST['email_address']);
+		$payment->setParameter("x_cust_id", "WP User - " . $invoice->recipient('user_id'));
+		$payment->setParameter("x_customer_ip ", $_SERVER['REMOTE_ADDR']);
 
-		$arb->setParameter('orderInvoiceNumber',  $invoice->display('display_id'));
-		$arb->setParameter('orderDescription', $invoice->display('subject'));
+		$payment->process();
 
-		$arb->createAccount();
+		if($payment->isApproved()) {
+			echo "Transaction okay.";
 
-		if ($arb->isSuccessful()) {
-		web_invoice_update_invoice_meta($invoice_id, 'subscription_id',$arb->getSubscriberID());
-		web_invoice_update_log($invoice_id, 'subscription', ' Subscription initiated, Subcription ID - ' . $arb->getSubscriberID());
+			update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
+			update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
+			update_usermeta($wp_users_id,'first_name',$_POST['first_name']);
+			update_usermeta($wp_users_id,'city',$_POST['city']);
+			update_usermeta($wp_users_id,'state',$_POST['state']);
+			update_usermeta($wp_users_id,'zip',$_POST['zip']);
+			update_usermeta($wp_users_id,'streetaddress',$_POST['address']);
+			update_usermeta($wp_users_id,'phonenumber',$_POST['phonenumber']);
+			update_usermeta($wp_users_id,'country',$_POST['country']);
+
+			//Mark invoice as paid
+			web_invoice_paid($invoice_id);
+			if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
+
+			if($recurring) {
+
+				$arb = new Web_Invoice_AuthnetARB();
+				// Customer Info
+				$arb->setParameter('customerId', "WP User - " . $invoice->recipient('user_id'));
+				$arb->setParameter('firstName', $_POST['first_name']);
+				$arb->setParameter('lastName', $_POST['last_name']);
+				$arb->setParameter('address', $_POST['address']);
+				$arb->setParameter('city', $_POST['city']);
+				$arb->setParameter('state', $_POST['state']);
+				$arb->setParameter('zip', $_POST['zip']);
+				$arb->setParameter('country', $_POST['country']);
+				$arb->setParameter('customerEmail', $_POST['email_address']);
+				$arb->setParameter('customerPhoneNumber', $_POST['phonenumber']);
+
+				// Billing Info
+				$arb->setParameter('amount', $invoice->display('amount'));
+				$arb->setParameter('cardNumber', $_POST['card_num']);
+				$arb->setParameter('expirationDate', $_POST['exp_month'].$_POST['exp_year']);
+
+				//Subscription Info
+				$arb->setParameter('refID',  $invoice->display('display_id'));
+				$arb->setParameter('subscrName', $invoice->display('subscription_name'));
+				$arb->setParameter('interval_length', $invoice->display('interval_length'));
+				$arb->setParameter('interval_unit', $invoice->display('interval_unit'));
+				$arb->setParameter('startDate', $invoice->display('startDate'));
+				$arb->setParameter('totalOccurrences', $invoice->display('totalOccurrences'));
+
+				// First billing cycle is taken care off with initial payment
+				$arb->setParameter('trialOccurrences', '1');
+				$arb->setParameter('trialAmount', '0.00');
+
+				$arb->setParameter('orderInvoiceNumber',  $invoice->display('display_id'));
+				$arb->setParameter('orderDescription', $invoice->display('subject'));
+
+				$arb->createAccount();
+
+				if ($arb->isSuccessful()) {
+					web_invoice_update_invoice_meta($invoice_id, 'subscription_id',$arb->getSubscriberID());
+					web_invoice_update_log($invoice_id, 'subscription', ' Subscription initiated, Subcription ID - ' . $arb->getSubscriberID());
+				}
+
+				if($arb->isError()) {
+					$errors [ 'processing_problem' ] [] .=  "One-time credit card payment is processed successfully.  However, recurring billing setup failed." . $arb->getResponse(); $stop_transaction = true;;
+					web_invoice_update_log($invoice_id, 'subscription_error', 'Response Code: ' . $arb->getResponseCode() . ' | Subscription error - ' . $arb->getResponse());
+
+				}
+
+			}
+
+
+		} else {
+			$errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transaction = true;
+
 		}
+		// Uncomment these to troubleshoot.  You will need FireBug to view the response of the AJAX post.
+		//echo $arb->xml;
+		//echo $arb->response;
+		//echo $arb->getResponse();
 
-		if($arb->isError()) {
-		$errors [ 'processing_problem' ] [] .=  "One-time credit card payment is processed successfully.  However, recurring billing setup failed." . $arb->getResponse(); $stop_transaction = true;;
-		web_invoice_update_log($invoice_id, 'subscription_error', 'Response Code: ' . $arb->getResponseCode() . ' | Subscription error - ' . $arb->getResponse());
-
-		}
-
+		//echo $payment->getResponseText();
+		//echo $payment->getTransactionID();
+		//echo $payment->getAVSResponse();
+		//echo $payment->getAuthCode();
 	}
 
 
- } else {
-$errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transaction = true;
-
- }
-// Uncomment these to troubleshoot.  You will need FireBug to view the response of the AJAX post.
-//echo $arb->xml;
-//echo $arb->response;
-//echo $arb->getResponse();
-
-//echo $payment->getResponseText();
-//echo $payment->getTransactionID();
-//echo $payment->getAVSResponse();
-//echo $payment->getAuthCode();
-}
-
-
-if ($stop_transaction && is_array($_POST))
-{
-	foreach ( $_POST as $key => $value )
+	if ($stop_transaction && is_array($_POST))
 	{
-		if ( array_key_exists ( $key, $errors ) )
+		foreach ( $_POST as $key => $value )
 		{
-			foreach ( $errors [ $key ] as $k => $v )
+			if ( array_key_exists ( $key, $errors ) )
 			{
-				$errors_msg .= "error|$key|$v\n";
+				foreach ( $errors [ $key ] as $k => $v )
+				{
+					$errors_msg .= "error|$key|$v\n";
+				}
+			}
+			else {
+				$errors_msg .= "ok|$key\n";
 			}
 		}
-		else {
-			$errors_msg .= "ok|$key\n";
-		}
 	}
-}
 
 
-echo $errors_msg;
+	echo $errors_msg;
 }
 
 function web_invoice_currency_array() {
@@ -1057,19 +1057,19 @@ function web_invoice_currency_symbol($currency = "USD" )
 	'USD'=> '$');
 
 
-foreach($currency_list as $value => $display)
-{
-    if($currency == $value) { return $display; $success = true; break;}
-}
-if(!$success) return $currency;
+	foreach($currency_list as $value => $display)
+	{
+		if($currency == $value) { return $display; $success = true; break;}
+	}
+	if(!$success) return $currency;
 
 
 
 }
 
 function web_invoice_contextual_help_list($content) {
-// Will add help and FAQ here eventually
-return $content;
+	// Will add help and FAQ here eventually
+	return $content;
 }
 
 function web_invoice_process_invoice_update($invoice_id) {
@@ -1113,9 +1113,9 @@ function web_invoice_process_invoice_update($invoice_id) {
 			if(empty($itemized_item[name])) {
 				unset($itemized_list[$counter]);
 			}
-		$counter++;
+			$counter++;
 		}
-	array_values($itemized_list);
+		array_values($itemized_list);
 	}
 	$itemized = urlencode(serialize($itemized_list));
 
@@ -1187,8 +1187,8 @@ function web_invoice_process_invoice_update($invoice_id) {
 
 	//If there is a message, append it with the web invoice link
 	if($message && $invoice_id) {
-	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
-	$message .= " <a href='".$invoice_info->display('link')."'>View Web Invoice</a>.";
+		$invoice_info = new Web_Invoice_GetInfo($invoice_id);
+		$message .= " <a href='".$invoice_info->display('link')."'>View Web Invoice</a>.";
 	}
 
 
@@ -1200,7 +1200,7 @@ function web_invoice_process_invoice_update($invoice_id) {
 }
 
 function web_invoice_show_message($content,$type="updated fade") {
-if($content) echo "<div id=\"message\" class='$type' ><p>".$content."</p></div>";
+	if($content) echo "<div id=\"message\" class='$type' ><p>".$content."</p></div>";
 }
 
 
@@ -1267,11 +1267,11 @@ function web_invoice_is_not_merchant() {
 function web_invoice_determine_currency($invoice_id) {
 	//in class
 	if(web_invoice_meta($invoice_id,'web_invoice_currency_code') != '')
-		{ $currency_code = web_invoice_meta($invoice_id,'web_invoice_currency_code'); }
-		elseif(get_option('web_invoice_default_currency_code') != '')
-		{ $currency_code = get_option('web_invoice_default_currency_code'); }
-		else { $currency_code = "USD"; }
-		return $currency_code;
+	{ $currency_code = web_invoice_meta($invoice_id,'web_invoice_currency_code'); }
+	elseif(get_option('web_invoice_default_currency_code') != '')
+	{ $currency_code = get_option('web_invoice_default_currency_code'); }
+	else { $currency_code = "USD"; }
+	return $currency_code;
 }
 
 function web_invoice_md5_to_invoice($md5) {

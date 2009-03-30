@@ -1,40 +1,40 @@
 <?php
 /*
-Plugin Name: Web Invoice
-Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
-Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
-Author: S H Mohanjith
-Version: 1.6.0
-Author URI: http://mohanjith.com/
-Text Domain: web-invoice
-License: GPL
+ Plugin Name: Web Invoice
+ Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
+ Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
+ Author: S H Mohanjith
+ Version: 1.6.0
+ Author URI: http://mohanjith.com/
+ Text Domain: web-invoice
+ License: GPL
 
-Copyright 2009  S H Mohanjith.   (email : moha@mohanjith.net)
-*/
+ Copyright 2009  S H Mohanjith.   (email : moha@mohanjith.net)
+ */
 
 /*
-	Created by TwinCitiesTech.com
-	(website: twincitiestech.com       email : support@twincitiestech.com)
+ Created by TwinCitiesTech.com
+ (website: twincitiestech.com       email : support@twincitiestech.com)
 
-	Modified by S H Mohanjith
-	(website: mohanjith.com       email : support@mohanjith.com)
+ Modified by S H Mohanjith
+ (website: mohanjith.com       email : support@mohanjith.com)
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; version 3 of the License, with the
-    exception of the JQuery JavaScript framework which is released
-    under it's own license.  You may view the details of that license in
-    the prototype.js file.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 3 of the License, with the
+ exception of the JQuery JavaScript framework which is released
+ under it's own license.  You may view the details of that license in
+ the prototype.js file.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 
 define("WEB_INVOICE_VERSION_NUM", "1.0.0");
@@ -113,14 +113,12 @@ class Web_Invoice {
 		return $table_prefix.'web_invoice_'.$table;
 	}
 
-
 	function admin_head() {
 		echo "<link rel='stylesheet' href='".$this->uri."/css/wp_admin.css' type='text/css'type='text/css' media='all' />";
 	}
 
-
 	function web_invoice_add_pages() {
-	    add_menu_page('Web Invoice System', 'Web Invoice',  $this->web_invoice_user_level,__FILE__, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
+		add_menu_page('Web Invoice System', 'Web Invoice',  $this->web_invoice_user_level,__FILE__, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
 		add_submenu_page( __FILE__, "Manage Invoice", "New Invoice", $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
 		add_submenu_page( __FILE__, "Recurring Billing", "Recurring Billing", $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
 		add_submenu_page( __FILE__, "Settings", "Settings", $this->web_invoice_user_level, 'web_invoice_settings', array(&$this,'settings_page'));
@@ -187,9 +185,9 @@ class Web_Invoice {
 		global $wpdb, $wp_version;
 
 		if (version_compare($wp_version, '2.6', '<')) // Using old WordPress
-        	load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages');
-        else
-        	load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages', dirname(plugin_basename(__FILE__)).'/languages');
+		load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages');
+		else
+		load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages', dirname(plugin_basename(__FILE__)).'/languages');
 
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery.maskedinput',$this->uri."/js/jquery.maskedinput.js", array('jquery'));
@@ -264,7 +262,7 @@ class Web_Invoice {
 			  UNIQUE KEY invoice_num (invoice_num)
 			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;";
 
-			$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
+		$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
 			  id bigint(20) NOT NULL auto_increment,
 			  invoice_id int(11) NOT NULL default '0',
 			  action_type varchar(255) NOT NULL,
@@ -275,7 +273,7 @@ class Web_Invoice {
 
 
 
-			$sql_meta= "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('meta') . "` (
+		$sql_meta= "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('meta') . "` (
 			`meta_id` bigint(20) NOT NULL auto_increment,
 			`invoice_id` bigint(20) NOT NULL default '0',
 			`meta_key` varchar(255) default NULL,
@@ -412,61 +410,61 @@ class Web_Invoice_GetInfo {
 				$first_name = get_usermeta($uid,'first_name');
 				$last_name = get_usermeta($uid,'last_name');
 				if(empty($first_name) || empty($last_name)) return $user_email; else return $first_name . " " . $last_name;
-			break;
+				break;
 
 			case 'user_id':
 				return $uid;
-			break;
+				break;
 
 			case 'email_address':
-					return $user_email;
-			break;
+				return $user_email;
+				break;
 
 			case 'first_name':
 				return get_usermeta($uid,'first_name');
-			break;
+				break;
 
 			case 'last_name':
 				return get_usermeta($uid,'last_name');
-			break;
+				break;
 
 			case 'phonenumber':
 				return web_invoice_format_phone(get_usermeta($uid,'phonenumber'));
-			break;
+				break;
 
 			case 'paypal_phonenumber':
 				return get_usermeta($uid,'phonenumber');
-			break;
+				break;
 
 			case 'log_status':
 				if($status_update = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = ".$this->id ." ORDER BY `".Web_Invoice::tablename('log')."`.`time_stamp` DESC LIMIT 0 , 1"))
 				return $status_update->value . " - " . web_invoice_Date::convert($status_update->time_stamp, 'Y-m-d H', 'M d Y');
-			break;
+				break;
 
 			case 'paid_date':
 				$paid_date = $wpdb->get_var("SELECT time_stamp FROM  ".Web_Invoice::tablename('log')." WHERE action_type = 'paid' AND invoice_id = '".$this->id."' ORDER BY time_stamp DESC LIMIT 0, 1");
 				if($paid_date) return web_inv;
-			break;
+				break;
 
 			case 'streetaddress':
 				return get_usermeta($uid,'streetaddress');
-			break;
+				break;
 
 			case 'state':
 				return strtoupper(get_usermeta($uid,'state'));
-			break;
+				break;
 
 			case 'city':
 				return get_usermeta($uid,'city');
-			break;
+				break;
 
 			case 'zip':
 				return get_usermeta($uid,'zip');
-			break;
+				break;
 
 			case 'country':
 				if(get_usermeta($uid,'country')) return get_usermeta($uid,'country');  else  return "US";
-			break;
+				break;
 		}
 
 	}
@@ -484,29 +482,29 @@ class Web_Invoice_GetInfo {
 			case 'log_status':
 				if($status_update = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = ".$this->id ." ORDER BY `".Web_Invoice::tablename('log')."`.`time_stamp` DESC LIMIT 0 , 1"))
 				return $status_update->value . " - " . web_invoice_Date::convert($status_update->time_stamp, 'Y-m-d H', 'M d Y');
-			break;
+				break;
 
 			case 'paid_date':
 				$paid_date = $wpdb->get_var("SELECT time_stamp FROM  ".Web_Invoice::tablename('log')." WHERE action_type = 'paid' AND invoice_id = '".$this->id."' ORDER BY time_stamp DESC LIMIT 0, 1");
 				if($paid_date) return web_invoice_Date::convert($paid_date, 'Y-m-d H', 'M d Y');
 				//echo "SELECT time_stamp FROM  ".Web_Invoice::tablename('log')." WHERE action_type = 'paid' AND invoice_id = '".$this->id."' ORDER BY time_stamp DESC LIMIT 0, 1";
-			break;
+				break;
 
 			case 'subscription_name':
 				return web_invoice_meta($this->id,'web_invoice_subscription_name');
-			break;
+				break;
 
 			case 'interval_length':
 				return web_invoice_meta($this->id,'web_invoice_subscription_length');
-			break;
+				break;
 
 			case 'interval_unit':
 				return web_invoice_meta($this->id,'web_invoice_subscription_unit');
-			break;
+				break;
 
 			case 'totalOccurrences':
 				return web_invoice_meta($this->id,'web_invoice_subscription_total_occurances');
-			break;
+				break;
 
 			case 'startDate':
 				$web_invoice_subscription_start_day = web_invoice_meta($this->id,'web_invoice_subscription_start_day');
@@ -518,12 +516,12 @@ class Web_Invoice_GetInfo {
 				} else {
 					return date("Y-m-d");
 				}
-			break;
-			
-			
+				break;
+					
+					
 			case 'endDate':
 				return date('Y-m-d', strtotime("+".($this->display('interval_length')*$this->display('totalOccurrences'))." ".$this->display('interval_unit'), strtotime($this->display('startDate'))));
-			break;
+				break;
 
 
 			case 'archive_status':
@@ -532,7 +530,7 @@ class Web_Invoice_GetInfo {
 					if ($event == 'unarchive') { return ''; break; }
 					if ($event == 'archive') { return 'archive'; break; }
 				}
-			break;
+				break;
 
 			case 'display_billing_rate':
 				$length = web_invoice_meta($this->id,'web_invoice_subscription_length');
@@ -548,18 +546,18 @@ class Web_Invoice_GetInfo {
 					if($length == '1') return "monthly for $occurances months";
 					if($length > '1') return "every $length months $occurances times";
 				}
-			break;
+				break;
 
 			case 'link':
 				$link_to_page = get_permalink(get_option('web_invoice_web_invoice_page'));
 				$hashed = md5($this->id);
 				if(get_option("permalink_structure")) { return $link_to_page . "?invoice_id=" .$hashed; }
 				else { return  $link_to_page . "&invoice_id=" . $hashed; }
-			break;
+				break;
 
 			case 'hash':
 				return md5($this->id);
-			break;
+				break;
 
 			case 'currency':
 				if(web_invoice_meta($this->id,'web_invoice_currency_code') != '') {
@@ -570,52 +568,52 @@ class Web_Invoice_GetInfo {
 					$currency_code = "USD";
 				}
 				return $currency_code;
-			break;
+				break;
 
 			case 'display_id':
 				$web_invoice_custom_invoice_id = web_invoice_meta($this->id,'web_invoice_custom_invoice_id');
 				if(empty($web_invoice_custom_invoice_id)) { return $this->id; }	else { return $web_invoice_custom_invoice_id; }
-			break;
+				break;
 
 			case 'due_date':
 				$web_invoice_due_date_month = web_invoice_meta($this->id,'web_invoice_due_date_month');
 				$web_invoice_due_date_year = web_invoice_meta($this->id,'web_invoice_due_date_year');
 				$web_invoice_due_date_day = web_invoice_meta($this->id,'web_invoice_due_date_day');
 				if(!empty($web_invoice_due_date_month) && !empty($web_invoice_due_date_year) && !empty($web_invoice_due_date_day)) return "$web_invoice_due_date_year/$web_invoice_due_date_month/$web_invoice_due_date_day";
-			break;
+				break;
 
 			case 'amount':
 				return $invoice_info->amount;
-			break;
+				break;
 
 			case 'tax_percent':
 				return web_invoice_meta($this->id,'tax_value');
-			break;
+				break;
 
 			case 'tax_total':
 				return  web_invoice_meta($this->id,'tax_value') * $invoice_info->amount;
-			break;
+				break;
 
 			case 'subject':
 				return $invoice_info->subject;
-			break;
+				break;
 
 			case 'display_amount':
 				if(!strpos($invoice_info->amount,'.')) $amount = $invoice_info->amount . ".00"; else $amount = $invoice_info->amount;
 				return web_invoice_currency_symbol($this->display('currency')).$amount;
-			break;
+				break;
 
 			case 'description':
 				return  str_replace("\n", "<br />", $invoice_info->description);
-			break;
+				break;
 
 			case 'itemized':
 				return unserialize(urldecode($invoice_info->itemized));
-			break;
+				break;
 
 			case 'status':
 				return $invoice_info->status;
-			break;
+				break;
 		}
 	}
 

@@ -4,73 +4,73 @@ class AuthnetARBException extends Exception {}
 
 class Web_Invoice_AuthnetARB
 {
-    private $login;
-    private $transkey;
+	private $login;
+	private $transkey;
 
-    private $params  = array();
-    private $sucess  = false;
-    private $error   = true;
+	private $params  = array();
+	private $sucess  = false;
+	private $error   = true;
 
-    var $xml;
-    var $response;
-    private $resultCode;
-    private $code;
-    private $text;
-    private $subscrId;
+	var $xml;
+	var $response;
+	private $resultCode;
+	private $code;
+	private $text;
+	private $subscrId;
 
-    public function __construct()
-    {
-	
-        $this->url = stripslashes(get_option("web_invoice_recurring_gateway_url"));
-        $this->login = stripslashes(get_option("web_invoice_gateway_username"));
-        $this->transkey = stripslashes(get_option("web_invoice_gateway_tran_key"));
+	public function __construct()
+	{
 
-    }
+		$this->url = stripslashes(get_option("web_invoice_recurring_gateway_url"));
+		$this->login = stripslashes(get_option("web_invoice_gateway_username"));
+		$this->transkey = stripslashes(get_option("web_invoice_gateway_tran_key"));
 
-    private function process($retries = 3)
-    {
-        $count = 0;
-        while ($count < $retries)
-        {
-            $ch = curl_init();
-		
+	}
+
+	private function process($retries = 3)
+	{
+		$count = 0;
+		while ($count < $retries)
+		{
+			$ch = curl_init();
+
 			//required for GoDaddy
 			if(get_option('web_invoice_using_godaddy') == 'yes') {
-			curl_setopt ($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-			curl_setopt ($ch, CURLOPT_PROXY,"http://proxy.shr.secureserver.net:3128");
-			curl_setopt ($ch, CURLOPT_TIMEOUT, 120);
+				curl_setopt ($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+				curl_setopt ($ch, CURLOPT_PROXY,"http://proxy.shr.secureserver.net:3128");
+				curl_setopt ($ch, CURLOPT_TIMEOUT, 120);
 			}
 			//required for GoDaddy
 
-            curl_setopt($ch, CURLOPT_URL, $this->url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: text/xml"));
-            curl_setopt($ch, CURLOPT_HEADER, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->xml);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            $this->response = curl_exec($ch);
-            $this->parseResults();
-            if ($this->resultCode === "Ok")
-            {
-                $this->success = true;
-                $this->error   = false;
-                break;
-            }
-            else
-            {
-                $this->success = false;
-                $this->error   = true;
-                break;
-            }
-            $count++;
-        }
-        curl_close($ch);
-    }
+			curl_setopt($ch, CURLOPT_URL, $this->url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: text/xml"));
+			curl_setopt($ch, CURLOPT_HEADER, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->xml);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			$this->response = curl_exec($ch);
+			$this->parseResults();
+			if ($this->resultCode === "Ok")
+			{
+				$this->success = true;
+				$this->error   = false;
+				break;
+			}
+			else
+			{
+				$this->success = false;
+				$this->error   = true;
+				break;
+			}
+			$count++;
+		}
+		curl_close($ch);
+	}
 
-    public function createAccount()
-    {
-        $this->xml = "<?xml version='1.0' encoding='utf-8'?>
+	public function createAccount()
+	{
+		$this->xml = "<?xml version='1.0' encoding='utf-8'?>
                       <ARBCreateSubscriptionRequest xmlns='AnetApi/xml/v1/schema/AnetApiSchema.xsd'>
                           <merchantAuthentication>
                               <name>" . $this->login . "</name>
@@ -126,12 +126,12 @@ class Web_Invoice_AuthnetARB
                               </shipTo>
                           </subscription>
                       </ARBCreateSubscriptionRequest>";
-        $this->process();
-    }
+		$this->process();
+	}
 
-    public function updateAccount()
-    {
-        $this->xml = "<?xml version='1.0' encoding='utf-8'?>
+	public function updateAccount()
+	{
+		$this->xml = "<?xml version='1.0' encoding='utf-8'?>
                       <ARBUpdateSubscriptionRequest xmlns='AnetApi/xml/v1/schema/AnetApiSchema.xsd'>
                           <merchantAuthentication>
                               <name>" . $this->url . "</name>
@@ -160,12 +160,12 @@ class Web_Invoice_AuthnetARB
                               </billTo>
                           </subscription>
                       </ARBUpdateSubscriptionRequest>";
-        $this->process();
-    }
+		$this->process();
+	}
 
-    public function deleteAccount()
-    {
-        $this->xml = "<?xml version='1.0' encoding='utf-8'?>
+	public function deleteAccount()
+	{
+		$this->xml = "<?xml version='1.0' encoding='utf-8'?>
                       <ARBCancelSubscriptionRequest xmlns='AnetApi/xml/v1/schema/AnetApiSchema.xsd'>
                           <merchantAuthentication>
                               <name>" . $this->url . "</name>
@@ -174,67 +174,67 @@ class Web_Invoice_AuthnetARB
                           <refId>" . $this->params['refID'] ."</refId>
                           <subscriptionId>" . $this->params['subscrId'] . "</subscriptionId>
                       </ARBCancelSubscriptionRequest>";
-        $this->process();
-    }
+		$this->process();
+	}
 
-    private function parseResults()
-    {
-        $this->resultCode = $this->parseXML('<resultCode>', '</resultCode>');
-        $this->code       = $this->parseXML('<code>', '</code>');
-        $this->text       = $this->parseXML('<text>', '</text>');
-        $this->subscrId   = $this->parseXML('<subscriptionId>', '</subscriptionId>');
-    }
+	private function parseResults()
+	{
+		$this->resultCode = $this->parseXML('<resultCode>', '</resultCode>');
+		$this->code       = $this->parseXML('<code>', '</code>');
+		$this->text       = $this->parseXML('<text>', '</text>');
+		$this->subscrId   = $this->parseXML('<subscriptionId>', '</subscriptionId>');
+	}
 
-    private function parseXML($start, $end)
-    {
-        return preg_replace('|^.*?'.$start.'(.*?)'.$end.'.*?$|i', '$1', substr($this->response, 334));
-    }
+	private function parseXML($start, $end)
+	{
+		return preg_replace('|^.*?'.$start.'(.*?)'.$end.'.*?$|i', '$1', substr($this->response, 334));
+	}
 
-    public function setParameter($field = "", $value = null)
-    {
-        $field = (is_string($field)) ? trim($field) : $field;
-        $value = (is_string($value)) ? trim($value) : $value;
-        if (!is_string($field))
-        {
-            throw new AuthnetARBException("setParameter() arg 1 must be a string or integer: " . gettype($field) . " given.");
-        }
-        if (!is_string($value) && !is_numeric($value) && !is_bool($value))
-        {
-            throw new AuthnetARBException("setParameter() arg 2 must be a string, integer, or boolean value: " . gettype($value) . " given.");
-        }
-        if (empty($field))
-        {
-            throw new AuthnetARBException("setParameter() requires a parameter field to be named.");
-        }
-        if ($value === "")
-        {
-            throw new AuthnetARBException("setParameter() requires a parameter value to be assigned: $field");
-        }
-        $this->params[$field] = $value;
-    }
+	public function setParameter($field = "", $value = null)
+	{
+		$field = (is_string($field)) ? trim($field) : $field;
+		$value = (is_string($value)) ? trim($value) : $value;
+		if (!is_string($field))
+		{
+			throw new AuthnetARBException("setParameter() arg 1 must be a string or integer: " . gettype($field) . " given.");
+		}
+		if (!is_string($value) && !is_numeric($value) && !is_bool($value))
+		{
+			throw new AuthnetARBException("setParameter() arg 2 must be a string, integer, or boolean value: " . gettype($value) . " given.");
+		}
+		if (empty($field))
+		{
+			throw new AuthnetARBException("setParameter() requires a parameter field to be named.");
+		}
+		if ($value === "")
+		{
+			throw new AuthnetARBException("setParameter() requires a parameter value to be assigned: $field");
+		}
+		$this->params[$field] = $value;
+	}
 
-    public function isSuccessful()
-    {
-        return $this->success;
-    }
+	public function isSuccessful()
+	{
+		return $this->success;
+	}
 
-    public function isError()
-    {
-        return $this->error;
-    }
+	public function isError()
+	{
+		return $this->error;
+	}
 
-    public function getResponse()
-    {
-        return strip_tags($this->text);
-    }
+	public function getResponse()
+	{
+		return strip_tags($this->text);
+	}
 
-    public function getResponseCode()
-    {
-        return $this->code;
-    }
+	public function getResponseCode()
+	{
+		return $this->code;
+	}
 
-    public function getSubscriberID()
-    {
-        return $this->subscrId;
-    }
+	public function getSubscriberID()
+	{
+		return $this->subscrId;
+	}
 }

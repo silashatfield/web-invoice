@@ -1,29 +1,29 @@
 <?php
 /*
-	Created by S H Mohanjith
-	(website: mohanjith.com       email : support@mohanjith.com)
+ Created by S H Mohanjith
+ (website: mohanjith.com       email : support@mohanjith.com)
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; version 3 of the License, with the
-    exception of the JQuery JavaScript framework which is released
-    under it's own license.  You may view the details of that license in
-    the prototype.js file.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 3 of the License, with the
+ exception of the JQuery JavaScript framework which is released
+ under it's own license.  You may view the details of that license in
+ the prototype.js file.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 /**
  * Please note that this class is experimental at the moment. I'm waiting for a
  * test account from Moneybookers.
- * 
+ *
  * @author moha
  *
  */
@@ -46,58 +46,58 @@ class Web_Invoice_Moneybookers {
 	var $md5sig;
 	var $amount;
 	var $currency;
-	
+
 	var $recurring_payment_type;
 	var $recurring_payment_id;
 
-    function Web_Invoice_Moneybookers($invoice_id) {
-    	$this->invoice = new Web_Invoice_GetInfo($invoice_id);
-    }
+	function Web_Invoice_Moneybookers($invoice_id) {
+		$this->invoice = new Web_Invoice_GetInfo($invoice_id);
+	}
 
-    function _logFailure($ref) {
+	function _logFailure($ref) {
 		web_invoice_update_log($this->invoice->id,'mb_api_fail',"Failed Moneybookers API request from {$this->ip}. REF: {$ref}. Serialized object ".serialize($this));
-    }
+	}
 
-    function _logSuccess($ref) {
+	function _logSuccess($ref) {
 		web_invoice_update_log($this->invoice->id,'mb_api_success',"Successful Moneybookers API request from {$this->ip}. REF: {$ref}");
-    }
+	}
 
-    function _quadIpToInt($ip) {
+	function _quadIpToInt($ip) {
 		$ip_parts = split('\.', $ip);
-        $numeric_ip = 0;
+		$numeric_ip = 0;
 
-        foreach ($ip_parts as $ip_part) {
-        	$numeric_ip=($numeric_ip*256)+intval($ip_part);
-        }
+		foreach ($ip_parts as $ip_part) {
+			$numeric_ip=($numeric_ip*256)+intval($ip_part);
+		}
 
-        return $numeric_ip;
-    }
+		return $numeric_ip;
+	}
 
-    function _allowedIp() {
-    	$allowed_ips = get_option('web_invoice_moneybookers_ip');
-    	$this->int_ip = $this->_quadIpToInt($this->ip);
+	function _allowedIp() {
+		$allowed_ips = get_option('web_invoice_moneybookers_ip');
+		$this->int_ip = $this->_quadIpToInt($this->ip);
 
-    	$ip_ranges = split(',', $allowed_ips);
+		$ip_ranges = split(',', $allowed_ips);
 
-    	foreach ($ip_ranges as $ip_range) {
-    		list($start_ips,$end_ips) = split('-', $ip_range);
+		foreach ($ip_ranges as $ip_range) {
+			list($start_ips,$end_ips) = split('-', $ip_range);
 
-    		$start_ip = $this->_quadIpToInt($start_ips);
-    		$end_ip = $this->_quadIpToInt($end_ips);
+			$start_ip = $this->_quadIpToInt($start_ips);
+			$end_ip = $this->_quadIpToInt($end_ips);
 
-    		if (($this->int_ip >= $start_ip) && ($end_ip >= $this->int_ip)) {
-    			if ($end_ip == 0 && $start_ip == $this->int_ip) continue;
+			if (($this->int_ip >= $start_ip) && ($end_ip >= $this->int_ip)) {
+				if ($end_ip == 0 && $start_ip == $this->int_ip) continue;
 
-    			return true;
-    		}
-    	}
+				return true;
+			}
+		}
 
-    	return false;
-    }
+		return false;
+	}
 
-    function processRequest($ip, $request) {
+	function processRequest($ip, $request) {
 
-    	$this->ip = $ip;
+		$this->ip = $ip;
 
 		$this->pay_to_email = $request['pay_to_email'];
 		$this->pay_from_email = $request['pay_from_email'];
@@ -111,12 +111,12 @@ class Web_Invoice_Moneybookers {
 		$this->md5sig = $request['md5sig'];
 		$this->amount = $request['amount'];
 		$this->currency = $request['currency'];
-		
+
 		if (isset($request['rec_payment_id'])) {
 			$this->recurring_payment_id = $request['rec_payment_id'];
 		}
-		
-    	if (isset($request['rec_payment_type'])) {
+
+		if (isset($request['rec_payment_type'])) {
 			$this->recurring_payment_type = $request['rec_payment_type'];
 		}
 
@@ -129,8 +129,8 @@ class Web_Invoice_Moneybookers {
 			exit(0);
 		}
 
-    	if (!$this->invoice->id) {
-    		$this->_logFailure('Invoice not found');
+		if (!$this->invoice->id) {
+			$this->_logFailure('Invoice not found');
 
 			header('HTTP/1.0 404 Not Found');
 			header('Content-type: text/plain; charset=UTF-8');
@@ -200,5 +200,5 @@ class Web_Invoice_Moneybookers {
 		header('Content-type: text/plain; charset=UTF-8');
 		print 'Thank you very much for letting us know';
 		exit(0);
-    }
+	}
 }
