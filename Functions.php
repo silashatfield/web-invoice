@@ -304,7 +304,7 @@ function web_invoice_get_invoice_status($invoice_id,$count='1')
 
 		foreach ($status_update as $single_status)
 		{
-			$message .= "<li>" . $single_status->value . " on <span class='web_invoice_tamp_stamp'>" . $single_status->time_stamp . "</span></li>";
+			$message .= "<li>" . $single_status->value . " on <span class='web_invoice_tamp_stamp'>" . date(__('Y-m-d H:i:s'), strtotime($single_status->time_stamp)) . "</span></li>";
 		}
 
 		return $message;
@@ -325,12 +325,12 @@ function web_invoice_get_single_invoice_status($invoice_id)
 	// in class
 	global $wpdb;
 	if($status_update = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = $invoice_id ORDER BY `".Web_Invoice::tablename('log')."`.`time_stamp` DESC LIMIT 0 , 1"))
-	return $status_update->value . " - " . web_invoice_Date::convert($status_update->time_stamp, 'Y-m-d H', 'M d Y');
+	return $status_update->value . " - " . web_invoice_Date::convert($status_update->time_stamp, 'Y-m-d H', __('M d Y'));
 }
 
 
 function web_invoice_currency_format($amount) {
-	return number_format($amount, 2, '.', ',');
+	return number_format($amount, 2, __('.'), __(','));
 }
 
 function web_invoice_paid($invoice_id) {

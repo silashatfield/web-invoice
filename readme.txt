@@ -21,6 +21,7 @@ Some features:
 * Create invoices from the WordPress control panel
 * Prefill customer information using the WordPress user list
 * Send invoice notifications to customers with a secured link back to the web invoice
+* Send invoice reminders to customers with a secured link back to the web invoice
 * Accept credit card payment via Authorize.net or MerchantPlus NaviGate
 * Moneybookers, AlertPay or PayPal available if you don't have a credit card processing account
 * Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature or Moneybookers
@@ -32,7 +33,7 @@ Some features:
 * Automatically mark invoices paid via AlertPay as paid (Requires business status)
 * Split gateway support (Your client is given the option of choosing the preferred gateway from
   the list of gateways you support). e.g PayPal and Moneybookers
-* Interfaces are internationalized
+* All user interfaces are internationalized
 
 Would you like to see this plugin in other languages? Please show your interest in
 the [Web Invoice community forum](http://mohanjith.com/forum/). You could also help us
@@ -63,6 +64,13 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.6.3**
+
+* Moneybookers API tested thoruoghly (Thank you MB for the test account)
+* Receipt e-mail made more meaning full
+* Amount decimal points fixed (using number_format)
+* Dates and number formatting internationalized
 
 **Version 1.6.2**
 

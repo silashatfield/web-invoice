@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.6.2
+ Version: 1.6.3
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -372,6 +372,12 @@ class Web_Invoice_GetInfo {
 		}
 
 		if (!$this->_row_cache) {
+			$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$invoice_id}'"));
+		}
+		
+		if (!$this->_row_cache) {
+			$_custom_invoice = $wpdb->get_row("SELECT invoice_id FROM ".Web_Invoice::tablename('meta')." WHERE meta_key = 'web_invoice_custom_invoice_id' AND meta_value = '{$invoice_id}'");
+			$this->id = $_custom_invoice->invoice_id;
 			$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$this->id}'"));
 		}
 	}
@@ -438,7 +444,7 @@ class Web_Invoice_GetInfo {
 
 			case 'log_status':
 				if($status_update = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = ".$this->id ." ORDER BY `".Web_Invoice::tablename('log')."`.`time_stamp` DESC LIMIT 0 , 1"))
-				return $status_update->value . " - " . web_invoice_Date::convert($status_update->time_stamp, 'Y-m-d H', 'M d Y');
+				return $status_update->value . " - " . web_invoice_Date::convert($status_update->time_stamp, 'Y-m-d H', __('M d Y'));
 				break;
 
 			case 'paid_date':
@@ -481,13 +487,12 @@ class Web_Invoice_GetInfo {
 		switch ($what) {
 			case 'log_status':
 				if($status_update = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = ".$this->id ." ORDER BY `".Web_Invoice::tablename('log')."`.`time_stamp` DESC LIMIT 0 , 1"))
-				return $status_update->value . " - " . web_invoice_Date::convert($status_update->time_stamp, 'Y-m-d H', 'M d Y');
+				return $status_update->value . " - " . web_invoice_Date::convert($status_update->time_stamp, 'Y-m-d H', __('M d Y'));
 				break;
 
 			case 'paid_date':
 				$paid_date = $wpdb->get_var("SELECT time_stamp FROM  ".Web_Invoice::tablename('log')." WHERE action_type = 'paid' AND invoice_id = '".$this->id."' ORDER BY time_stamp DESC LIMIT 0, 1");
-				if($paid_date) return web_invoice_Date::convert($paid_date, 'Y-m-d H', 'M d Y');
-				//echo "SELECT time_stamp FROM  ".Web_Invoice::tablename('log')." WHERE action_type = 'paid' AND invoice_id = '".$this->id."' ORDER BY time_stamp DESC LIMIT 0, 1";
+				if($paid_date) return web_invoice_Date::convert($paid_date, 'Y-m-d H', __('M d Y'));
 				break;
 
 			case 'subscription_name':
@@ -512,15 +517,15 @@ class Web_Invoice_GetInfo {
 				$web_invoice_subscription_start_month = web_invoice_meta($this->id,'web_invoice_subscription_start_month');
 
 				if($web_invoice_subscription_start_month && $web_invoice_subscription_start_year && $web_invoice_subscription_start_day) {
-					return $web_invoice_subscription_start_year . "-" . $web_invoice_subscription_start_month . "-" . $web_invoice_subscription_start_day;
+					return date(__('Y-m-d'), strtotime($web_invoice_subscription_start_year . "-" . $web_invoice_subscription_start_month . "-" . $web_invoice_subscription_start_day));
 				} else {
-					return date("Y-m-d");
+					return date(__("Y-m-d"));
 				}
 				break;
 					
 					
 			case 'endDate':
-				return date('Y-m-d', strtotime("+".($this->display('interval_length')*$this->display('totalOccurrences'))." ".$this->display('interval_unit'), strtotime($this->display('startDate'))));
+				return date(__('Y-m-d'), strtotime("+".($this->display('interval_length')*$this->display('totalOccurrences'))." ".$this->display('interval_unit'), strtotime($this->display('startDate'))));
 				break;
 
 
@@ -579,7 +584,8 @@ class Web_Invoice_GetInfo {
 				$web_invoice_due_date_month = web_invoice_meta($this->id,'web_invoice_due_date_month');
 				$web_invoice_due_date_year = web_invoice_meta($this->id,'web_invoice_due_date_year');
 				$web_invoice_due_date_day = web_invoice_meta($this->id,'web_invoice_due_date_day');
-				if(!empty($web_invoice_due_date_month) && !empty($web_invoice_due_date_year) && !empty($web_invoice_due_date_day)) return "$web_invoice_due_date_year/$web_invoice_due_date_month/$web_invoice_due_date_day";
+				if(!empty($web_invoice_due_date_month) && !empty($web_invoice_due_date_year) && !empty($web_invoice_due_date_day)) 
+					return date(__('Y-m-d'), strtotime("$web_invoice_due_date_year-$web_invoice_due_date_month-$web_invoice_due_date_day"));
 				break;
 
 			case 'amount':
@@ -599,8 +605,7 @@ class Web_Invoice_GetInfo {
 				break;
 
 			case 'display_amount':
-				if(!strpos($invoice_info->amount,'.')) $amount = $invoice_info->amount . ".00"; else $amount = $invoice_info->amount;
-				return web_invoice_currency_symbol($this->display('currency')).$amount;
+				return web_invoice_currency_symbol($this->display('currency')).web_invoice_currency_format($invoice_info->amount);
 				break;
 
 			case 'description':
