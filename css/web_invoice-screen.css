@@ -38,12 +38,12 @@
 }
 
 #invoice_page input {
-	width: 230px;
+	width: 235px;
 	border: 0;
 	background: #EFEFEF;
-	padding: 5px;
-	-moz-border-radius: 9px;
-	border-radius: 9px;
+	padding: 7px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 }
 
 #invoice_page select option {

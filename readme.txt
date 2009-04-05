@@ -34,6 +34,7 @@ Some features:
 * Split gateway support (Your client is given the option of choosing the preferred gateway from
   the list of gateways you support). e.g PayPal and Moneybookers
 * All user interfaces are internationalized
+* E-mail templates and hooks to allow you to customize the e-mails sent to your clients
 
 Would you like to see this plugin in other languages? Please show your interest in
 the [Web Invoice community forum](http://mohanjith.com/forum/). You could also help us
@@ -65,9 +66,19 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.7.0**
+
+* States are no longer selectable (it's just a text box)
+* AlertPay API bug fix
+* AlertPay IP range added (more security)
+* AlertPay country code (ISO_3166-1 alpha-3 country code) to ISO_3166-1 alpha-2 country code mapping
+* Allow just the button payments for PayPal
+* E-mail templates
+* E-mail hooks (add you own variables via another plugin)
+
 **Version 1.6.3**
 
-* Moneybookers API tested thoruoghly (Thank you MB for the test account)
+* Moneybookers API tested thoroughly (Thank you MB for the test account)
 * Receipt e-mail made more meaning full
 * Amount decimal points fixed (using number_format)
 * Dates and number formatting internationalized

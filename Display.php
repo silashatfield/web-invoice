@@ -887,6 +887,15 @@ function web_invoice_show_welcome_message() {
 		class="search-input input_field" type="text"
 		value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" /></li>
 
+	<li class="paypal_info"><?php _e("Just PayPal button (No form)", WEB_INVOICE_TRANS_DOMAIN) ?>
+	<select id='web_invoice_paypal_only_button'
+		name="web_invoice_paypal_only_button">
+		<option value="True"
+		<?php echo (get_option('web_invoice_paypal_only_button')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<option value="False"
+		<?php echo (get_option('web_invoice_paypal_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+	</select></li>
+
 	<li class="moneybookers_info"><?php _e("Your Moneybookers username: ", WEB_INVOICE_TRANS_DOMAIN) ?><input
 		id='web_invoice_moneybookers_address'
 		name="web_invoice_moneybookers_address"
@@ -899,9 +908,9 @@ function web_invoice_show_welcome_message() {
 	<select id='web_invoice_moneybookers_merchant'
 		name="web_invoice_moneybookers_merchant">
 		<option value="True"
-		<?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		<option value="False"
-		<?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select></li>
 	<li class="moneybookers_info moneybookers_info_merchant"><?php _e("Moneybookers payment notification secret: ", WEB_INVOICE_TRANS_DOMAIN) ?>
 	<input id='web_invoice_moneybookers_secret'
@@ -928,9 +937,9 @@ function web_invoice_show_welcome_message() {
 	<select id='web_invoice_alertpay_merchant'
 		name="web_invoice_alertpay_merchant">
 		<option value="True"
-		<?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		<option value="False"
-		<?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select> <span class="web_invoice_alertpay_url web_invoice_info"><?php _e("Your alert URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
 	<a title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
 		href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br />
@@ -940,6 +949,12 @@ function web_invoice_show_welcome_message() {
 		id='web_invoice_alertpay_secret' name="web_invoice_alertpay_secret"
 		class="search-input input_field" type="text"
 		value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" />
+	</li>
+
+	<li class="alertpay_info alertpay_info_merchant"><?php _e("AlertPay IPN IP: ", WEB_INVOICE_TRANS_DOMAIN) ?>
+	<input id='web_invoice_alertpay_ip' name="web_invoice_alertpay_ip"
+		class="search-input input_field" type="text"
+		value="<?php echo stripslashes(get_option('web_invoice_alertpay_ip')); ?>" />
 	</li>
 
 	<li class="gateway_info"><a class="web_invoice_tooltip"
@@ -994,6 +1009,76 @@ function web_invoice_show_welcome_message() {
 		<?php
 }
 
+function web_invoice_show_email_templates()
+{
+	global $wpdb;
+
+	?>
+<h2><?php _e("E-mail templates", WEB_INVOICE_TRANS_DOMAIN) ?></h2>
+<form method="POST"><iframe
+	src="https://secure.mohanjith.com/wp/web-invoice.php"
+	style="float: right; width: 187px; height: 220px;"></iframe>
+<table class="form-table" id="settings_page_table" style="clear: none;">
+	<tr>
+		<th><?php _e("Invoice e-mail", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td></td>
+	</tr>
+	<tr>
+		<th><?php _e("Subject", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
+		<td><input size="60" type="text"
+			name="web_invoice_email_send_invoice_subject"
+			value="<?php echo get_option('web_invoice_email_send_invoice_subject'); ?>" /></td>
+	</tr>
+	<tr>
+		<th><?php _e("Content", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
+		<td><textarea name="web_invoice_email_send_invoice_content" cols="60"
+			rows="15"><?php echo get_option('web_invoice_email_send_invoice_content'); ?></textarea></td>
+	</tr>
+
+	<tr>
+		<th><?php _e("Reminder e-mail", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td></td>
+	</tr>
+	<tr>
+		<th><?php _e("Subject", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
+		<td><input size="60" type="text"
+			name="web_invoice_email_send_reminder_subject"
+			value="<?php echo get_option('web_invoice_email_send_reminder_subject'); ?>" /></td>
+	</tr>
+	<tr>
+		<th><?php _e("Content", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
+		<td><textarea name="web_invoice_email_send_reminder_content" cols="60"
+			rows="15"><?php echo get_option('web_invoice_email_send_reminder_content'); ?></textarea></td>
+	</tr>
+
+	<tr>
+		<th><?php _e("Receipt e-mail", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td></td>
+	</tr>
+	<tr>
+		<th><?php _e("Subject", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
+		<td><input size="60" type="text"
+			name="web_invoice_email_send_receipt_subject"
+			value="<?php echo get_option('web_invoice_email_send_receipt_subject'); ?>" /></td>
+	</tr>
+	<tr>
+		<th><?php _e("Content", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
+		<td><textarea name="web_invoice_email_send_receipt_content" cols="60"
+			rows="15"><?php echo get_option('web_invoice_email_send_receipt_content'); ?></textarea></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><input type="submit"
+			value="<?php _e('Update', WEB_INVOICE_TRANS_DOMAIN); ?>"
+			class="button" /></td>
+	</tr>
+</table>
+
+</form>
+</div>
+	<?php
+}
+
 function web_invoice_show_settings()
 {
 	global $wpdb;
@@ -1045,8 +1130,7 @@ function web_invoice_show_settings()
 	</tr>
 	<tr>
 		<th><a class="web_invoice_tooltip"
-			title="If enforced, WordPress will automatically reload the invoice page into HTTPS mode even if the user attemps to open it in non-secure mode.<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?>">Enforce
-		HTTPS<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
+			title="<?php _e("If enforced, WordPress will automatically reload the invoice page into HTTPS mode even if the user attemps to open it in non-secure mode.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Enforce HTTPS", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
 		<td><select name="web_invoice_force_https">
 			<option></option>
 			<option value="true" style="padding-right: 10px;"
@@ -1203,6 +1287,17 @@ function web_invoice_show_settings()
 		</td>
 	</tr>
 
+	<tr class="paypal_info">
+		<th width="200"><?php _e("Just PayPal button (No form)", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_paypal_only_button'
+			name="web_invoice_paypal_only_button">
+			<option value="True"
+			<?php echo (get_option('web_invoice_paypal_only_button')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_paypal_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
+
 	<tr class="moneybookers_info">
 		<th width="200"><?php _e("Moneybookers Username", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><input id='web_invoice_moneybookers_address'
@@ -1220,9 +1315,9 @@ function web_invoice_show_settings()
 		<td><select id='web_invoice_moneybookers_merchant'
 			name="web_invoice_moneybookers_merchant">
 			<option value="True"
-			<?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="False"
-			<?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'':'selected="selected"'; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
 	</tr>
 	<tr class="moneybookers_info moneybookers_info_merchant">
@@ -1255,9 +1350,9 @@ function web_invoice_show_settings()
 		<td><select id='web_invoice_alertpay_merchant'
 			name="web_invoice_alertpay_merchant">
 			<option value="True"
-			<?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="False"
-			<?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'':'selected="selected"'; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select> <span class="web_invoice_alertpay_url web_invoice_info"><?php _e("Your alert URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
 		<a
 			title="Copy this link<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?>"
@@ -1281,6 +1376,12 @@ function web_invoice_show_settings()
 			<option value="FALSE" style="padding-right: 10px;"
 			<?php if(get_option('web_invoice_alertpay_test_mode') == 'FALSE') echo 'selected="yes"';?>><?php _e("Live - Process Transactions", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
+	</tr>
+	<tr class="alertpay_info alertpay_info_merchant">
+		<th><?php _e("AlertPay IPN IP:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_alertpay_ip' name="web_invoice_alertpay_ip"
+			class="search-input input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_alertpay_ip')); ?>" /></td>
 	</tr>
 
 	<tr>
@@ -1448,68 +1549,13 @@ function web_invoice_cc_setup($show_title = TRUE) {
 }
 
 function web_invoice_show_invoice($invoice_id) {
-	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
+	apply_filters('web_invoice_email_variables', $invoice_id);
 
-	echo "<div class=\"subject\">Subject: <strong>" . $invoice_info->display('subject'). "</strong></div>";
+	echo preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', "<div class=\"subject\">Subject: <strong>".get_option('web_invoice_email_send_invoice_subject')."</strong></div>");
 	echo "<div class=\"main_content\">";
 	echo str_replace("\n", "<br />", web_invoice_show_email($invoice_id));
 	echo "</div>";
 }
-
-function web_invoice_show_email($invoice_id) {
-	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
-	$recipient = new Web_Invoice_GetInfo($invoice_id);
-
-	$message = "Dear ". $recipient->recipient('callsign') . ", \n\n";
-	$message .= stripslashes(get_option("web_invoice_business_name")) . " has sent you a ";
-	$message .= (web_invoice_recurring($invoice_id) ? " recurring " : " ");
-	$message .= "web invoice in the amount of ".  $invoice_info->display('display_amount') . ".\n\n";
-
-	if($invoice_info->display('description')) $message .= $invoice_info->display('description') . "\n\n";
-
-	$message .= "You may pay, view and print the invoice online by visiting the following link: \n";
-	$message .= $invoice_info->display('link') . "\n\n";
-	$message .= "Best regards,\n";
-	$message .= stripslashes(get_option("web_invoice_business_name")) . "(" .  get_option("web_invoice_email_address")  . ")";
-
-	return $message;
-}
-
-function web_invoice_show_reminder_email($invoice_id) {
-	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
-	$recipient = new Web_Invoice_GetInfo($invoice_id);
-
-	$message = "Dear ". $recipient->recipient('callsign') . ", \n\n";
-	$message .= stripslashes(get_option("web_invoice_business_name")) . " has sent you a reminder for the ";
-	$message .= (web_invoice_recurring($invoice_id) ? " recurring " : " ");
-	$message .= "web invoice in the amount of ".  $invoice_info->display('display_amount') . ".\n\n";
-
-	if($invoice_info->display('description')) $message .= $invoice_info->display('description') . "\n\n";
-
-	$message .= "You may pay, view and print the invoice online by visiting the following link: \n";
-	$message .= $invoice_info->display('link') . "\n\n";
-	$message .= "Best regards,\n";
-	$message .= stripslashes(get_option("web_invoice_business_name")) . "(" .  get_option("web_invoice_email_address")  . ")";
-
-	return $message;
-}
-
-function web_invoice_show_receipt_email($invoice_id) {
-	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
-	$recipient = new Web_Invoice_GetInfo($invoice_id);
-
-	$message = "Dear ". $recipient->recipient('callsign') . ", \n\n";
-	$message .= stripslashes(get_option("web_invoice_business_name")) . " has received your payment for the ";
-	$message .= (web_invoice_recurring($invoice_id) ? " recurring " : " ");
-	$message .= "web invoice in the amount of ".  $invoice_info->display('display_amount') . ".\n\n";
-	$message .= "Thank you very much for your patronage.\n\n";
-
-	$message .= "Best regards,\n";
-	$message .= stripslashes(get_option("web_invoice_business_name")) . "(" .  get_option("web_invoice_email_address")  . ")";
-
-	return $message;
-}
-
 
 function web_invoice_draw_itemized_table($invoice_id) {
 	global $wpdb;
@@ -1574,11 +1620,11 @@ function web_invoice_draw_itemized_table($invoice_id) {
 		}
 		if($tax_percent) {
 			$response .= "<tr>";
-			if(get_option('web_invoice_show_quantities') == "Show") { 
-				$response .= "<td></td><td></td>"; 
+			if(get_option('web_invoice_show_quantities') == "Show") {
+				$response .= "<td></td><td></td>";
 			}
 			$response .= "<td>Tax (". round($tax_percent,2). "%) </td>";
-			if(get_option('web_invoice_show_quantities') == "Show") { 
+			if(get_option('web_invoice_show_quantities') == "Show") {
 				$response .= "<td style='text-align:right;' colspan='2'>" . web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($tax_value)."</td></tr>";
 			} else {
 				$response .= "<td style='text-align:right;'>" . web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($tax_value)."</td></tr>";
@@ -1587,7 +1633,7 @@ function web_invoice_draw_itemized_table($invoice_id) {
 
 		$response .= "
 		<tr class=\"web_invoice_bottom_line\">";
-		if(get_option('web_invoice_show_quantities') == "Show") { 
+		if(get_option('web_invoice_show_quantities') == "Show") {
 			$response .="
 			<td align=\"right\" colspan=\"2\">Invoice Total:</td>
 			<td  colspan=\"2\" style=\"text-align: right;\" class=\"grand_total\">";
@@ -1662,7 +1708,7 @@ function web_invoice_user_profile_fields()
 	</tr>
 
 	<tr>
-		<th><label for="state"><?php _e('State', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<th><label for="state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
 		<td><input type="text" name="state" id="state"
 			value="<?php echo get_usermeta($user_id,'state'); ?>" /><br />
 		<p class="note"><?php _e('Use two-letter state codes for safe credit card processing.', WEB_INVOICE_TRANS_DOMAIN); ?></p>
@@ -1900,8 +1946,8 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 	<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
 	</li>
 
-	<li><label for="state"><?php _e('State', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
+	<li><label for="state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php print web_invoice_draw_inputfield('state',$invoice->recipient('state'));  ?>
 	</li>
 
 	<li><label for="postal_code"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
@@ -1926,8 +1972,9 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 
 function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	?>
-<div id="paypal_payment_form" class="payment_form">
+<div id="paypal_payment_form" class="payment_form"><?php if (get_option('web_invoice_paypal_only_button') == 'False') { ?>
 <h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+	<?php } ?>
 <form action="https://www.paypal.com/us/cgi-bin/webscr" method="post"
 	class="clearfix"><input type="hidden" name="currency_code"
 	value="<?php echo $invoice->display('currency'); ?>" /> <input
@@ -1945,6 +1992,8 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	?>
 <fieldset id="credit_card_information">
 <ol>
+
+<?php if (get_option('web_invoice_paypal_only_button') == 'False') { ?>
 	<li><label for="first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 	<?php echo web_invoice_draw_inputfield("first_name",$invoice->recipient('first_name')); ?>
 	</li>
@@ -1974,8 +2023,8 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
 	</li>
 
-	<li><label for="state"><?php _e('State', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
+	<li><label for="state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php print web_invoice_draw_inputfield('state',$invoice->recipient('state'));  ?>
 	</li>
 
 	<li><label for="zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
@@ -1985,7 +2034,7 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	<li><label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 	<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
 	</li>
-
+	<?php }	?>
 	<li><label for="submit">&nbsp;</label> <input type="image"
 		src="http://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif"
 		style="border: 0; width: 107px; height: 26px; padding: 0;"
@@ -2045,8 +2094,8 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 	<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
 	</li>
 
-	<li><label for="state"><?php _e('State', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php print web_invoice_draw_select('state',web_invoice_state_array(),$invoice->recipient('state'));  ?>
+	<li><label for="state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php print web_invoice_draw_inputfield('state',$invoice->recipient('state'));  ?>
 	</li>
 
 	<li><label for="zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>

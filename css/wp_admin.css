@@ -345,7 +345,7 @@
 }
 
 #settings_page_table  .input_field,#settings_page_table  textarea {
-	width: 340px;
+	width: auto;
 }
 
 #web_invoice_enable_recurring_billing {

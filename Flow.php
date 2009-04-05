@@ -82,11 +82,13 @@ class Web_Invoice_Decider {
 
 			case "first_setup":
 				if(isset($_POST['web_invoice_web_invoice_page'])) update_option('web_invoice_web_invoice_page', $_POST['web_invoice_web_invoice_page']);
-				if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 				if(isset($_POST['web_invoice_payment_method'])) update_option('web_invoice_payment_method', join($_POST['web_invoice_payment_method'],','));
 				if(isset($_POST['web_invoice_gateway_username'])) update_option('web_invoice_gateway_username', $_POST['web_invoice_gateway_username']);
 				if(isset($_POST['web_invoice_gateway_tran_key'])) update_option('web_invoice_gateway_tran_key', $_POST['web_invoice_gateway_tran_key']);
 				if(isset($_POST['web_invoice_gateway_merchant_email'])) update_option('web_invoice_gateway_merchant_email', $_POST['web_invoice_gateway_merchant_email']);
+				// PayPal
+				if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
+				if(isset($_POST['web_invoice_paypal_only_button'])) update_option('web_invoice_paypal_only_button', $_POST['web_invoice_paypal_only_button']);
 				// Moneybookers
 				if(isset($_POST['web_invoice_moneybookers_address'])) update_option('web_invoice_moneybookers_address', $_POST['web_invoice_moneybookers_address']);
 				if(isset($_POST['web_invoice_moneybookers_merchant'])) update_option('web_invoice_moneybookers_merchant', $_POST['web_invoice_moneybookers_merchant']);
@@ -103,6 +105,11 @@ class Web_Invoice_Decider {
 			case "web_invoice_settings":
 				web_invoice_process_settings();
 				web_invoice_show_settings();
+				break;
+				
+			case "web_invoice_email_templates":
+				web_invoice_process_email_templates();
+				web_invoice_show_email_templates();
 				break;
 
 			case "delete_invoice":

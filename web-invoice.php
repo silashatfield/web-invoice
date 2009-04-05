@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.6.3
+ Version: 1.7.0
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -99,6 +99,7 @@ class Web_Invoice {
 		}
 
 		add_filter('the_content', 'web_invoice_the_content');
+		add_filter('web_invoice_email_variables', 'web_invoice_email_variables');
 
 		$this->SetUserAccess(get_option('web_invoice_user_level'));
 
@@ -118,10 +119,11 @@ class Web_Invoice {
 	}
 
 	function web_invoice_add_pages() {
-		add_menu_page('Web Invoice System', 'Web Invoice',  $this->web_invoice_user_level,__FILE__, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
-		add_submenu_page( __FILE__, "Manage Invoice", "New Invoice", $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
-		add_submenu_page( __FILE__, "Recurring Billing", "Recurring Billing", $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
-		add_submenu_page( __FILE__, "Settings", "Settings", $this->web_invoice_user_level, 'web_invoice_settings', array(&$this,'settings_page'));
+		add_menu_page('Web Invoice System', 'Web Invoice',  $this->web_invoice_user_level, __FILE__, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
+		add_submenu_page(__FILE__, __("Manage Invoice"), __("New Invoice"), $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
+		add_submenu_page(__FILE__, __("Recurring Billing"), __("Recurring Billing"), $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
+		add_submenu_page(__FILE__, __("E-mail templates"), __("E-mail templates"), $this->web_invoice_user_level, 'web_invoice_email_templates', array(&$this,'email_template_page'));
+		add_submenu_page(__FILE__, __("Settings"), __("Settings"), $this->web_invoice_user_level, 'web_invoice_settings', array(&$this,'settings_page'));
 	}
 
 	function security() {
@@ -181,6 +183,11 @@ class Web_Invoice {
 		echo $Web_Invoice_Decider->display();
 	}
 
+	function email_template_page() {
+		$Web_Invoice_Decider = new Web_Invoice_Decider('web_invoice_email_templates');
+		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
+		echo $Web_Invoice_Decider->display();
+	}
 	function init() {
 		global $wpdb, $wp_version;
 
@@ -200,7 +207,7 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'));
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'));
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery') );
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.4.0');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.7.0');
 		} else {
 
 			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.5.3');
@@ -260,7 +267,7 @@ class Web_Invoice {
 			  status int(11) NOT NULL,
 			  PRIMARY KEY  (id),
 			  UNIQUE KEY invoice_num (invoice_num)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;";
+			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
 
 		$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
 			  id bigint(20) NOT NULL auto_increment,
@@ -269,7 +276,7 @@ class Web_Invoice {
 			  `value` longtext NOT NULL,
 			  time_stamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
 			  PRIMARY KEY  (id)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;";
+			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
 
 
 
@@ -279,11 +286,28 @@ class Web_Invoice {
 			`meta_key` varchar(255) default NULL,
 			`meta_value` longtext,
 			PRIMARY KEY  (`meta_id`),
-			KEY `post_id` (`invoice_id`),
+			KEY `invoice_id` (`invoice_id`),
 			KEY `meta_key` (`meta_key`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;";
-
-
+			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
+		
+		$sql_payment = "CREATE TABLE IF NOT EXISTS ". Web_Invoice::tablename('payment') ." (
+			  payment_id int(11) NOT NULL auto_increment,
+			  amount double default '0',
+			  user_id varchar(20) NOT NULL default '',
+			  status int(11) NOT NULL,
+			  PRIMARY KEY  (payment_id),
+			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
+		
+		$sql_payment_meta = "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('payment_meta') . "` (
+			`payment_meta_id` bigint(20) NOT NULL auto_increment,
+			`payment_id` bigint(20) NOT NULL default '0',
+			`meta_key` varchar(255) default NULL,
+			`meta_value` longtext,
+			PRIMARY KEY  (`payment_meta_id`),
+			KEY `payment_id` (`payment_id`),
+			KEY `meta_key` (`meta_key`)
+			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
+		
 		// Fix Paid Statuses  from Old Version where they were kept in main table
 		$all_invoices = $wpdb->get_results("SELECT invoice_num FROM ".Web_Invoice::tablename('main')." WHERE status ='1'");
 		if(!empty($all_invoices)) {
@@ -306,6 +330,8 @@ class Web_Invoice {
 		dbDelta($sql_main);
 		dbDelta($sql_log);
 		dbDelta($sql_meta);
+		dbDelta($sql_payment);
+		dbDelta($sql_payment_meta);
 
 		add_option('web_invoice_version', WP_INVOICE_VERSION_NUM);
 		add_option('web_invoice_email_address',get_bloginfo('admin_email'));
@@ -316,7 +342,6 @@ class Web_Invoice {
 		add_option('web_invoice_protocol','http');
 		add_option('web_invoice_user_level','level_8');
 		add_option('web_invoice_web_invoice_page','');
-		add_option('web_invoice_paypal_address','');
 		add_option('web_invoice_default_currency_code','USD');
 
 		add_option('web_invoice_show_quantities','Hide');
@@ -341,6 +366,10 @@ class Web_Invoice {
 		add_option('web_invoice_gateway_relay_response','FALSE');
 		add_option('web_invoice_gateway_email_customer','FALSE');
 
+		// PayPal
+		add_option('web_invoice_paypal_address','');
+		add_option('web_invoice_paypal_only_button', 'False');
+
 		// Moneybookers
 		add_option('web_invoice_moneybookers_address','');
 		add_option('web_invoice_moneybookers_merchant','False');
@@ -352,11 +381,59 @@ class Web_Invoice {
 		add_option('web_invoice_alertpay_merchant','False');
 		add_option('web_invoice_alertpay_secret',uniqid());
 		add_option('web_invoice_alertpay_test_mode','FALSE');
+		add_option('web_invoice_alertpay_ip', '67.205.87.225-67.205.87.226,67.205.87.235');
+
+		// Send invoice
+		add_option('web_invoice_email_send_invoice_subject','%subject');
+		add_option('web_invoice_email_send_invoice_content',
+"Dear %call_sign, 
+
+%business_name has sent you a %recurring
+web invoice in the amount of %amount.
+
+%description
+
+You may pay, view and print the invoice online by visiting the following link: 
+%link
+
+Best regards,
+%business_name ( %business_email )");
+
+		// Send reminder
+		add_option('web_invoice_email_send_reminder_subject','[Reminder] %subject');
+		add_option('web_invoice_email_send_reminder_content',
+"Dear %call_sign, 
+
+%business_name has ent you a reminder for the %recurring
+web invoice in the amount of %amount.
+
+%description
+
+You may pay, view and print the invoice online by visiting the following link: 
+%link.
+
+Best regards,
+%business_name ( %business_email )");
+
+		// Send receipt
+		add_option('web_invoice_email_send_receipt_subject','Receipt for %subject');
+		add_option('web_invoice_email_send_receipt_content',
+"Dear %call_sign, 
+
+%business_name has received your payment for the %recurring
+web invoice in the amount of %amount.
+
+Thank you very much for your patronage.
+
+Best regards,
+%business_name ( %business_email )");
 	}
 
 }
 
 global $_web_invoice_getinfo;
+global $_web_invoice_payment_cache;
+global $_web_invoice_payment_meta_cache;
 
 class Web_Invoice_GetInfo {
 	var $id;
@@ -374,7 +451,7 @@ class Web_Invoice_GetInfo {
 		if (!$this->_row_cache) {
 			$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$invoice_id}'"));
 		}
-		
+
 		if (!$this->_row_cache) {
 			$_custom_invoice = $wpdb->get_row("SELECT invoice_id FROM ".Web_Invoice::tablename('meta')." WHERE meta_key = 'web_invoice_custom_invoice_id' AND meta_value = '{$invoice_id}'");
 			$this->id = $_custom_invoice->invoice_id;
@@ -584,8 +661,8 @@ class Web_Invoice_GetInfo {
 				$web_invoice_due_date_month = web_invoice_meta($this->id,'web_invoice_due_date_month');
 				$web_invoice_due_date_year = web_invoice_meta($this->id,'web_invoice_due_date_year');
 				$web_invoice_due_date_day = web_invoice_meta($this->id,'web_invoice_due_date_day');
-				if(!empty($web_invoice_due_date_month) && !empty($web_invoice_due_date_year) && !empty($web_invoice_due_date_day)) 
-					return date(__('Y-m-d'), strtotime("$web_invoice_due_date_year-$web_invoice_due_date_month-$web_invoice_due_date_day"));
+				if(!empty($web_invoice_due_date_month) && !empty($web_invoice_due_date_year) && !empty($web_invoice_due_date_day))
+				return date(__('Y-m-d'), strtotime("$web_invoice_due_date_year-$web_invoice_due_date_month-$web_invoice_due_date_day"));
 				break;
 
 			case 'amount':

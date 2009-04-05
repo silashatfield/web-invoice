@@ -25,6 +25,7 @@ class Web_Invoice_AlertPay {
 	var $invoice;
 
 	var $ip;
+	var $int_ip;
 
 	var $ap_custemailaddress;
 	var $ap_custfirstname;
@@ -36,7 +37,6 @@ class Web_Invoice_AlertPay {
 	var $ap_custzip;
 
 	var $ap_merchant;
-	var $ap_referencenumber;
 	var $ap_referencenumber;
 
 	var $ap_totalamount;
@@ -58,21 +58,54 @@ class Web_Invoice_AlertPay {
 	function _logSuccess($ref) {
 		web_invoice_update_log($this->invoice->id,'alertpay_api_success',"Successful AlertPay API request from {$this->ip}. REF: {$ref}");
 	}
+	
+	function _quadIpToInt($ip) {
+		$ip_parts = split('\.', $ip);
+		$numeric_ip = 0;
+
+		foreach ($ip_parts as $ip_part) {
+			$numeric_ip=($numeric_ip*256)+intval($ip_part);
+		}
+
+		return $numeric_ip;
+	}
+	
+	function _allowedIp() {
+		$allowed_ips = get_option('web_invoice_alertpay_ip');
+		$this->int_ip = $this->_quadIpToInt($this->ip);
+
+		$ip_ranges = split(',', $allowed_ips);
+
+		foreach ($ip_ranges as $ip_range) {
+			list($start_ips,$end_ips) = split('-', $ip_range);
+
+			$start_ip = $this->_quadIpToInt($start_ips);
+			$end_ip = $this->_quadIpToInt($end_ips);
+
+			if (($this->int_ip >= $start_ip) && ($end_ip >= $this->int_ip)) {
+				if ($end_ip == 0 && $start_ip == $this->int_ip) continue;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	function updateContactInfo() {
 		$user_id = $this->invoice->recipient('user_id');
 		$updated = false;
 
 		if (!empty($this->ap_custaddress)) {
-			update_usermeta($user_id, 'first_name', $this->ap_custaddress);
+			update_usermeta($user_id, 'streetaddress', $this->ap_custaddress);
 			$updated = true;
 		}
 		if (!empty($this->ap_custfirstname)) {
-			update_usermeta($user_id, 'last_name', $this->ap_custfirstname);
+			update_usermeta($user_id, 'first_name', $this->ap_custfirstname);
 			$updated = true;
 		}
 		if (!empty($this->ap_custlastname)) {
-			update_usermeta($user_id, 'streetaddress', $this->ap_custlastname);
+			update_usermeta($user_id, 'last_name', $this->ap_custlastname);
 			$updated = true;
 		}
 		if (!empty($this->ap_custzip)) {
@@ -88,7 +121,7 @@ class Web_Invoice_AlertPay {
 			$updated = true;
 		}
 		if (!empty($this->ap_custcountry)) {
-			update_usermeta($user_id, 'country', $this->ap_custcountry);
+			update_usermeta($user_id, 'country', web_invoice_map_country3_to_country($this->ap_custcountry));
 			$updated = true;
 		}
 
@@ -121,6 +154,15 @@ class Web_Invoice_AlertPay {
 		$this->ap_securitycode = $request['ap_securitycode'];
 		$this->ap_status = $request['ap_status'];
 		$this->ap_test = $request['ap_test'];
+		
+		if (!$this->_allowedIp()) {
+			$this->_logFailure('Invalid IP');
+
+			header('HTTP/1.0 403 Forbidden');
+			header('Content-type: text/plain; charset=UTF-8');
+			print 'We were unable to authenticate the request';
+			exit(0);
+		}
 
 		if (!$this->invoice->id) {
 			$this->_logFailure('Invoice not found');
@@ -136,7 +178,7 @@ class Web_Invoice_AlertPay {
 
 			header('HTTP/1.0 400 Bad Request');
 			header('Content-type: text/plain; charset=UTF-8');
-			print 'We were not expecting you. REF: MB0';
+			print 'We were not expecting you. REF: AP0';
 			exit(0);
 		}
 		if (($this->ap_totalamount != $this->invoice->display('amount'))) {
@@ -144,19 +186,19 @@ class Web_Invoice_AlertPay {
 
 			header('HTTP/1.0 400 Bad Request');
 			header('Content-type: text/plain; charset=UTF-8');
-			print 'We were not expecting you. REF: MB1';
+			print 'We were not expecting you. REF: AP1';
 			exit(0);
 		}
-		if (($this->ap_merchant != get_option('web_invoice_moneybookers_address'))) {
+		if (($this->ap_merchant != get_option('web_invoice_alertpay_address'))) {
 			$this->_logFailure('Invalid pay_to_email');
 
 			header('HTTP/1.0 400 Bad Request');
 			header('Content-type: text/plain; charset=UTF-8');
-			print 'We were not expecting you. REF: MB2';
+			print 'We were not expecting you. REF: AP2';
 			exit(0);
 		}
 
-		if ($this->ap_securitycode != get_option('web_invoice_moneybookers_secret')) {
+		if ($this->ap_securitycode != get_option('web_invoice_alertpay_secret')) {
 			$this->_logFailure('Invalid security code');
 
 			header('HTTP/1.0 403 Forbidden');
@@ -175,7 +217,7 @@ class Web_Invoice_AlertPay {
 		}
 
 		if ($this->ap_test == 1) {
-			if (get_option('web_invoice_gateway_test_mode') == 'TRUE') {
+			if (get_option('web_invoice_alertpay_test_mode') == 'TRUE') {
 				$this->_logFailure('Test payment');
 				$this->updateContactInfo();
 			}

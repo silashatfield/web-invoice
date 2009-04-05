@@ -116,6 +116,18 @@ function web_invoice_meta($invoice_id,$meta_key)
 	return $_web_invoice_meta_cache[$invoice_id][$meta_key];
 }
 
+function web_invoice_payment_meta($payment_id, $meta_key)
+{
+	global $wpdb;
+	global $_web_invoice_payment_meta_cache;
+
+	if (!isset($_web_invoice_payment_meta_cache[$payment_id][$meta_key]) || !$_web_invoice_payment_meta_cache[$payment_id][$meta_key]) {
+		$_web_invoice_payment_meta_cache[$payment_id][$meta_key] = $wpdb->get_var("SELECT meta_value FROM `".Web_Invoice::tablename('payment_meta')."` WHERE meta_key = '$meta_key' AND payment_id = '$payment_id'");
+	}
+
+	return $_web_invoice_payment_meta_cache[$payment_id][$meta_key];
+}
+
 function web_invoice_update_invoice_meta($invoice_id,$meta_key,$meta_value)
 {
 
@@ -134,6 +146,24 @@ function web_invoice_update_invoice_meta($invoice_id,$meta_key,$meta_value)
 	}
 }
 
+function web_invoice_update_payment_meta($payment_id,$meta_key,$meta_value)
+{
+
+	global $wpdb;
+	if(empty($meta_value)) {
+		// Dlete meta_key if no value is set
+		$wpdb->query("DELETE FROM ".Web_Invoice::tablename('payment_meta')." WHERE  payment_id = '$payment_id' AND meta_key = '$meta_key'");
+	}
+	else
+	{
+		// Check if meta key already exists, then we replace it Web_Invoice::tablename('payment_meta')
+		if($wpdb->get_var("SELECT meta_key 	FROM `".Web_Invoice::tablename('payment_meta')."` WHERE meta_key = '$meta_key' AND payment_id = '$payment_id'"))
+		{ $wpdb->query("UPDATE `".Web_Invoice::tablename('payment_meta')."` SET meta_value = '$meta_value' WHERE meta_key = '$meta_key' AND payment_id = '$payment_id'"); }
+		else
+		{ $wpdb->query("INSERT INTO `".Web_Invoice::tablename('payment_meta')."` (payment_id, meta_key, meta_value) VALUES ('$payment_id','$meta_key','$meta_value')"); }
+	}
+}
+
 function web_invoice_delete_invoice_meta($invoice_id,$meta_key='')
 {
 	global $wpdb;
@@ -144,6 +174,15 @@ function web_invoice_delete_invoice_meta($invoice_id,$meta_key='')
 
 }
 
+function web_invoice_delete_payment_meta($payment_id,$meta_key='')
+{
+	global $wpdb;
+	if(empty($meta_key))
+	{ $wpdb->query("DELETE FROM `".Web_Invoice::tablename('payment_meta')."` WHERE invoice_id = '$payment_id' ");}
+	else
+	{ $wpdb->query("DELETE FROM `".Web_Invoice::tablename('payment_meta')."` WHERE invoice_id = '$payment_id' AND meta_key = '$meta_key'");}
+
+}
 
 function web_invoice_delete($invoice_id) {
 	global $wpdb;
@@ -341,6 +380,80 @@ function web_invoice_paid($invoice_id) {
 
 }
 
+function web_invoice_email_variables($invoice_id) {
+	global $web_invoices_email_variables;
+	
+	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
+	$recipient = new Web_Invoice_GetInfo($invoice_id);
+	
+	$web_invoices_email_variables = array(
+		'call_sign' => $recipient->recipient('callsign'), 
+		'business_name' => stripslashes(get_option("web_invoice_business_name")),
+		'recurring' => (web_invoice_recurring($invoice_id) ? " recurring " : ""),
+		'amount' => $invoice_info->display('display_amount'),
+		'link' => $invoice_info->display('link'),
+		'business_email' => get_option("web_invoice_email_address"),
+		'subject' => $invoice_info->display('subject')
+	);
+	
+	if($invoice_info->display('description')) {
+		$web_invoices_email_variables['description'] = $invoice_info->display('description').".";
+	} else {
+		$web_invoices_email_variables['description'] = "";
+	}
+}
+
+function web_invoice_email_apply_variables($matches) {
+	global $web_invoices_email_variables;
+
+	if (isset($web_invoices_email_variables[$matches[2]])) {
+		return $web_invoices_email_variables[$matches[2]];
+	}
+	return $matches[2];
+}
+
+function web_invoice_show_email($invoice_id) {
+	apply_filters('web_invoice_email_variables', $invoice_id);
+	
+	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_invoice_content'));	
+}
+
+function web_invoice_show_reminder_email($invoice_id) {
+	
+	apply_filters('web_invoice_email_variables', $invoice_id);
+
+	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_reminder_content'));	
+}
+
+function web_invoice_show_receipt_email($invoice_id) {
+	
+	apply_filters('web_invoice_email_variables', $invoice_id);
+
+	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_receipt_content'));	
+}
+
+function web_invoice_send_email_receipt($invoice_id) {
+	global $wpdb;
+
+	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
+
+	$message = web_invoice_show_receipt_email($invoice_id);
+
+	$from = get_option("web_invoice_email_address");
+	$headers = "From: {$from}\r\n";
+	if (get_option('web_invoice_cc_thank_you_email') == 'yes') {
+		$headers .= "Bcc: {$from}\r\n";
+	}
+
+	$message = web_invoice_show_receipt_email($invoice_id);
+	$subject = preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_receipt_subject'));
+
+	if(mail($invoice_info->recipient('email_address'), "Receipt", $message, $headers))
+	{ web_invoice_update_log($invoice_id,'contact','Receipt eMailed'); }
+
+	return $message;
+}
+
 function web_invoice_recurring($invoice_id) {
 	global $wpdb;
 	if(web_invoice_meta($invoice_id,'web_invoice_recurring_billing')) return true;
@@ -402,27 +515,6 @@ function web_invoice_draw_select($name,$values,$current_value = '', $id=null) {
 	return $output;
 }
 
-function web_invoice_send_email_receipt($invoice_id) {
-	global $wpdb;
-
-	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
-
-	$message = web_invoice_show_receipt_email($invoice_id);
-
-	$from = get_option("web_invoice_email_address");
-	$headers = "From: {$from}\r\n";
-	if (get_option('web_invoice_cc_thank_you_email') == 'yes') {
-		$headers .= "Bcc: {$from}\r\n";
-	}
-
-	$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
-
-	if(mail($invoice_info->recipient('email_address'), "Receipt", $message, $headers))
-	{ web_invoice_update_log($invoice_id,'contact','Receipt eMailed'); }
-
-	return $message;
-}
-
 function web_invoice_format_phone($phone)
 {
 	$phone = preg_replace("/[^0-9]/", "", $phone);
@@ -435,14 +527,11 @@ function web_invoice_format_phone($phone)
 	return $phone;
 }
 
-
-
 function web_invoice_deactivation($confirm=false)
 {
 	global $wpdb;
 
 }
-
 
 function web_invoice_complete_removal()
 {
@@ -461,7 +550,6 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_business_name');
 	delete_option('web_invoice_business_address');
 	delete_option('web_invoice_business_phone');
-	delete_option('web_invoice_paypal_address');
 	delete_option('web_invoice_default_currency_code');
 	delete_option('web_invoice_web_invoice_page');
 	delete_option('web_invoice_billing_meta');
@@ -486,6 +574,10 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_gateway_delim_data');
 	delete_option('web_invoice_gateway_relay_response');
 	delete_option('web_invoice_gateway_email_customer');
+	
+	// PayPal
+	delete_option('web_invoice_paypal_address');
+	delete_option('web_invoice_paypal_only_button');
 
 	// Moneybookers
 	delete_option('web_invoice_moneybookers_address');
@@ -498,6 +590,19 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_alertpay_merchant');
 	delete_option('web_invoice_alertpay_secret');
 	delete_option('web_invoice_alertpay_test_mode');
+	delete_option('web_invoice_alertpay_ip');
+	
+	// Send invoice
+	delete_option('web_invoice_email_send_invoice_subject');
+	delete_option('web_invoice_email_send_invoice_content');
+		
+	// Send reminder
+	delete_option('web_invoice_email_send_reminder_subject');
+	delete_option('web_invoice_email_send_reminder_content');
+		
+	// Send receipt
+	delete_option('web_invoice_email_send_receipt_subject');
+	delete_option('web_invoice_email_send_receipt_content');
 
 	return "All settings and databased removed.";
 }
@@ -509,7 +614,7 @@ function get_web_invoice_user_id($invoice_id) {
 	return $invoice_info->user_id;
 }
 
-function web_invoice_send_email($invoice_array,$reminder = false)
+function web_invoice_send_email($invoice_array, $reminder = false)
 {
 	global $wpdb;
 
@@ -525,10 +630,10 @@ function web_invoice_send_email($invoice_array,$reminder = false)
 
 			if ($reminder) {
 				$message = strip_tags(web_invoice_show_reminder_email($invoice_id));
-				$subject = "[Reminder] {$invoice_info->subject}";
+				$subject = preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_reminder_subject'));
 			} else {
 				$message = strip_tags(web_invoice_show_email($invoice_id));
-				$subject = $invoice_info->subject;
+				$subject = preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_invoice_subject'));
 			}
 
 			$from = get_option("web_invoice_email_address");
@@ -554,10 +659,10 @@ function web_invoice_send_email($invoice_array,$reminder = false)
 
 		if ($reminder) {
 			$message = strip_tags(web_invoice_show_reminder_email($invoice_id));
-			$subject = "[Reminder] {$invoice_info->subject}";
+			$subject = preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_reminder_subject'));
 		} else {
 			$message = strip_tags(web_invoice_show_email($invoice_id));
-			$subject = $invoice_info->subject;
+			$subject = preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_invoice_subject'));
 		}
 
 		$from = get_option("web_invoice_email_address");
@@ -819,6 +924,21 @@ function web_invoice_state_array($sel='')
 
 function web_invoice_country_array() {
 	return array("US"=> "United States","AL"=> "Albania","DZ"=> "Algeria","AD"=> "Andorra","AO"=> "Angola","AI"=> "Anguilla","AG"=> "Antigua and Barbuda","AR"=> "Argentina","AM"=> "Armenia","AW"=> "Aruba","AU"=> "Australia","AT"=> "Austria","AZ"=> "Azerbaijan Republic","BS"=> "Bahamas","BH"=> "Bahrain","BB"=> "Barbados","BE"=> "Belgium","BZ"=> "Belize","BJ"=> "Benin","BM"=> "Bermuda","BT"=> "Bhutan","BO"=> "Bolivia","BA"=> "Bosnia and Herzegovina","BW"=> "Botswana","BR"=> "Brazil","VG"=> "British Virgin Islands","BN"=> "Brunei","BG"=> "Bulgaria","BF"=> "Burkina Faso","BI"=> "Burundi","KH"=> "Cambodia","CA"=> "Canada","CV"=> "Cape Verde","KY"=> "Cayman Islands","TD"=> "Chad","CL"=> "Chile","C2"=> "China","CO"=> "Colombia","KM"=> "Comoros","CK"=> "Cook Islands","CR"=> "Costa Rica","HR"=> "Croatia","CY"=> "Cyprus","CZ"=> "Czech Republic","CD"=> "Democratic Republic of the Congo","DK"=> "Denmark","DJ"=> "Djibouti","DM"=> "Dominica","DO"=> "Dominican Republic","EC"=> "Ecuador","SV"=> "El Salvador","ER"=> "Eritrea","EE"=> "Estonia","ET"=> "Ethiopia","FK"=> "Falkland Islands","FO"=> "Faroe Islands","FM"=> "Federated States of Micronesia","FJ"=> "Fiji","FI"=> "Finland","FR"=> "France","GF"=> "French Guiana","PF"=> "French Polynesia","GA"=> "Gabon Republic","GM"=> "Gambia","DE"=> "Germany","GI"=> "Gibraltar","GR"=> "Greece","GL"=> "Greenland","GD"=> "Grenada","GP"=> "Guadeloupe","GT"=> "Guatemala","GN"=> "Guinea","GW"=> "Guinea Bissau","GY"=> "Guyana","HN"=> "Honduras","HK"=> "Hong Kong","HU"=> "Hungary","IS"=> "Iceland","IN"=> "India","ID"=> "Indonesia","IE"=> "Ireland","IL"=> "Israel","IT"=> "Italy","JM"=> "Jamaica","JP"=> "Japan","JO"=> "Jordan","KZ"=> "Kazakhstan","KE"=> "Kenya","KI"=> "Kiribati","KW"=> "Kuwait","KG"=> "Kyrgyzstan","LA"=> "Laos","LV"=> "Latvia","LS"=> "Lesotho","LI"=> "Liechtenstein","LT"=> "Lithuania","LU"=> "Luxembourg","MG"=> "Madagascar","MW"=> "Malawi","MY"=> "Malaysia","MV"=> "Maldives","ML"=> "Mali","MT"=> "Malta","MH"=> "Marshall Islands","MQ"=> "Martinique","MR"=> "Mauritania","MU"=> "Mauritius","YT"=> "Mayotte","MX"=> "Mexico","MN"=> "Mongolia","MS"=> "Montserrat","MA"=> "Morocco","MZ"=> "Mozambique","NA"=> "Namibia","NR"=> "Nauru","NP"=> "Nepal","NL"=> "Netherlands","AN"=> "Netherlands Antilles","NC"=> "New Caledonia","NZ"=> "New Zealand","NI"=> "Nicaragua","NE"=> "Niger","NU"=> "Niue","NF"=> "Norfolk Island","NO"=> "Norway","OM"=> "Oman","PW"=> "Palau","PA"=> "Panama","PG"=> "Papua New Guinea","PE"=> "Peru","PH"=> "Philippines","PN"=> "Pitcairn Islands","PL"=> "Poland","PT"=> "Portugal","QA"=> "Qatar","CG"=> "Republic of the Congo","RE"=> "Reunion","RO"=> "Romania","RU"=> "Russia","RW"=> "Rwanda","VC"=> "Saint Vincent and the Grenadines","WS"=> "Samoa","SM"=> "San Marino","ST"=> "São Tomé and Príncipe","SA"=> "Saudi Arabia","SN"=> "Senegal","SC"=> "Seychelles","SL"=> "Sierra Leone","SG"=> "Singapore","SK"=> "Slovakia","SI"=> "Slovenia","SB"=> "Solomon Islands","SO"=> "Somalia","ZA"=> "South Africa","KR"=> "South Korea","ES"=> "Spain","LK"=> "Sri Lanka","SH"=> "St. Helena","KN"=> "St. Kitts and Nevis","LC"=> "St. Lucia","PM"=> "St. Pierre and Miquelon","SR"=> "Suriname","SJ"=> "Svalbard and Jan Mayen Islands","SZ"=> "Swaziland","SE"=> "Sweden","CH"=> "Switzerland","TW"=> "Taiwan","TJ"=> "Tajikistan","TZ"=> "Tanzania","TH"=> "Thailand","TG"=> "Togo","TO"=> "Tonga","TT"=> "Trinidad and Tobago","TN"=> "Tunisia","TR"=> "Turkey","TM"=> "Turkmenistan","TC"=> "Turks and Caicos Islands","TV"=> "Tuvalu","UG"=> "Uganda","UA"=> "Ukraine","AE"=> "United Arab Emirates","GB"=> "United Kingdom","UY"=> "Uruguay","VU"=> "Vanuatu","VA"=> "Vatican City State","VE"=> "Venezuela","VN"=> "Vietnam","WF"=> "Wallis and Futuna Islands","YE"=> "Yemen","ZM"=> "Zambia");
+}
+
+function web_invoice_country3_array() {
+	return array("AFG" => "AF","ALA" => "AX","ALB" => "AL","DZA" => "DZ","ASM" => "AS","AND" => "AD","AGO" => "AO","AIA" => "AI","ATA" => "AQ","ATG" => "AG","ARG" => "AR","ARM" => "AM","ABW" => "AW","AUS" => "AU","AUT" => "AT","AZE" => "AZ","BHS" => "BS","BHR" => "BH","BGD" => "BD","BRB" => "BB","BLR" => "BY","BEL" => "BE","BLZ" => "BZ","BEN" => "BJ","BMU" => "BM","BTN" => "BT","BOL" => "BO","BIH" => "BA","BWA" => "BW","BVT" => "BV","BRA" => "BR","IOT" => "IO","BRN" => "BN","BGR" => "BG","BFA" => "BF","BDI" => "BI","KHM" => "KH","CMR" => "CM","CAN" => "CA","CPV" => "CV","CYM" => "KY","CAF" => "CF","TCD" => "TD","CHL" => "CL","CHN" => "CN","CXR" => "CX","CCK" => "CC","COL" => "CO","COM" => "KM","COG" => "CG","COD" => "CD","COK" => "CK","CRI" => "CR","CIV" => "CI","HRV" => "HR","CUB" => "CU","CYP" => "CY","CZE" => "CZ","DNK" => "DK","DJI" => "DJ","DMA" => "DM","DOM" => "DO","ECU" => "EC","EGY" => "EG","SLV" => "SV","GNQ" => "GQ","ERI" => "ER","EST" => "EE","ETH" => "ET","FLK" => "FK","FRO" => "FO","FJI" => "FJ","FIN" => "FI","FRA" => "FR","GUF" => "GF","PYF" => "PF","ATF" => "TF","GAB" => "GA","GMB" => "GM","GEO" => "GE","DEU" => "DE","GHA" => "GH","GIB" => "GI","GRC" => "GR","GRL" => "GL","GRD" => "GD","GLP" => "GP","GUM" => "GU","GTM" => "GT","GGY" => "GG","GIN" => "GN","GNB" => "GW","GUY" => "GY","HTI" => "HT","HMD" => "HM","VAT" => "VA","HND" => "HN","HKG" => "HK","HUN" => "HU","ISL" => "IS","IND" => "IN","IDN" => "ID","IRN" => "IR","IRQ" => "IQ","IRL" => "IE","IMN" => "IM","ISR" => "IL","ITA" => "IT","JAM" => "JM","JPN" => "JP","JEY" => "JE","JOR" => "JO","KAZ" => "KZ","KEN" => "KE","KIR" => "KI","PRK" => "KP","KOR" => "KR","KWT" => "KW","KGZ" => "KG","LAO" => "LA","LVA" => "LV","LBN" => "LB","LSO" => "LS","LBR" => "LR","LBY" => "LY","LIE" => "LI","LTU" => "LT","LUX" => "LU","MAC" => "MO","MKD" => "MK","MDG" => "MG","MWI" => "MW","MYS" => "MY","MDV" => "MV","MLI" => "ML","MLT" => "MT","MHL" => "MH","MTQ" => "MQ","MRT" => "MR","MUS" => "MU","MYT" => "YT","MEX" => "MX","FSM" => "FM","MDA" => "MD","MCO" => "MC","MNG" => "MN","MNE" => "ME","MSR" => "MS","MAR" => "MA","MOZ" => "MZ","MMR" => "MM","NAM" => "NA","NRU" => "NR","NPL" => "NP","NLD" => "NL","ANT" => "AN","NCL" => "NC","NZL" => "NZ","NIC" => "NI","NER" => "NE","NGA" => "NG","NIU" => "NU","NFK" => "NF","MNP" => "MP","NOR" => "NO","OMN" => "OM","PAK" => "PK","PLW" => "PW","PSE" => "PS","PAN" => "PA","PNG" => "PG","PRY" => "PY","PER" => "PE","PHL" => "PH","PCN" => "PN","POL" => "PL","PRT" => "PT","PRI" => "PR","QAT" => "QA","REU" => "RE","ROU" => "RO","RUS" => "RU","RWA" => "RW","BLM" => "BL","SHN" => "SH","KNA" => "KN","LCA" => "LC","MAF" => "MF","SPM" => "PM","VCT" => "VC","WSM" => "WS","SMR" => "SM","STP" => "ST","SAU" => "SA","SEN" => "SN","SRB" => "RS","SYC" => "SC","SLE" => "SL","SGP" => "SG","SVK" => "SK","SVN" => "SI","SLB" => "SB","SOM" => "SO","ZAF" => "ZA","SGS" => "GS","ESP" => "ES","LKA" => "LK","SDN" => "SD","SUR" => "SR","SJM" => "SJ","SWZ" => "SZ","SWE" => "SE","CHE" => "CH","SYR" => "SY","TWN" => "TW","TJK" => "TJ","TZA" => "TZ","THA" => "TH","TLS" => "TL","TGO" => "TG","TKL" => "TK","TON" => "TO","TTO" => "TT","TUN" => "TN","TUR" => "TR","TKM" => "TM","TCA" => "TC","TUV" => "TV","UGA" => "UG","UKR" => "UA","ARE" => "AE","GBR" => "GB","USA" => "US","UMI" => "UM","URY" => "UY","UZB" => "UZ","VUT" => "VU","VEN" => "VE","VNM" => "VN","VGB" => "VG","VIR" => "VI","WLF" => "WF","ESH" => "EH","YEM" => "YE","ZMB" => "ZM","ZWE" => "ZW");
+}
+
+function web_invoice_map_country3_to_country($country3) {
+	$country_map = web_invoice_country3_array();
+	if (isset($country_map[$country3])) {
+		$country2 = $country_map[$country3];
+	} else {
+		$country2 = $country3; // Cheating ;)
+	}
+	unset($country_map);
+	return $country2;
 }
 
 function web_invoice_month_array() {
@@ -1216,7 +1336,6 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_using_godaddy'])) update_option('web_invoice_using_godaddy', $_POST['web_invoice_using_godaddy']);
 	if(isset($_POST['web_invoice_email_address'])) update_option('web_invoice_email_address', $_POST['web_invoice_email_address']);
 	if(isset($_POST['web_invoice_force_https'])) update_option('web_invoice_force_https', $_POST['web_invoice_force_https']);
-	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 	if(isset($_POST['web_invoice_payment_link'])) update_option('web_invoice_payment_link', $_POST['web_invoice_payment_link']);
 	if(isset($_POST['web_invoice_payment_method'])) update_option('web_invoice_payment_method', join($_POST['web_invoice_payment_method'],','));
 	if(isset($_POST['web_invoice_protocol'])) update_option('web_invoice_protocol', $_POST['web_invoice_protocol']);
@@ -1246,6 +1365,10 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_gateway_relay_response'])) update_option('web_invoice_gateway_relay_response', $_POST['web_invoice_gateway_relay_response']);
 	if(isset($_POST['web_invoice_gateway_email_customer'])) update_option('web_invoice_gateway_email_customer', $_POST['web_invoice_gateway_email_customer']);
 
+	// PayPal
+	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
+	if(isset($_POST['web_invoice_paypal_only_button'])) update_option('web_invoice_paypal_only_button', $_POST['web_invoice_paypal_only_button']);
+	
 	// Moneybookers
 	if(isset($_POST['web_invoice_moneybookers_address'])) update_option('web_invoice_moneybookers_address', $_POST['web_invoice_moneybookers_address']);
 	if(isset($_POST['web_invoice_moneybookers_merchant'])) update_option('web_invoice_moneybookers_merchant', $_POST['web_invoice_moneybookers_merchant']);
@@ -1257,12 +1380,25 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_alertpay_merchant'])) update_option('web_invoice_alertpay_merchant', $_POST['web_invoice_alertpay_merchant']);
 	if(isset($_POST['web_invoice_alertpay_secret'])) update_option('web_invoice_alertpay_secret', $_POST['web_invoice_alertpay_secret']);
 	if(isset($_POST['web_invoice_alertpay_test_mode'])) update_option('web_invoice_alertpay_test_mode', $_POST['web_invoice_alertpay_test_mode']);
+	if(isset($_POST['web_invoice_alertpay_ip'])) update_option('web_invoice_alertpay_ip', $_POST['web_invoice_alertpay_ip']);
+}
+
+function web_invoice_process_email_templates() {
+	global $wpdb;
+
+	// Save General Settings
+	if(isset($_POST['web_invoice_email_send_invoice_subject'])) { update_option('web_invoice_email_send_invoice_subject', $_POST['web_invoice_email_send_invoice_subject']); }
+	if(isset($_POST['web_invoice_email_send_invoice_content'])) update_option('web_invoice_email_send_invoice_content', $_POST['web_invoice_email_send_invoice_content']);
+	if(isset($_POST['web_invoice_email_send_reminder_subject'])) update_option('web_invoice_email_send_reminder_subject', $_POST['web_invoice_email_send_reminder_subject']);
+	if(isset($_POST['web_invoice_email_send_reminder_content'])) update_option('web_invoice_email_send_reminder_content', $_POST['web_invoice_email_send_reminder_content']);
+	if(isset($_POST['web_invoice_email_send_receipt_subject'])) update_option('web_invoice_email_send_receipt_subject', $_POST['web_invoice_email_send_receipt_subject']);
+	if(isset($_POST['web_invoice_email_send_receipt_content'])) update_option('web_invoice_email_send_receipt_content', $_POST['web_invoice_email_send_receipt_content']);
+	
 }
 
 function web_invoice_is_not_merchant() {
 	if(get_option('web_invoice_gateway_username') == '' || get_option('web_invoice_gateway_tran_key') == '') return true;
 }
-
 
 function web_invoice_determine_currency($invoice_id) {
 	//in class
