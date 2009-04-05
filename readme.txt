@@ -12,7 +12,7 @@ Web-Invoice lets you create and send web invoices and setup recurring billing fo
 
 Web Invoice lets WordPress blog owners send itemized invoices to their clients. Ideal for web developers, SEO consultants, general contractors, or anyone with a WordPress blog and clients to bill. The plugin ties into WP's user management database to keep track of your clients and their information.
 
-Once an invoice is created from the WP admin section, an email with a brief description and a unique link is sent to client. Clients follow the link to your blog's special invoice page, view their invoice, and pay their bill using Moneybookers or PayPal. The control panel is very user-friendly and intuitive.
+Once an invoice is created from the WP admin section, an email with a brief description and a unique link is sent to client. Clients follow the link to your blog's special invoice page, view their invoice, and pay their bill using Moneybookers, AlertPay or PayPal. The control panel is very user-friendly and intuitive.
 
 Credit card payments may be accepted via Authorize.net, MerchantPlus' NaviGate, Moneybookers, or PayPal account.  For recurring billing we have integrated Authorize.net's ARB API that will allow you to setup payment schedules along with invoices.
 
