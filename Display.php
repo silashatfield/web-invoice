@@ -1144,7 +1144,7 @@ function web_invoice_show_settings()
 			<?php if(get_option('web_invoice_force_https') == 'true') echo 'selected="yes"';?>><?php _e("Yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="false" style="padding-right: 10px;"
 			<?php if(get_option('web_invoice_force_https') == 'false') echo 'selected="yes"';?>><?php _e("No", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		</select> <a href="http://mohanjith.com/ssl-certificates.html" alt="dynadot.com"
+		</select> <a href="http://mohanjith.com/ssl-certificates.html" alt="mohanjith.com"
 			class="web_invoice_click_me"><?php _e("Do you need an SSL Certificate?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
