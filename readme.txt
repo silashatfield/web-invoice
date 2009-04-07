@@ -66,6 +66,12 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.7.1**
+
+* Added database table health status
+* Activation and Deactivation hooks may not have fired if
+  the plugin directory is symlinked
+
 **Version 1.7.0**
 
 * States are no longer selectable (it's just a text box)

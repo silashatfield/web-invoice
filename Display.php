@@ -1092,8 +1092,15 @@ function web_invoice_show_settings()
 
 	if(get_option('web_invoice_billing_meta') != '') $web_invoice_billing_meta = unserialize(urldecode(get_option('web_invoice_billing_meta')));
 
-	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) { $warning_message = "The plugin database tables are gone, deactivate and reactivate plugin to re-create them."; }if($warning_message) echo "<div id=\"message\" class='error' ><p>$warning_message</p></div>";
-
+	if(	!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") ||
+		!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") ||
+		!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';") ||
+		!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('payment')."';") ||
+		!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('payment_meta')."';")) { 
+		$warning_message = "The plugin database tables are gone, deactivate and reactivate plugin to re-create them.";
+	}
+		
+	if($warning_message) echo "<div id=\"message\" class='error' ><p>$warning_message</p></div>";
 	?>
 <h2><?php _e("Invoice Settings", WEB_INVOICE_TRANS_DOMAIN) ?></h2>
 <form method="POST"><iframe
@@ -1137,7 +1144,7 @@ function web_invoice_show_settings()
 			<?php if(get_option('web_invoice_force_https') == 'true') echo 'selected="yes"';?>><?php _e("Yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="false" style="padding-right: 10px;"
 			<?php if(get_option('web_invoice_force_https') == 'false') echo 'selected="yes"';?>><?php _e("No", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		</select> <a href="http://keti.ws/36281" alt="dynadot.com"
+		</select> <a href="http://mohanjith.com/ssl-certificates.html" alt="dynadot.com"
 			class="web_invoice_click_me"><?php _e("Do you need an SSL Certificate?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
@@ -1530,11 +1537,26 @@ function web_invoice_show_settings()
 	</tr>
 </table>
 
-<table class="form-table">
+<table class="form-table" >
+<tr>
+<td
+<h2>Web Invoice Database Tables</h2>
+<p>Check to see if the database tables are installed properly.  If not, try deactivating and reactivating the plugin, if that doesn't work, <a href="http://mohanjith.com/contact.html">contact us</a>.</p>
+<?php 
 
+echo "Main Table - ";  if($wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';")) {echo "Good";} else {echo "Not Found"; }
+echo "<br />Meta Table - "; if($wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';")) {echo "Good";} else {echo "Not Found"; }
+echo "<br />Log Table - ";  if($wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) {echo "Good";} else {echo "Not Found"; }
+echo "<br />Payment Table - "; if($wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('payment')."';")) {echo "Good";} else {echo "Not Found"; }
+echo "<br />Payment Meta Table - ";  if($wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('payment_meta')."';")) {echo "Good";} else {echo "Not Found"; }
+?>
+</td>
+</tr>
+<tr>
 	<td colspan="2"><a id="delete_all_web_invoice_databases"
 		href="admin.php?page=new_web_invoice&web_invoice_action=complete_removal"><?php _e('Remove All Web Invoice Databases', WEB_INVOICE_TRANS_DOMAIN); ?></a>
 	- <?php _e('Only do this if you want to completely remove the plugin.  All invoices and logs will be gone... forever.', WEB_INVOICE_TRANS_DOMAIN); ?></td>
+</tr>
 </table>
 </form>
 </div>

@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.7.0
+ Version: 1.7.1
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -69,6 +69,7 @@ class Web_Invoice {
 	function Web_Invoice() {
 
 		$version = get_option('web_invoice_version');
+		$_file = "web-invoice/" . basename(__FILE__);
 
 		$this->path = dirname(__FILE__);
 		$this->file = basename(__FILE__);
@@ -83,8 +84,8 @@ class Web_Invoice {
 
 		add_action('wp', array($this, 'api'));
 
-		register_activation_hook(__FILE__, array(&$this, 'install'));
-		register_deactivation_hook(__FILE__, "web_invoice_deactivation");
+		register_activation_hook($_file, array(&$this, 'install'));
+		register_deactivation_hook($_file, array(&$this, 'uninstall'));
 
 		add_action('admin_head', array($this, 'admin_head'));
 		add_action('contextual_help', 'web_invoice_contextual_help_list');
@@ -119,11 +120,13 @@ class Web_Invoice {
 	}
 
 	function web_invoice_add_pages() {
-		add_menu_page('Web Invoice System', 'Web Invoice',  $this->web_invoice_user_level, __FILE__, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
-		add_submenu_page(__FILE__, __("Manage Invoice"), __("New Invoice"), $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
-		add_submenu_page(__FILE__, __("Recurring Billing"), __("Recurring Billing"), $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
-		add_submenu_page(__FILE__, __("E-mail templates"), __("E-mail templates"), $this->web_invoice_user_level, 'web_invoice_email_templates', array(&$this,'email_template_page'));
-		add_submenu_page(__FILE__, __("Settings"), __("Settings"), $this->web_invoice_user_level, 'web_invoice_settings', array(&$this,'settings_page'));
+		$file = "web-invoice/" . basename(__FILE__);
+		
+		add_menu_page('Web Invoice System', 'Web Invoice',  $this->web_invoice_user_level, $file, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
+		add_submenu_page($file, __("Manage Invoice"), __("New Invoice"), $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
+		add_submenu_page($file, __("Recurring Billing"), __("Recurring Billing"), $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
+		add_submenu_page($file, __("E-mail templates"), __("E-mail templates"), $this->web_invoice_user_level, 'web_invoice_email_templates', array(&$this,'email_template_page'));
+		add_submenu_page($file, __("Settings"), __("Settings"), $this->web_invoice_user_level, 'web_invoice_settings', array(&$this,'settings_page'));
 	}
 
 	function security() {
@@ -188,6 +191,7 @@ class Web_Invoice {
 		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
 		echo $Web_Invoice_Decider->display();
 	}
+	
 	function init() {
 		global $wpdb, $wp_version;
 
@@ -244,10 +248,17 @@ class Web_Invoice {
 		}
 		if(empty($_GET['invoice_id'])) unset($_GET['invoice_id']);
 	}
+	
+	function uninstall() {
+		global $wpdb;
+		
+	}
 
 	function install() {
 
 		global $wpdb;
+		
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 		//change old table name to new one
 		if($wpdb->get_var("SHOW TABLES LIKE 'web_invoice'")) {
@@ -255,58 +266,71 @@ class Web_Invoice {
 			$sql_update = "RENAME TABLE ".$table_prefix."invoice TO ". Web_Invoice::tablename('main')."";
 			$wpdb->query($sql_update);
 		}
-
-		$sql_main = "CREATE TABLE IF NOT EXISTS ". Web_Invoice::tablename('main') ." (
-			  id int(11) NOT NULL auto_increment,
-			  amount double default '0',
-			  description text NOT NULL,
-			  invoice_num varchar(45) NOT NULL default '',
-			  user_id varchar(20) NOT NULL default '',
-			  subject text NOT NULL,
-			  itemized text NOT NULL,
-			  status int(11) NOT NULL,
-			  PRIMARY KEY  (id),
-			  UNIQUE KEY invoice_num (invoice_num)
-			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
-
-		$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
-			  id bigint(20) NOT NULL auto_increment,
-			  invoice_id int(11) NOT NULL default '0',
-			  action_type varchar(255) NOT NULL,
-			  `value` longtext NOT NULL,
-			  time_stamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-			  PRIMARY KEY  (id)
-			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
-
-
-
-		$sql_meta= "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('meta') . "` (
-			`meta_id` bigint(20) NOT NULL auto_increment,
-			`invoice_id` bigint(20) NOT NULL default '0',
-			`meta_key` varchar(255) default NULL,
-			`meta_value` longtext,
-			PRIMARY KEY  (`meta_id`),
-			KEY `invoice_id` (`invoice_id`),
-			KEY `meta_key` (`meta_key`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
 		
-		$sql_payment = "CREATE TABLE IF NOT EXISTS ". Web_Invoice::tablename('payment') ." (
-			  payment_id int(11) NOT NULL auto_increment,
-			  amount double default '0',
-			  user_id varchar(20) NOT NULL default '',
-			  status int(11) NOT NULL,
-			  PRIMARY KEY  (payment_id),
-			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
+		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('main') ."'") != Web_Invoice::tablename('main')) {
+			$sql_main = "CREATE TABLE IF NOT EXISTS ". Web_Invoice::tablename('main') ." (
+				  id int(11) NOT NULL auto_increment,
+				  amount double default '0',
+				  description text NOT NULL,
+				  invoice_num varchar(45) NOT NULL default '',
+				  user_id varchar(20) NOT NULL default '',
+				  subject text NOT NULL,
+				  itemized text NOT NULL,
+				  status int(11) NOT NULL,
+				  PRIMARY KEY  (id),
+				  UNIQUE KEY invoice_num (invoice_num)
+				);";
+			dbDelta($sql_main);
+		//}
+
+		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('log') ."'") != Web_Invoice::tablename('log')) {
+			$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
+				  id bigint(20) NOT NULL auto_increment,
+				  invoice_id int(11) NOT NULL default '0',
+				  action_type varchar(255) NOT NULL,
+				  `value` longtext NOT NULL,
+				  time_stamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+				  PRIMARY KEY  (id)
+				);";
+			dbDelta($sql_log);
+		//}
+
+		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('meta') ."'") != Web_Invoice::tablename('meta')) {
+			$sql_meta= "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('meta') . "` (
+				`meta_id` bigint(20) NOT NULL auto_increment,
+				`invoice_id` bigint(20) NOT NULL default '0',
+				`meta_key` varchar(255) default NULL,
+				`meta_value` longtext,
+				PRIMARY KEY  (`meta_id`),
+				KEY `invoice_id` (`invoice_id`),
+				KEY `meta_key` (`meta_key`)
+				);";
+			dbDelta($sql_meta);
+		//}
 		
-		$sql_payment_meta = "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('payment_meta') . "` (
-			`payment_meta_id` bigint(20) NOT NULL auto_increment,
-			`payment_id` bigint(20) NOT NULL default '0',
-			`meta_key` varchar(255) default NULL,
-			`meta_value` longtext,
-			PRIMARY KEY  (`payment_meta_id`),
-			KEY `payment_id` (`payment_id`),
-			KEY `meta_key` (`meta_key`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=utf-8;";
+		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('payment') ."'") != Web_Invoice::tablename('payment')) {
+			$sql_payment = "CREATE TABLE IF NOT EXISTS ". Web_Invoice::tablename('payment') ." (
+				  payment_id int(11) NOT NULL auto_increment,
+				  amount double default '0',
+				  user_id varchar(20) NOT NULL default '',
+				  status int(11) NOT NULL,
+				  PRIMARY KEY  (payment_id)
+				);";
+			dbDelta($sql_payment);
+		//}
+		
+		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('payment_meta') ."'") != Web_Invoice::tablename('payment_meta')) {
+			$sql_payment_meta = "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('payment_meta') . "` (
+				`payment_meta_id` bigint(20) NOT NULL auto_increment,
+				`payment_id` bigint(20) NOT NULL default '0',
+				`meta_key` varchar(255) default NULL,
+				`meta_value` longtext,
+				PRIMARY KEY  (`payment_meta_id`),
+				KEY `payment_id` (`payment_id`),
+				KEY `meta_key` (`meta_key`)
+				);";
+			dbDelta($sql_payment_meta);
+		//}
 		
 		// Fix Paid Statuses  from Old Version where they were kept in main table
 		$all_invoices = $wpdb->get_results("SELECT invoice_num FROM ".Web_Invoice::tablename('main')." WHERE status ='1'");
@@ -325,13 +349,6 @@ class Web_Invoice {
 				if(get_usermeta($user, 'country')) { update_usermeta($user, 'country',get_usermeta($user, 'country')); }
 			}
 		}
-
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		dbDelta($sql_main);
-		dbDelta($sql_log);
-		dbDelta($sql_meta);
-		dbDelta($sql_payment);
-		dbDelta($sql_payment_meta);
 
 		add_option('web_invoice_version', WP_INVOICE_VERSION_NUM);
 		add_option('web_invoice_email_address',get_bloginfo('admin_email'));

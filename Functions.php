@@ -527,20 +527,19 @@ function web_invoice_format_phone($phone)
 	return $phone;
 }
 
-function web_invoice_deactivation($confirm=false)
-{
-	global $wpdb;
-
-}
-
 function web_invoice_complete_removal()
 {
 	// Run regular deactivation, but also delete the main table - all invoice data is gone
 	global $wpdb;
-	web_invoice_deactivation() ;;
+	
+	$web_invoice = new Web_Invoice();
+	$web_invoice->uninstall();
+	
 	$wpdb->query("DROP TABLE " . Web_Invoice::tablename('log') .";");
 	$wpdb->query("DROP TABLE " . Web_Invoice::tablename('main') .";");
 	$wpdb->query("DROP TABLE " . Web_Invoice::tablename('meta') .";");
+	$wpdb->query("DROP TABLE " . Web_Invoice::tablename('payment') .";");
+	$wpdb->query("DROP TABLE " . Web_Invoice::tablename('payment_meta') .";");
 
 	delete_option('web_invoice_version');
 	delete_option('web_invoice_payment_link');

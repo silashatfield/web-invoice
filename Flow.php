@@ -166,10 +166,6 @@ class Web_Invoice_Decider {
 
 				break;
 
-
-
-
-
 			default:
 
 				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
