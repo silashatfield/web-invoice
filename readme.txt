@@ -66,6 +66,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.7.2**
+
+* Call to undefined function web_invoice_curpageurl when CC is enabled
+
 **Version 1.7.1**
 
 * Added database table health status

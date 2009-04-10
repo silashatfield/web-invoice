@@ -65,14 +65,14 @@ class Web_Invoice_Authnet
 				curl_setopt ($ch, CURLOPT_TIMEOUT, 120);
 			}
 			//required for GoDaddy
-				
+
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim($this->fields, "& "));
 			$this->response = curl_exec($ch);
-				
+
 			$this->parseResults();
-				
+
 
 			if ($this->getResultResponseFull() == "Approved")
 			{
@@ -124,7 +124,7 @@ class Web_Invoice_Authnet
 	{
 		return str_replace($this->params['x_encap_char'],'',$this->results[0]);
 	}
-	 
+
 	public function getResultResponseFull()
 	{
 		$response = array("", "Approved", "Declined", "Error");

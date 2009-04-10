@@ -382,10 +382,10 @@ function web_invoice_paid($invoice_id) {
 
 function web_invoice_email_variables($invoice_id) {
 	global $web_invoices_email_variables;
-	
+
 	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
 	$recipient = new Web_Invoice_GetInfo($invoice_id);
-	
+
 	$web_invoices_email_variables = array(
 		'call_sign' => $recipient->recipient('callsign'), 
 		'business_name' => stripslashes(get_option("web_invoice_business_name")),
@@ -395,7 +395,7 @@ function web_invoice_email_variables($invoice_id) {
 		'business_email' => get_option("web_invoice_email_address"),
 		'subject' => $invoice_info->display('subject')
 	);
-	
+
 	if($invoice_info->display('description')) {
 		$web_invoices_email_variables['description'] = $invoice_info->display('description').".";
 	} else {
@@ -414,22 +414,22 @@ function web_invoice_email_apply_variables($matches) {
 
 function web_invoice_show_email($invoice_id) {
 	apply_filters('web_invoice_email_variables', $invoice_id);
-	
-	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_invoice_content'));	
+
+	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_invoice_content'));
 }
 
 function web_invoice_show_reminder_email($invoice_id) {
-	
+
 	apply_filters('web_invoice_email_variables', $invoice_id);
 
-	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_reminder_content'));	
+	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_reminder_content'));
 }
 
 function web_invoice_show_receipt_email($invoice_id) {
-	
+
 	apply_filters('web_invoice_email_variables', $invoice_id);
 
-	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_receipt_content'));	
+	return preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_receipt_content'));
 }
 
 function web_invoice_send_email_receipt($invoice_id) {
@@ -448,7 +448,7 @@ function web_invoice_send_email_receipt($invoice_id) {
 	$message = web_invoice_show_receipt_email($invoice_id);
 	$subject = preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_receipt_subject'));
 
-	if(mail($invoice_info->recipient('email_address'), "Receipt", $message, $headers))
+	if(mail($invoice_info->recipient('email_address'), $subject, $message, $headers))
 	{ web_invoice_update_log($invoice_id,'contact','Receipt eMailed'); }
 
 	return $message;
@@ -531,10 +531,10 @@ function web_invoice_complete_removal()
 {
 	// Run regular deactivation, but also delete the main table - all invoice data is gone
 	global $wpdb;
-	
+
 	$web_invoice = new Web_Invoice();
 	$web_invoice->uninstall();
-	
+
 	$wpdb->query("DROP TABLE " . Web_Invoice::tablename('log') .";");
 	$wpdb->query("DROP TABLE " . Web_Invoice::tablename('main') .";");
 	$wpdb->query("DROP TABLE " . Web_Invoice::tablename('meta') .";");
@@ -573,7 +573,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_gateway_delim_data');
 	delete_option('web_invoice_gateway_relay_response');
 	delete_option('web_invoice_gateway_email_customer');
-	
+
 	// PayPal
 	delete_option('web_invoice_paypal_address');
 	delete_option('web_invoice_paypal_only_button');
@@ -590,15 +590,15 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_alertpay_secret');
 	delete_option('web_invoice_alertpay_test_mode');
 	delete_option('web_invoice_alertpay_ip');
-	
+
 	// Send invoice
 	delete_option('web_invoice_email_send_invoice_subject');
 	delete_option('web_invoice_email_send_invoice_content');
-		
+
 	// Send reminder
 	delete_option('web_invoice_email_send_reminder_subject');
 	delete_option('web_invoice_email_send_reminder_content');
-		
+
 	// Send receipt
 	delete_option('web_invoice_email_send_receipt_subject');
 	delete_option('web_invoice_email_send_receipt_content');
@@ -1367,7 +1367,7 @@ function web_invoice_process_settings() {
 	// PayPal
 	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 	if(isset($_POST['web_invoice_paypal_only_button'])) update_option('web_invoice_paypal_only_button', $_POST['web_invoice_paypal_only_button']);
-	
+
 	// Moneybookers
 	if(isset($_POST['web_invoice_moneybookers_address'])) update_option('web_invoice_moneybookers_address', $_POST['web_invoice_moneybookers_address']);
 	if(isset($_POST['web_invoice_moneybookers_merchant'])) update_option('web_invoice_moneybookers_merchant', $_POST['web_invoice_moneybookers_merchant']);
@@ -1392,7 +1392,7 @@ function web_invoice_process_email_templates() {
 	if(isset($_POST['web_invoice_email_send_reminder_content'])) update_option('web_invoice_email_send_reminder_content', $_POST['web_invoice_email_send_reminder_content']);
 	if(isset($_POST['web_invoice_email_send_receipt_subject'])) update_option('web_invoice_email_send_receipt_subject', $_POST['web_invoice_email_send_receipt_subject']);
 	if(isset($_POST['web_invoice_email_send_receipt_content'])) update_option('web_invoice_email_send_receipt_content', $_POST['web_invoice_email_send_receipt_content']);
-	
+
 }
 
 function web_invoice_is_not_merchant() {

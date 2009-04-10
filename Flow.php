@@ -106,7 +106,7 @@ class Web_Invoice_Decider {
 				web_invoice_process_settings();
 				web_invoice_show_settings();
 				break;
-				
+
 			case "web_invoice_email_templates":
 				web_invoice_process_email_templates();
 				web_invoice_show_email_templates();

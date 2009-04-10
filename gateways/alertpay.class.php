@@ -58,7 +58,7 @@ class Web_Invoice_AlertPay {
 	function _logSuccess($ref) {
 		web_invoice_update_log($this->invoice->id,'alertpay_api_success',"Successful AlertPay API request from {$this->ip}. REF: {$ref}");
 	}
-	
+
 	function _quadIpToInt($ip) {
 		$ip_parts = split('\.', $ip);
 		$numeric_ip = 0;
@@ -69,7 +69,7 @@ class Web_Invoice_AlertPay {
 
 		return $numeric_ip;
 	}
-	
+
 	function _allowedIp() {
 		$allowed_ips = get_option('web_invoice_alertpay_ip');
 		$this->int_ip = $this->_quadIpToInt($this->ip);
@@ -154,7 +154,7 @@ class Web_Invoice_AlertPay {
 		$this->ap_securitycode = $request['ap_securitycode'];
 		$this->ap_status = $request['ap_status'];
 		$this->ap_test = $request['ap_test'];
-		
+
 		if (!$this->_allowedIp()) {
 			$this->_logFailure('Invalid IP');
 

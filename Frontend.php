@@ -66,6 +66,17 @@ web_invoice_show_billing_information($invoice_id);
 
 function web_invoice_frontend_js() {
 	if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page')))  {
+		function web_invoice_curPageURL() {
+			$pageURL = 'http';
+			if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+			$pageURL .= "://";
+			if ($_SERVER["SERVER_PORT"] != "80") {
+				$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+			} else {
+				$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+			}
+			return $pageURL;
+		}
 		?>
 <script type="text/javascript">
 
@@ -83,13 +94,13 @@ function cc_card_pick(){
 	}
 }
 
-function process_cc_checkout(){
+function process_cc_checkout() {
 
-jQuery('#web_invoice_process_wait span').html('<img src="<?php echo Web_Invoice::frontend_path(); ?>/images/processing-ajax.gif">');
+	jQuery('#web_invoice_process_wait span').html('<img src="<?php echo Web_Invoice::frontend_path(); ?>/images/processing-ajax.gif">');
 
-site_url = '<?php echo web_invoice_curPageURL(); ?>';
-link_id = 'wp_cc_response';
-	var req = jQuery.post ( site_url, jQuery('#checkout_form').serialize(), function(html){
+	site_url = '<?php echo web_invoice_curPageURL(); ?>';
+	link_id = 'wp_cc_response';
+	var req = jQuery.post ( site_url, jQuery('#checkout_form').serialize(), function(html) {
 
 			var explode = html.toString().split('\n');
 			var shown = false;
@@ -147,17 +158,6 @@ function add_remove_class(search,replace,element_id)
 
 </script>
 		<?php
-		function web_invoice_curPageURL() {
-			$pageURL = 'http';
-			if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-			$pageURL .= "://";
-			if ($_SERVER["SERVER_PORT"] != "80") {
-				$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-			} else {
-				$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-			}
-			return $pageURL;
-		}
 	}
 
 }
