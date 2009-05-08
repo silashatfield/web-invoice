@@ -1768,6 +1768,7 @@ function web_invoice_show_invoice_overview($invoice_id) {
 <?php  } ?> <?php echo web_invoice_draw_itemized_table($invoice_id); ?>
 </div>
 <?php
+	echo do_action('web_invoice_content_append', $invoice_id);
 }
 
 function web_invoice_show_business_address() {
