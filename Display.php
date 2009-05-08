@@ -462,7 +462,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 	if(!empty($web_invoice_currency_code)) $currency = $web_invoice_currency_code;
 
 	// Crreae two blank arrays for itemized list if none is set
-	if(count($itemized_array) == 0) {
+	if (!is_array($itemized_array) || count($itemized_array) == 0) {
 		$itemized_array[1] = "";
 		$itemized_array[2] = "";
 	}
@@ -717,7 +717,6 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 
 <div id="misc-publishing-actions">
 <table class="form-table">
-	a
 	<tr class="invoice_main">
 		<th><?php _e("Invoice ID ", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td style="font-size: 1.1em; padding-top: 7px;"><input

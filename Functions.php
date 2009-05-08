@@ -253,6 +253,8 @@ function web_invoice_mark_as_paid($invoice_id) {
 			web_invoice_update_invoice_meta($single_invoice_id,'paid_status','paid');
 			web_invoice_update_log($single_invoice_id,'paid',"Invoice marked as paid");
 			if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($single_invoice_id);
+			
+			do_action('web_invoice_mark_as_paid', $single_invoice_id);
 		}
 
 		if(get_option('web_invoice_send_thank_you_email') == 'yes') {
@@ -268,13 +270,15 @@ function web_invoice_mark_as_paid($invoice_id) {
 		web_invoice_update_invoice_meta($invoice_id,'paid_status','paid');
 		web_invoice_update_log($invoice_id,'paid',"Invoice marked as paid");
 		if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
-
+		do_action('web_invoice_mark_as_paid', $invoice_id);
+			
 		if(get_option('web_invoice_send_thank_you_email') == 'yes') {
 			return $counter . " invoice marked as paid, and thank you email sent to customer.";
 		}
 		else{
 			return $counter . " invoice marked as paid.";
-		}}
+		}
+	}
 }
 
 function web_invoice_unarchive($invoice_id) {
