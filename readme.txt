@@ -70,6 +70,7 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 * IE not showing payment forms
 * Updating invoice forces the invoice data cache to purge
+* Add support for WP Mail SMTP (wp_mail)
 
 **Version 1.7.2**
 

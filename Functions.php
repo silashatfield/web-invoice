@@ -444,7 +444,8 @@ function web_invoice_send_email_receipt($invoice_id) {
 	$message = web_invoice_show_receipt_email($invoice_id);
 
 	$from = get_option("web_invoice_email_address");
-	$headers = "From: {$from}\r\n";
+	$from_name = get_option("web_invoice_business_name");
+	$headers = "From: {$from_name} <{$from}>\r\n";
 	if (get_option('web_invoice_cc_thank_you_email') == 'yes') {
 		$headers .= "Bcc: {$from}\r\n";
 	}
@@ -452,7 +453,7 @@ function web_invoice_send_email_receipt($invoice_id) {
 	$message = web_invoice_show_receipt_email($invoice_id);
 	$subject = preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_receipt_subject'));
 
-	if(mail($invoice_info->recipient('email_address'), $subject, $message, $headers))
+	if(wp_mail($invoice_info->recipient('email_address'), $subject, $message, $headers))
 	{ web_invoice_update_log($invoice_id,'contact','Receipt eMailed'); }
 
 	return $message;
@@ -640,11 +641,12 @@ function web_invoice_send_email($invoice_array, $reminder = false)
 			}
 
 			$from = get_option("web_invoice_email_address");
-			$headers = "From: $from";
+			$from_name = get_option("web_invoice_business_name");
+			$headers = "From: {$from_name} <{$from}>";
 
 			$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
 
-			if(mail($profileuser->user_email, $subject, $message, $headers))
+			if(wp_mail($profileuser->user_email, $subject, $message, $headers))
 			{
 				$counter++; // Success in sending quantified.
 				web_invoice_update_log($invoice_id,'contact','Invoice eMailed'); //make sent entry
@@ -669,18 +671,18 @@ function web_invoice_send_email($invoice_array, $reminder = false)
 		}
 
 		$from = get_option("web_invoice_email_address");
-		$headers = "From: $from";
+		$from_name = get_option("web_invoice_business_name");
+		$headers = "From: {$from_name} <{$from}>";
 
 		$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
 
-		if(mail($profileuser->user_email, $subject, $message, $headers))
+		if(wp_mail($profileuser->user_email, $subject, $message, $headers))
 		{
 			web_invoice_update_invoice_meta($invoice_id, "sent_date", date("Y-m-d", time()));
-			web_invoice_update_log($invoice_id,'contact','Invoice eMailed'); return "Web invoice sent successfully."; }
-			else
-			{ return "There was a problem sending the invoice."; }
-
-
+			web_invoice_update_log($invoice_id,'contact','Invoice eMailed'); return "Web invoice sent successfully."; 
+		} else { 
+			return "There was a problem sending the invoice.";
+		}
 	}
 }
 
