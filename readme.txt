@@ -66,13 +66,17 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
-**Version 1.7.4**
+**Version 1.7.5**
 
 * IE not showing payment forms
 * Updating invoice forces the invoice data cache to purge
 * Add support for WP Mail SMTP (wp_mail)
 
-**Version 1.7.2**
+**Version 1.7.4**
+
+* Bug fixes
+
+**Version 1.7.3**
 
 * Bug fixes
 
