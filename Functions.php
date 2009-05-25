@@ -1248,10 +1248,30 @@ function web_invoice_process_invoice_update($invoice_id) {
 	if(web_invoice_does_invoice_exist($invoice_id)) {
 		// Updating Old Invoice
 
-		if(web_invoice_get_invoice_attrib($invoice_id,'subject') != $subject) { $wpdb->query("UPDATE ".Web_Invoice::tablename('main')." SET subject = '$subject' WHERE invoice_num = $invoice_id"); 			web_invoice_update_log($invoice_id, 'updated', ' Subject Updated '); $message .= "Subject updated. ";}
-		if(web_invoice_get_invoice_attrib($invoice_id,'description') != $description) { $wpdb->query("UPDATE ".Web_Invoice::tablename('main')." SET description = '$description' WHERE invoice_num = $invoice_id"); 			web_invoice_update_log($invoice_id, 'updated', ' Description Updated '); $message .= "Description updated. ";}
-		if(web_invoice_get_invoice_attrib($invoice_id,'amount') != $amount) { $wpdb->query("UPDATE ".Web_Invoice::tablename('main')." SET amount = '$amount' WHERE invoice_num = $invoice_id"); 			web_invoice_update_log($invoice_id, 'updated', ' Amount Updated '); $message .= "Amount updated. ";}
-		if(web_invoice_get_invoice_attrib($invoice_id,'itemized') != $itemized) { $wpdb->query("UPDATE ".Web_Invoice::tablename('main')." SET itemized = '$itemized' WHERE invoice_num = $invoice_id"); 			web_invoice_update_log($invoice_id, 'updated', ' Itemized List Updated '); $message .= "Itemized List updated. ";}
+		if(web_invoice_get_invoice_attrib($invoice_id,'subject') != $subject) { 
+			$wpdb->query("UPDATE ".Web_Invoice::tablename('main')." SET subject = '$subject' WHERE invoice_num = $invoice_id"); 
+			web_invoice_update_log($invoice_id, 'updated', ' Subject Updated '); 
+			$message .= "Subject updated. ";
+			web_invoice_clear_cache();
+		}
+		if(web_invoice_get_invoice_attrib($invoice_id,'description') != $description) { 
+			$wpdb->query("UPDATE ".Web_Invoice::tablename('main')." SET description = '$description' WHERE invoice_num = $invoice_id"); 
+			web_invoice_update_log($invoice_id, 'updated', ' Description Updated '); 
+			$message .= "Description updated. ";
+			web_invoice_clear_cache();
+		}
+		if(web_invoice_get_invoice_attrib($invoice_id,'amount') != $amount) { 
+			$wpdb->query("UPDATE ".Web_Invoice::tablename('main')." SET amount = '$amount' WHERE invoice_num = $invoice_id"); 
+			web_invoice_update_log($invoice_id, 'updated', ' Amount Updated '); 
+			$message .= "Amount updated. ";
+			web_invoice_clear_cache();
+		}
+		if(web_invoice_get_invoice_attrib($invoice_id,'itemized') != $itemized) { 
+			$wpdb->query("UPDATE ".Web_Invoice::tablename('main')." SET itemized = '$itemized' WHERE invoice_num = $invoice_id"); 
+			web_invoice_update_log($invoice_id, 'updated', ' Itemized List Updated '); 
+			$message .= "Itemized List updated. ";
+			web_invoice_clear_cache();
+		}
 	}
 	else {
 		// Create New Invoice
@@ -1432,4 +1452,10 @@ function web_invoice_md5_to_invoice($md5) {
 
 function web_invoice_get_alertpay_api_url() {
 	return get_permalink(get_option('web_invoice_web_invoice_page'));
+}
+
+function web_invoice_clear_cache() {
+	global $_web_invoice_clear_cache;
+	
+	$_web_invoice_clear_cache = true;
 }

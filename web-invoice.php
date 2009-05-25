@@ -451,13 +451,14 @@ Best regards,
 global $_web_invoice_getinfo;
 global $_web_invoice_payment_cache;
 global $_web_invoice_payment_meta_cache;
+global $_web_invoice_clear_cache;
 
 class Web_Invoice_GetInfo {
 	var $id;
 	var $_row_cache;
 
 	function __construct($invoice_id) {
-		global $_web_invoice_getinfo, $wpdb;
+		global $_web_invoice_getinfo, $_web_invoice_clear_cache, $wpdb;
 
 		$this->id = $invoice_id;
 
@@ -465,8 +466,9 @@ class Web_Invoice_GetInfo {
 			$this->_row_cache = $_web_invoice_getinfo[$this->id];
 		}
 
-		if (!$this->_row_cache) {
+		if (!$this->_row_cache || $_web_invoice_clear_cache) {
 			$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$invoice_id}'"));
+			$_web_invoice_clear_cache = false;
 		}
 
 		if (!$this->_row_cache) {
@@ -489,10 +491,11 @@ class Web_Invoice_GetInfo {
 	}
 
 	function recipient($what) {
-		global $wpdb;
+		global $_web_invoice_clear_cache, $wpdb;
 
-		if (!$this->_row_cache) {
+		if (!$this->_row_cache || $_web_invoice_clear_cache) {
 			$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$this->id}'"));
+			$_web_invoice_clear_cache = false;
 		}
 
 		if ($this->_row_cache) {
@@ -570,13 +573,14 @@ class Web_Invoice_GetInfo {
 	}
 
 	function display($what) {
-		global $wpdb;
+		global $_web_invoice_clear_cache, $wpdb;
 
-		if (!$this->_row_cache) {
+		if (!$this->_row_cache || $_web_invoice_clear_cache) {
 			$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$this->id}'"));
+			$_web_invoice_clear_cache = false;
 		}
 
-		$invoice_info = $this->_row_cache ;
+		$invoice_info = $this->_row_cache;
 
 		switch ($what) {
 			case 'log_status':

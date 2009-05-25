@@ -1,5 +1,5 @@
 if (!Array.indexOf) {
-	Array.indexOf = [].indexOf ? function(arr, obj, from) {
+	Object.indexOf = Array.indexOf = [].indexOf ? function(arr, obj, from) {
 		return arr.indexOf(obj, from);
 	} : function(arr, obj, from) { // (for IE6)
 				var l = arr.length, i = from ? parseInt((1 * from)
@@ -221,17 +221,20 @@ jQuery(document)
 														'https://gateway.merchantwarehouse.com');
 									})
 
-					payment_method_array = (jQuery(
-							"#web_invoice_payment_method").val() + "")
-							.split(",");
-
-					if (payment_method_array.indexOf('cc') != -1) {
+					if (jQuery("#web_invoice_payment_method").val()) {
+						payment_method_array = (jQuery(
+							"#web_invoice_payment_method").val() + "");
+					} else {
+						payment_method_array = "";
+					}
+					
+					if (payment_method_array.indexOf && payment_method_array.indexOf('cc') != -1) {
 						jQuery('.gateway_info').show();
 					}
-					if (payment_method_array.indexOf('paypal') != -1) {
+					if (payment_method_array.indexOf && payment_method_array.indexOf('paypal') != -1) {
 						jQuery('.paypal_info').show();
 					}
-					if (payment_method_array.indexOf('moneybookers') != -1) {
+					if (payment_method_array.indexOf && payment_method_array.indexOf('moneybookers') != -1) {
 						jQuery('.moneybookers_info').show();
 
 						if (jQuery('#web_invoice_moneybookers_merchant').val() == 'False') {
@@ -242,7 +245,7 @@ jQuery(document)
 									.hide();
 						}
 					}
-					if (payment_method_array.indexOf('alertpay') != -1) {
+					if (payment_method_array.indexOf && payment_method_array.indexOf('alertpay') != -1) {
 						jQuery('.alertpay_info').show();
 
 						if (jQuery('#web_invoice_alertpay_merchant').val() == 'False') {
@@ -258,7 +261,7 @@ jQuery(document)
 							.change(
 									function() {
 										payment_method_array = (jQuery(this)
-												.val() + "").split(",");
+												.val() + "");
 
 										jQuery('.paypal_info').hide();
 										jQuery('.moneybookers_info').hide();

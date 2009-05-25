@@ -66,6 +66,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.7.3**
+
+* IE not showing payment forms
+* Updating invoice forces the invoice data cache to purge
+
 **Version 1.7.2**
 
 * Call to undefined function web_invoice_curpageurl when CC is enabled
