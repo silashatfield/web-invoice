@@ -453,26 +453,24 @@ jQuery(document)
 				});
 
 function recalc() {
-	jQuery("[@id^=total_item]").calc(
-	// the equation to use for the calculation
+	jQuery("[id^=total_item]").calc(
+			// the equation to use for the calculation 
 			"qty * price",
 			// define the variables used in the equation, these can be a jQuery
 			// object
 			{
-				qty :jQuery("[@id^=qty_item_]"),
-				price :jQuery("[@id^=price_item_]")
+				qty :jQuery("[id^=qty_item_]"),
+				price :jQuery("[id^=price_item_]")
 			},
 			// define the formatting callback, the results of the calculation
 			// are passed to this function
 			function(s) {
-				// return the number as a dollar amount
-
 				return s.toFixed(2);
 			},
 			// define the finish callback, this runs after the calculation has
 			// been complete
 			function($this) {
-				// sum the total of the $("[@id^=total_item]") selector
+				// sum the total of the $("[id^=total_item]") selector
 				var tax = jQuery('#web_invoice_tax').val() / 100;
 				var sum = $this.sum() + ($this.sum() * tax);
 				var total_occurances = jQuery(
@@ -490,7 +488,6 @@ function recalc() {
 function add_itemized_list_row() {
 	var lastRow = jQuery('#invoice_list tr:last').clone();
 	var id = parseInt(jQuery('.id', lastRow).html()) + 1;
-	;
 
 	jQuery('.id', lastRow).html(id);
 	jQuery('.item_name', lastRow).attr('name',

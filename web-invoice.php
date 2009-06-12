@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.7.5
+ Version: 1.8.0
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -205,12 +205,12 @@ class Web_Invoice {
 		wp_enqueue_script('jquery.form',$this->uri."/js/jquery.form.js", array('jquery') );
 
 		if(is_admin()) {
-			wp_enqueue_script('jquery.impromptu',$this->uri."/js/jquery-impromptu.1.7.js", array('jquery'));
-			wp_enqueue_script('jquery.field',$this->uri."/js/jquery.field.min.js", array('jquery'));
-			wp_enqueue_script('jquery.delegate',$this->uri."/js/jquery.delegate-1.1.min.js", array('jquery') );
-			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'));
-			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'));
-			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery') );
+			wp_enqueue_script('jquery.impromptu',$this->uri."/js/jquery-impromptu.1.7.js", array('jquery'), '1.8.0');
+			wp_enqueue_script('jquery.field',$this->uri."/js/jquery.field.min.js", array('jquery'), '1.8.0');
+			wp_enqueue_script('jquery.delegate',$this->uri."/js/jquery.delegate.js", array('jquery'), '1.8.0');
+			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'), '1.8.0');
+			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'), '1.8.0');
+			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.7.0');
 		} else {
 

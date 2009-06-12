@@ -3,7 +3,7 @@ Contributors: mohanjith
 Donate link: http://mohanjith.com/wordpress
 Tags: bill, moneybookers, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
-Tested up to: 2.7.1
+Tested up to: 2.8.0
 Stable tag: trunk
 
 Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
@@ -65,6 +65,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.8.0**
+
+* Compatibility with WordPress 2.8.0
+* Upgrade jquery.calculation, jquery.delegate, jquery.field and jquery.form to latest available
 
 **Version 1.7.5**
 
