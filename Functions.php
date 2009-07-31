@@ -595,6 +595,11 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_alertpay_secret');
 	delete_option('web_invoice_alertpay_test_mode');
 	delete_option('web_invoice_alertpay_ip');
+	
+	// Google Checkout
+	delete_option('web_invoice_google_checkout_merchant_id');
+	delete_option('web_invoice_google_checkout_level2');
+	delete_option('web_invoice_google_checkout_merchant_key');
 
 	// Send invoice
 	delete_option('web_invoice_email_send_invoice_subject');
@@ -1406,6 +1411,11 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_alertpay_secret'])) update_option('web_invoice_alertpay_secret', $_POST['web_invoice_alertpay_secret']);
 	if(isset($_POST['web_invoice_alertpay_test_mode'])) update_option('web_invoice_alertpay_test_mode', $_POST['web_invoice_alertpay_test_mode']);
 	if(isset($_POST['web_invoice_alertpay_ip'])) update_option('web_invoice_alertpay_ip', $_POST['web_invoice_alertpay_ip']);
+		
+	// Google Checkout
+	if(isset($_POST['web_invoice_google_checkout_merchant_id'])) update_option('web_invoice_google_checkout_merchant_id', $_POST['web_invoice_google_checkout_merchant_id']);
+	if(isset($_POST['web_invoice_google_checkout_level2'])) update_option('web_invoice_google_checkout_level2', $_POST['web_invoice_google_checkout_level2']);
+	if(isset($_POST['web_invoice_google_checkout_merchant_key'])) update_option('web_invoice_google_checkout_merchant_key', $_POST['web_invoice_google_checkout_merchant_key']);
 }
 
 function web_invoice_process_email_templates() {

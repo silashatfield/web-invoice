@@ -400,6 +400,11 @@ class Web_Invoice {
 		add_option('web_invoice_alertpay_test_mode','FALSE');
 		add_option('web_invoice_alertpay_ip', '67.205.87.225-67.205.87.226,67.205.87.235');
 
+		// Google Checkout
+		add_option('web_invoice_google_checkout_merchant_id','');
+		add_option('web_invoice_google_checkout_level2','False');
+		add_option('web_invoice_google_checkout_merchant_key','');
+		
 		// Send invoice
 		add_option('web_invoice_email_send_invoice_subject','%subject');
 		add_option('web_invoice_email_send_invoice_content',

@@ -256,6 +256,17 @@ jQuery(document)
 									.hide();
 						}
 					}
+					if (payment_method_array.indexOf && payment_method_array.indexOf('google_checkout') != -1) {
+						jQuery('.google_checkout_info').show();
+
+						if (jQuery('#web_invoice_google_checkout').val() == 'False') {
+							jQuery('.google_checkout_info_merchant').hide();
+						}
+						if (jQuery('#web_invoice_google_checkout_address').val() != '') {
+							jQuery('#web_invoice_google_checkout_register_link')
+									.hide();
+						}
+					}
 
 					jQuery('#web_invoice_payment_method')
 							.change(
