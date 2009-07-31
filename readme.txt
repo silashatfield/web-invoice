@@ -3,7 +3,7 @@ Contributors: mohanjith
 Donate link: http://mohanjith.com/wordpress
 Tags: bill, moneybookers, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
-Tested up to: 2.8.0
+Tested up to: 2.8.2
 Stable tag: trunk
 
 Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
@@ -23,14 +23,14 @@ Some features:
 * Send invoice notifications to customers with a secured link back to the web invoice
 * Send invoice reminders to customers with a secured link back to the web invoice
 * Accept credit card payment via Authorize.net or MerchantPlus NaviGate
-* Moneybookers, AlertPay or PayPal available if you don't have a credit card processing account
+* Moneybookers, AlertPay, Google Checkout (Sponsored by Aaron Petz, http://aaronpetz.com) or PayPal available if you don't have a credit card processing account
 * Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature or Moneybookers
 * Force web invoice pages to be viewed in SSL mode
 * Archive old invoices
 * Easily use old invoices as templates for new ones
 * Dynamic and intuitive user interface
-* Automatically mark invoices paid via Moneybookers as paid (Requires merchant status)
-* Automatically mark invoices paid via AlertPay as paid (Requires business status)
+* Automatically mark invoices paid via Moneybookers (Requires merchant status), AlertPay 
+  (Requires merchant status) or Google Checkout as paid 
 * Split gateway support (Your client is given the option of choosing the preferred gateway from
   the list of gateways you support). e.g PayPal and Moneybookers
 * All user interfaces are internationalized
@@ -40,7 +40,7 @@ Would you like to see this plugin in other languages? Please show your interest 
 the [Web Invoice community forum](http://mohanjith.com/forum/). You could also help us
 translate this plugin to your language.
 
-If you like this plugin please give it a good rating, and consider saying thanks or making a donation.
+If you like this plugin please give it a good rating, and consider saying thanks, sponsoring a feature or making a donation.
 
 This is a fork of [WP-Invoice](http://wordpress.org/extend/plugins/wp-invoice/), however now lot of things have changed since.
 
@@ -65,6 +65,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.9.0**
+
+* Google Checkout support
 
 **Version 1.8.0**
 

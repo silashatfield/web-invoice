@@ -115,6 +115,10 @@
 	display: none;
 }
 
+#web_invoice_first_time_setup .google_checkout_info {
+	display: none;
+}
+
 #web_invoice_first_time_setup .gateway_info {
 	display: none;
 }
@@ -337,6 +341,10 @@
 }
 
 #settings_page_table  .alertpay_info {
+	display: none;
+}
+
+#settings_page_table  .google_checkout_info {
 	display: none;
 }
 

@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.8.0
+ Version: 1.9.0
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -140,7 +140,7 @@ class Web_Invoice {
 		echo $Web_Invoice_Decider->display();
 	}
 
-	function favorites ($actions) {
+	function favorites($actions) {
 		$key = 'admin.php?page=new_web_invoice';
 		$actions[$key] = array('New Invoice',$this->web_invoice_user_level);
 		return $actions;
@@ -162,6 +162,10 @@ class Web_Invoice {
 				require_once("gateways/alertpay.class.php");
 				$alertpay_obj = new Web_Invoice_AlertPay($_POST['ap_itemname']);
 				$alertpay_obj->processRequest($_SERVER['REMOTE_ADDR'], $_POST);
+			} else if((get_option('web_invoice_google_checkout_level2') == 'True') && isset($_POST['_type'])) {
+				require_once("gateways/googlecheckout.class.php");
+				$gc_obj = new Web_Invoice_GoogleCheckout($_POST['_type'], $_POST);
+				$gc_obj->processRequest($_SERVER['REMOTE_ADDR'], $_POST);
 			}
 		}
 	}
@@ -211,7 +215,7 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery'), '1.8.0');
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.7.0');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.9.0');
 		} else {
 
 			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.5.3');
@@ -404,6 +408,7 @@ class Web_Invoice {
 		add_option('web_invoice_google_checkout_merchant_id','');
 		add_option('web_invoice_google_checkout_level2','False');
 		add_option('web_invoice_google_checkout_merchant_key','');
+		add_option('web_invoice_google_checkout_tax_state','NY');
 		
 		// Send invoice
 		add_option('web_invoice_email_send_invoice_subject','%subject');

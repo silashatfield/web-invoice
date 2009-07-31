@@ -840,6 +840,8 @@ function web_invoice_show_welcome_message() {
 		<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>><?php _e("Moneybookers", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		<option value="alertpay" style="padding-right: 10px;"
 		<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>><?php _e("AlertPay", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<option value="google_checkout" style="padding-right: 10px;"
+		<?php if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) echo 'selected="yes"';?>><?php _e("Google Checkout", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		<option value="cc" style="padding-right: 10px;"
 		<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 	</select></li>
@@ -918,6 +920,38 @@ function web_invoice_show_welcome_message() {
 	<input id='web_invoice_alertpay_ip' name="web_invoice_alertpay_ip"
 		class="search-input input_field" type="text"
 		value="<?php echo stripslashes(get_option('web_invoice_alertpay_ip')); ?>" />
+	</li>
+	
+	<li class="google_checkout_info">
+		<?php _e("Google Checkout Merchant Id:", WEB_INVOICE_TRANS_DOMAIN) ?>
+		<input id='web_invoice_google_checkout_merchant_id'
+			name="web_invoice_google_checkout_merchant_id" class="input_field"
+			type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_google_checkout_merchant_id')); ?>" />
+		<a id="web_invoice_google_checkout_register_link" href="http://keti.ws/60282"
+			alt="checkout.google.com/sell/" class="web_invoice_click_me"><?php _e("Do you need a Google Checkout account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+	</li>
+
+	<li class="google_checkout_info">
+		<?php _e("Enable Google Checkout Level 2 integration:", WEB_INVOICE_TRANS_DOMAIN) ?>
+		<select id='web_invoice_google_checkout_level2'
+			name="web_invoice_google_checkout_level2">
+			<option value="True"
+			<?php echo (get_option('web_invoice_google_checkout_level2')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_google_checkout_level2')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select>
+		<span class="web_invoice_google_checkout_url web_invoice_info"><?php _e("HTML API callback URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
+		<a title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
+			href="<?php echo web_invoice_get_google_checkout_api_url(); ?>"><?php echo web_invoice_get_google_checkout_api_url(); ?></a></span>
+	</li>
+	
+	<li class="google_checkout_info google_checkout_info_merchant">
+		<?php _e("Google Checkout merchant key:", WEB_INVOICE_TRANS_DOMAIN) ?>
+		<input id='web_invoice_google_checkout_merchant_key'
+			name="web_invoice_google_checkout_merchant_key"
+			class="search-input input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_google_checkout_merchant_key')); ?>" />
 	</li>
 
 	<li class="gateway_info"><a class="web_invoice_tooltip"
@@ -1242,7 +1276,7 @@ function web_invoice_show_settings()
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>><?php _e("Moneybookers", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="alertpay" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>><?php _e("AlertPay", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-			<option value="google-checkout" style="padding-right: 10px;"
+			<option value="google_checkout" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) echo 'selected="yes"';?>><?php _e("Google Checkout", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="cc" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
@@ -1326,7 +1360,7 @@ function web_invoice_show_settings()
 			<?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select> <span class="web_invoice_alertpay_url web_invoice_info"><?php _e("Your alert URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
 		<a
-			title="Copy this link<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?>"
+			title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
 			href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br />
 			<?php _e("Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).", WEB_INVOICE_TRANS_DOMAIN) ?>
 		</span></td>
@@ -1363,8 +1397,8 @@ function web_invoice_show_settings()
 			name="web_invoice_google_checkout_merchant_id" class="input_field"
 			type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_google_checkout_merchant_id')); ?>" />
-		<a id="web_invoice_google_checkout_register_link" href="http://keti.ws/60281"
-			alt="google.com/checkout/sell/" class="web_invoice_click_me"><?php _e("Do you need a Google Checkout account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+		<a id="web_invoice_google_checkout_register_link" href="http://keti.ws/60282"
+			alt="checkout.google.com/sell/" class="web_invoice_click_me"><?php _e("Do you need a Google Checkout account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
 
@@ -1376,7 +1410,12 @@ function web_invoice_show_settings()
 			<?php echo (get_option('web_invoice_google_checkout_level2')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="False"
 			<?php echo (get_option('web_invoice_google_checkout_level2')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		</select></td>
+		</select>
+		<span class="web_invoice_google_checkout_url web_invoice_info"><?php _e("HTML API callback URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
+		<a
+			title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
+			href="<?php echo web_invoice_get_google_checkout_api_url(); ?>"><?php echo web_invoice_get_google_checkout_api_url(); ?></a></span>
+			</td>
 	</tr>
 	<tr class="google_checkout_info google_checkout_info_merchant">
 		<th><?php _e("Google Checkout merchant key:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
@@ -1820,12 +1859,13 @@ function web_invoice_show_business_address() {
 function web_invoice_show_billing_information($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	$Web_Invoice = new Web_Invoice();
-	$pp = false; $cc = false; $mb = false; $alertpay = false;
+	$pp = false; $cc = false; $mb = false; $alertpay = false; $gc = false;
 
 	if(stristr(get_option('web_invoice_payment_method'),'paypal')) { $pp = true; }
 	if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) { $mb = true; }
 	if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) { $alertpay = true; }
-	if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true;}
+	if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true; }
+	if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) { $gc = true; }
 
 	?>
 
@@ -1843,7 +1883,11 @@ function web_invoice_show_billing_information($invoice_id) {
 <a href="#moneybookers_payment_form"
 	title="<?php _e('Moneybookers', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/moneybookers_logo.png"
-	alt="Moneybookers" width="75" height="42" /></a> <?php } ?> <?php if ($pp) { ?>
+	alt="Moneybookers" width="75" height="42" /></a> <?php } ?> <?php if ($gc) { ?>
+<a href="#google_checkout_payment_form"
+	title="<?php _e('Google Checkout', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	src="<?php echo Web_Invoice::frontend_path(); ?>/images/google_checkout.gif"
+	alt="Google Checkout" height="46" width="180" /></a> <?php } ?> <?php if ($pp) { ?>
 <a href="#paypal_payment_form"
 	title="<?php _e('PayPal', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png"
@@ -1854,6 +1898,7 @@ function web_invoice_show_billing_information($invoice_id) {
 	if ($alertpay) web_invoice_show_alertpay_form($invoice_id, $invoice);
 	if ($cc) web_invoice_show_cc_form($invoice_id, $invoice);
 	if ($mb) web_invoice_show_moneybookers_form($invoice_id, $invoice);
+	if ($gc) web_invoice_show_google_checkout_form($invoice_id, $invoice);
 	if ($pp) web_invoice_show_paypal_form($invoice_id, $invoice);
 
 	?></div>
@@ -1881,9 +1926,45 @@ function web_invoice_show_alertpay_form($invoice_id, $invoice) {
 <fieldset id="credit_card_information">
 <ol>
 	<li><label for="submit">&nbsp;</label> <input type="image"
-		src="https://www.alertpay.com//PayNow/4FF7280888FE4FD4AE1B4A286ED9B8D5a.gif"
+		src="https://www.alertpay.com/PayNow/4FF7280888FE4FD4AE1B4A286ED9B8D5a.gif"
 		style="border: 0; width: 170px; height: 70px; padding: 0;"
 		name="submit" alt="Pay now with AlertPay" /></li>
+</ol>
+</fieldset>
+</form>
+</div>
+	<?php
+}
+
+function web_invoice_show_google_checkout_form($invoice_id, $invoice) {
+$env_base_url = "sandbox.google.com/checkout";
+// $env_base_url = "checkout.google.com";
+	?>
+<div id="google_checkout_payment_form" class="payment_form">
+<form action="https://<?php echo $env_base_url; ?>/api/checkout/v2/checkoutForm/Merchant/<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>" method="post"
+	class="clearfix"><?php 
+if ($invoice->display('tax')) {
+	if (get_option('web_invoice_google_checkout_tax_state') == 'UK') {
+	?><input type="hidden" name="tax_uk_country" value="<?php echo get_option('web_invoice_google_checkout_tax_state'); ?>"/><?php 
+	} else {
+	?><input type="hidden" name="tax_us_state" value="<?php echo get_option('web_invoice_google_checkout_tax_state'); ?>"/><?php
+	}
+?>
+<p>Tax may not be applied if you are from a different state</p>
+<?php 
+}
+	// Convert Itemized List into Moneybookers Item List
+	if(is_array($invoice->display('itemized'))) {
+		echo web_invoice_create_google_checkout_itemized_list($invoice->display('itemized'),$invoice_id);
+	}
+	?>
+<fieldset id="credit_card_information">
+<ol>
+	<li><label for="submit">&nbsp;</label> <input type="image" name="Google Checkout" 
+		alt="Fast checkout through Google" height="46" width="180"
+		style="border: 0; width: 180px; height: 46px; padding: 0;"
+		src="http://<?php echo $env_base_url; ?>/buttons/checkout.gif?merchant_id=<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>&w=180&h=46&style=white&variant=text&loc=en_US"/>
+		</li>
 </ol>
 </fieldset>
 </form>
@@ -2292,6 +2373,42 @@ function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
 	return $output;
 }
 
+function web_invoice_create_google_checkout_itemized_list($itemized_array,$invoice_id) {
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	$tax = $invoice->display('tax_percent');
+	$amount = $invoice->display('amount');
+	$display_id = $invoice->display('display_id');
+	$currency = $invoice->display('currency');
+	$single_item = false;
+
+	$tax_free_sum = 0;
+	$counter = 1;
+
+	if (empty($tax) && count($itemized_array) >  3) {
+		$single_item = true;
+	} else if (count($itemized_array) >  2) {
+		$single_item = true;
+	}
+
+	foreach($itemized_array as $itemized_item) {
+		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
+	}
+
+	if(!empty($tax)) {
+		$output .= "
+		<input type='hidden' name='tax_rate' value='".($tax/100)."' />\n";
+	}
+	
+	$output .= "<input type='hidden' name='item_name_{$counter}' value='Reference Invoice #:' />\n";
+	$output .= "<input type='hidden' name='item_description_{$counter}' value='".$display_id."' />\n";
+		
+	$output .= "<input type='hidden' name='item_quantity_{$counter}' value='1' />\n";
+	$output .= "<input type='hidden' name='item_price_{$counter}' value='".$tax_free_sum."' />\n";
+	$output .= "<input type='hidden' name='item_currency_{$counter}' value='".$currency."' />\n";
+
+	return $output;
+}
+
 function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	$tax = $invoice->display('tax_percent');
@@ -2329,7 +2446,7 @@ function web_invoice_create_moneybookers_itemized_list($itemized_array,$invoice_
 		$counter++;
 		$output .= "<input type='hidden' name='amount{$counter}' value='". $tax_cart ."' />\n";
 	}
-
+	
 	$output .= "<input type='hidden' name='detail1_description' value='Reference Invoice #:' />\n";
 	$output .= "<input type='hidden' name='detail1_text' value='$display_id' />\n";
 

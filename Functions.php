@@ -101,7 +101,6 @@ function web_invoice_update_log($invoice_id,$action_type,$value)
 function web_invoice_query_log($invoice_id,$action_type) {
 	global $wpdb;
 	if($results = $wpdb->get_results("SELECT * FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = '$invoice_id' AND action_type = '$action_type' ORDER BY 'time_stamp' DESC")) return $results;
-
 }
 
 function web_invoice_meta($invoice_id,$meta_key)
@@ -600,6 +599,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_google_checkout_merchant_id');
 	delete_option('web_invoice_google_checkout_level2');
 	delete_option('web_invoice_google_checkout_merchant_key');
+	delete_option('web_invoice_google_checkout_tax_state');
 
 	// Send invoice
 	delete_option('web_invoice_email_send_invoice_subject');
@@ -1416,6 +1416,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_google_checkout_merchant_id'])) update_option('web_invoice_google_checkout_merchant_id', $_POST['web_invoice_google_checkout_merchant_id']);
 	if(isset($_POST['web_invoice_google_checkout_level2'])) update_option('web_invoice_google_checkout_level2', $_POST['web_invoice_google_checkout_level2']);
 	if(isset($_POST['web_invoice_google_checkout_merchant_key'])) update_option('web_invoice_google_checkout_merchant_key', $_POST['web_invoice_google_checkout_merchant_key']);
+	if(isset($_POST['web_invoice_google_checkout_tax_state'])) update_option('web_invoice_google_checkout_tax_state', $_POST['web_invoice_google_checkout_tax_state']);
 }
 
 function web_invoice_process_email_templates() {
@@ -1445,6 +1446,17 @@ function web_invoice_determine_currency($invoice_id) {
 	return $currency_code;
 }
 
+function web_invoice_gc_serial_to_invoice($serial_number)
+{
+	global $wpdb;
+
+	$serial_number = mysql_real_escape_string($serial_number);
+	$invoice_id = $wpdb->get_var("SELECT invoice_id FROM `".Web_Invoice::tablename('meta')."` WHERE meta_key = 'gc_serial_number' AND meta_value = '$serial_number'");
+
+	return $invoice_id;
+}
+
+
 function web_invoice_md5_to_invoice($md5) {
 	global $wpdb, $_web_invoice_md5_to_invoice_cache;
 
@@ -1463,6 +1475,10 @@ function web_invoice_md5_to_invoice($md5) {
 }
 
 function web_invoice_get_alertpay_api_url() {
+	return get_permalink(get_option('web_invoice_web_invoice_page'));
+}
+
+function web_invoice_get_google_checkout_api_url() {
 	return get_permalink(get_option('web_invoice_web_invoice_page'));
 }
 

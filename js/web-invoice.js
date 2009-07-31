@@ -259,10 +259,10 @@ jQuery(document)
 					if (payment_method_array.indexOf && payment_method_array.indexOf('google_checkout') != -1) {
 						jQuery('.google_checkout_info').show();
 
-						if (jQuery('#web_invoice_google_checkout').val() == 'False') {
+						if (jQuery('#web_invoice_google_checkout_level2').val() == 'False') {
 							jQuery('.google_checkout_info_merchant').hide();
 						}
-						if (jQuery('#web_invoice_google_checkout_address').val() != '') {
+						if (jQuery('#web_invoice_google_checkout_merchant_id').val() != '') {
 							jQuery('#web_invoice_google_checkout_register_link')
 									.hide();
 						}
@@ -277,6 +277,7 @@ jQuery(document)
 										jQuery('.paypal_info').hide();
 										jQuery('.moneybookers_info').hide();
 										jQuery('.alertpay_info').hide();
+										jQuery('.google_checkout_info').hide();
 										jQuery('.gateway_info').hide();
 										if (payment_method_array
 												.indexOf('paypal') != -1) {
@@ -320,6 +321,25 @@ jQuery(document)
 														.hide();
 											}
 										}
+										if (payment_method_array
+												.indexOf('google_checkout') != -1) {
+											jQuery('.google_checkout_info').show();
+
+											if (jQuery(
+													'#web_invoice_google_checkout_merchant')
+													.val() == 'False') {
+												jQuery(
+														'.google_checkout_info_merchant')
+														.hide();
+											}
+											if (jQuery(
+													'#web_invoice_google_checkout_merchant_id')
+													.val() != '') {
+												jQuery(
+														'#web_invoice_google_checkout_register_link')
+														.hide();
+											}
+										}
 										if (payment_method_array.indexOf('cc') != -1) {
 											jQuery('.gateway_info').show();
 										}
@@ -344,6 +364,15 @@ jQuery(document)
 								}
 								if (jQuery(this).val() == 'False') {
 									jQuery('.alertpay_info_merchant').hide();
+								}
+							});
+					jQuery('#web_invoice_google_checkout_level2').change(
+							function() {
+								if (jQuery(this).val() == 'True') {
+									jQuery('.google_checkout_info_merchant').show();
+								}
+								if (jQuery(this).val() == 'False') {
+									jQuery('.google_checkout_info_merchant').hide();
 								}
 							});
 
