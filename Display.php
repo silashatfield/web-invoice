@@ -1860,18 +1860,22 @@ function web_invoice_show_billing_information($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	$Web_Invoice = new Web_Invoice();
 	$pp = false; $cc = false; $mb = false; $alertpay = false; $gc = false;
-
-	if(stristr(get_option('web_invoice_payment_method'),'paypal')) { $pp = true; }
-	if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) { $mb = true; }
-	if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) { $alertpay = true; }
-	if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true; }
-	if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) { $gc = true; }
+	
+	$method_count = 0;
+	
+	if(stristr(get_option('web_invoice_payment_method'),'paypal')) { $pp = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) { $mb = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) { $alertpay = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) { $gc = true; $method_count++; }
 
 	?>
 
 <div id="billing_overview" class="clearfix noprint">
 <div id="payment_methods">
-<p><?php _e('Pay with:', WEB_INVOICE_TRANS_DOMAIN); ?> <br />
+<p><?php _e('Pay with:', WEB_INVOICE_TRANS_DOMAIN); ?> 
+<?php if ($method_count > 1) { ?>
+<br />
 	<?php if ($cc) { ?> <a href="#cc_payment_form"
 	title="<?php _e('Visa Master American Express', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/cc_logo.png"
@@ -1891,7 +1895,9 @@ function web_invoice_show_billing_information($invoice_id) {
 <a href="#paypal_payment_form"
 	title="<?php _e('PayPal', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png"
-	alt="PayPal" width="80" height="45" /></a> <?php } ?></p>
+	alt="PayPal" width="80" height="45" /></a> <?php } ?>
+<?php } ?>
+</p>
 </div>
 	<?php
 
@@ -1902,6 +1908,9 @@ function web_invoice_show_billing_information($invoice_id) {
 	if ($pp) web_invoice_show_paypal_form($invoice_id, $invoice);
 
 	?></div>
+	<script type="text/javascript">
+		_web_invoice_method_count = <?php echo $method_count; ?>;
+	</script>
 	<?php
 }
 
