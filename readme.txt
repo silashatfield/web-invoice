@@ -66,6 +66,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.1**
+
+* Re-released because the payment forms used Google Checkout sandbox
+
 **Version 1.9.0**
 
 * Google Checkout support

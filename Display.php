@@ -1937,8 +1937,8 @@ function web_invoice_show_alertpay_form($invoice_id, $invoice) {
 }
 
 function web_invoice_show_google_checkout_form($invoice_id, $invoice) {
-$env_base_url = "sandbox.google.com/checkout";
-// $env_base_url = "checkout.google.com";
+// $env_base_url = "sandbox.google.com/checkout";
+$env_base_url = "checkout.google.com";
 	?>
 <div id="google_checkout_payment_form" class="payment_form">
 <form action="https://<?php echo $env_base_url; ?>/api/checkout/v2/checkoutForm/Merchant/<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>" method="post"
