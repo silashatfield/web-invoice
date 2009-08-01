@@ -66,6 +66,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.3**
+
+* Fixed javascript error outside of invoice page
+
 **Version 1.9.2**
 
 * Usability fixes

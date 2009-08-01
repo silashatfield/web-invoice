@@ -1,3 +1,5 @@
+var _web_invoice_method_count = 0;
+
 jQuery(document).ready( function() {
 	if (_web_invoice_method_count > 1) {
 		jQuery(".payment_form").hide();
