@@ -1,7 +1,7 @@
 === Web Invoice - Invoicing and billing for WordPress ===
 Contributors: mohanjith
 Donate link: http://mohanjith.com/wordpress
-Tags: bill, moneybookers, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
+Tags: bill, moneybookers, google checkout, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
 Tested up to: 2.8.2
 Stable tag: trunk
