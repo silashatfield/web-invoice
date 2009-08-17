@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.9.3
+ Version: 1.9.4
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -288,15 +288,27 @@ class Web_Invoice {
 		//}
 
 		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('log') ."'") != Web_Invoice::tablename('log')) {
-		$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
-				  id bigint(20) NOT NULL auto_increment,
-				  invoice_id int(11) NOT NULL default '0',
-				  action_type varchar(255) NOT NULL,
-				  `value` longtext NOT NULL,
-				  time_stamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-				  PRIMARY KEY  (id)
-				);";
-		dbDelta($sql_log);
+		if(preg_match('/^4\.0.*/', $wpdb->get_var("SELECT version()")) > 0) {
+			$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
+					  id bigint(20) NOT NULL auto_increment,
+					  invoice_id int(11) NOT NULL default '0',
+					  action_type varchar(255) NOT NULL,
+					  `value` longtext NOT NULL,
+					  time_stamp timestamp NOT NULL,
+					  PRIMARY KEY  (id)
+					);";
+			dbDelta($sql_log);
+		} else {
+			$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
+					  id bigint(20) NOT NULL auto_increment,
+					  invoice_id int(11) NOT NULL default '0',
+					  action_type varchar(255) NOT NULL,
+					  `value` longtext NOT NULL,
+					  time_stamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+					  PRIMARY KEY  (id)
+					);";
+			dbDelta($sql_log);
+		}
 		//}
 
 		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('meta') ."'") != Web_Invoice::tablename('meta')) {
