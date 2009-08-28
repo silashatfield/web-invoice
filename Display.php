@@ -1839,7 +1839,6 @@ function web_invoice_show_paypal_receipt($invoice_id) {
 
 function web_invoice_show_already_paid($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
-	print_r($invoice->display('paid_date'));
 	return '<p>'.sprintf(__('This invoice was paid on %s.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('paid_date')).'</p>';
 }
 

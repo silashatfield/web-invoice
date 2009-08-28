@@ -66,6 +66,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.6**
+
+* Bug fixes
+
 **Version 1.9.5**
 
 * Secure URLs to payment method logos
