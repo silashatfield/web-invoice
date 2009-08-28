@@ -806,6 +806,7 @@ function web_invoice_show_welcome_message() {
 	$web_invoice_web_invoice_page = get_option("web_invoice_web_invoice_page");
 	$web_invoice_paypal_address = get_option("web_invoice_paypal_address");
 	$web_invoice_moneybookers_address = get_option("web_invoice_moneybookers_address");
+	$web_invoice_moneybookers_recurring_address = get_option("web_invoice_moneybookers_recurring_address");
 	$web_invoice_alertpay_address = get_option("web_invoice_alertpay_address");
 	$web_invoice_gateway_username = get_option("web_invoice_gateway_username");
 	$web_invoice_payment_method = get_option("web_invoice_payment_method");
@@ -868,6 +869,12 @@ function web_invoice_show_welcome_message() {
 		value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
 	<a href="http://keti.ws/27481" alt="moneybookers.com"
 		class="web_invoice_click_me"><?php _e("Do you need a Moneybookers account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+	</li>
+	<li class="moneybookers_info"><?php _e("Moneybookers username for recurring payments (optional): ", WEB_INVOICE_TRANS_DOMAIN) ?><input
+		id='web_invoice_moneybookers_recurring_address'
+		name="web_invoice_moneybookers_recurring_address"
+		class="search-input input_field" type="text"
+		value="<?php echo stripslashes(get_option('web_invoice_moneybookers_recurring_address')); ?>" />
 	</li>
 	<li class="moneybookers_info"><?php _e("Enable Moneybookers payment notifications: ", WEB_INVOICE_TRANS_DOMAIN) ?>
 	<select id='web_invoice_moneybookers_merchant'
@@ -1311,6 +1318,15 @@ function web_invoice_show_settings()
 		<a id="web_invoice_moneybookers_register_link"
 			href="http://keti.ws/27481" alt="moneybookers.com"
 			class="web_invoice_click_me"><?php _e("Do you need a Moneybookers account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+		</td>
+	</tr>
+	
+	<tr class="moneybookers_info">
+		<th width="200"><?php _e("Moneybookers Username for recurring payments (optional):", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_moneybookers_recurring_address'
+			name="web_invoice_moneybookers_recurring_address" class="input_field"
+			type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_moneybookers_recurring_address')); ?>" />
 		</td>
 	</tr>
 
@@ -1823,6 +1839,7 @@ function web_invoice_show_paypal_receipt($invoice_id) {
 
 function web_invoice_show_already_paid($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	print_r($invoice->display('paid_date'));
 	return '<p>'.sprintf(__('This invoice was paid on %s.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('paid_date')).'</p>';
 }
 
@@ -1972,7 +1989,7 @@ if ($invoice->display('tax')) {
 	<li><label for="submit">&nbsp;</label> <input type="image" name="Google Checkout" 
 		alt="Fast checkout through Google" height="46" width="180"
 		style="border: 0; width: 180px; height: 46px; padding: 0;"
-		src="http://<?php echo $env_base_url; ?>/buttons/checkout.gif?merchant_id=<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>&w=180&h=46&style=white&variant=text&loc=en_US"/>
+		src="https://<?php echo $env_base_url; ?>/buttons/checkout.gif?merchant_id=<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>&w=180&h=46&style=white&variant=text&loc=en_US"/>
 		</li>
 </ol>
 </fieldset>
@@ -1989,9 +2006,7 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 	class="clearfix"><input type="hidden" name="currency"
 	value="<?php echo $invoice->display('currency'); ?>" /> <input
 	type="hidden" name="no_shipping" value="1" /> <input type="hidden"
-	name="rid" value="5413099" /> <input type="hidden" name="pay_to_email"
-	value="<?php echo get_option('web_invoice_moneybookers_address'); ?>" />
-<input type="hidden" name="return_url"
+	name="rid" value="5413099" /> <input type="hidden" name="return_url"
 	value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" /> <input
 	type="hidden" name="cancel_url"
 	value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" /> <input
@@ -2000,7 +2015,9 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 	type="hidden" name="transaction_id" id="invoice_num"
 	value="<?php echo  $invoice->display('display_id'); ?>" /> <?php
 	if (web_invoice_recurring($invoice_id)) {
-		?> <input type="hidden" name="rec_payment_id"
+		?> <input type="hidden" name="pay_to_email"
+	value="<?php echo get_option('web_invoice_moneybookers_recurring_address'); ?>" /> 
+	<input type="hidden" name="rec_payment_id"
 	value="<?php echo $invoice->display('display_id').date('YMD'); ?>" /> <input
 	type="hidden" name="rec_payment_type" value="recurring" /> <input
 	type="hidden" name="rec_status_url"
@@ -2016,8 +2033,9 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 	type="hidden" name="rec_amount"
 	value="<?php echo $invoice->display('amount'); ?>" /> <?php
 	} else {
-		?> <input type="hidden" name="amount"
-	value="<?php echo $invoice->display('amount'); ?>" /> <?php 
+		?> <input type="hidden" name="pay_to_email"
+	value="<?php echo get_option('web_invoice_moneybookers_address'); ?>" /> 
+	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" /> <?php 
 	// Convert Itemized List into Moneybookers Item List
 	if(is_array($invoice->display('itemized'))) {
 		echo web_invoice_create_moneybookers_itemized_list($invoice->display('itemized'),$invoice_id);
@@ -2064,7 +2082,7 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 	</li>
 
 	<li><label for="submit">&nbsp;</label> <input type="image"
-		src="http://www.moneybookers.com/images/logos/checkout_logos/checkoutlogo_CCs_240x80.gif"
+		src="https://www.moneybookers.com/images/logos/checkout_logos/checkoutlogo_CCs_240x80.gif"
 		style="border: 0; width: 240px; height: 80px; padding: 0;"
 		name="submit" alt="Moneybookers.com and money moves" /></li>
 	<br class="cb" />
@@ -2141,7 +2159,7 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	</li>
 	<?php }	?>
 	<li><label for="submit">&nbsp;</label> <input type="image"
-		src="http://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif"
+		src="https://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif"
 		style="border: 0; width: 107px; height: 26px; padding: 0;"
 		name="submit"
 		alt="Make payments with PayPal - it's fast, free and secure!" /></li>

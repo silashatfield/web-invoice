@@ -66,6 +66,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.5**
+
+* Secure URLs to payment method logos
+* Separate address/username for Moneybookers recurring payments
+
 **Version 1.9.4**
 
 * Tested with WordPress 2.8.4

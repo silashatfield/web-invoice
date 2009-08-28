@@ -35,7 +35,7 @@ function web_invoice_the_content($content) {
 		if(!($invoice_id = web_invoice_md5_to_invoice($_GET['invoice_id']))) return $content;
 
 		//If already paid, show thank you message
-		if(web_invoice_paid_status($invoice_id)) return web_invoice_show_already_paid($invoice_id).$content;
+		// if(web_invoice_paid_status($invoice_id)) return web_invoice_show_already_paid($invoice_id).$content;
 
 		// Show receipt if coming back from PayPal
 		if(isset($_REQUEST['receipt_id'])) return web_invoice_show_paypal_receipt($invoice_id);
@@ -55,10 +55,12 @@ if($recurring)  web_invoice_show_recurring_info($invoice_id);
 //Billing Business Address
 if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
 
-//Show Billing Information
-web_invoice_show_billing_information($invoice_id);
-
-
+if(web_invoice_paid_status($invoice_id)) {
+	return web_invoice_show_already_paid($invoice_id);
+} else {
+	//Show Billing Information
+	web_invoice_show_billing_information($invoice_id);
+}
 ?></div>
 <?php
 	} else return $content;

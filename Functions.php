@@ -584,6 +584,7 @@ function web_invoice_complete_removal()
 
 	// Moneybookers
 	delete_option('web_invoice_moneybookers_address');
+	delete_option('web_invoice_moneybookers_recurring_address');
 	delete_option('web_invoice_moneybookers_merchant');
 	delete_option('web_invoice_moneybookers_secret');
 	delete_option('web_invoice_moneybookers_ip');
@@ -1401,6 +1402,7 @@ function web_invoice_process_settings() {
 
 	// Moneybookers
 	if(isset($_POST['web_invoice_moneybookers_address'])) update_option('web_invoice_moneybookers_address', $_POST['web_invoice_moneybookers_address']);
+	if(isset($_POST['web_invoice_moneybookers_recurring_address'])) update_option('web_invoice_moneybookers_recurring_address', $_POST['web_invoice_moneybookers_recurring_address']);
 	if(isset($_POST['web_invoice_moneybookers_merchant'])) update_option('web_invoice_moneybookers_merchant', $_POST['web_invoice_moneybookers_merchant']);
 	if(isset($_POST['web_invoice_moneybookers_secret'])) update_option('web_invoice_moneybookers_secret', $_POST['web_invoice_moneybookers_secret']);
 	if(isset($_POST['web_invoice_moneybookers_ip'])) update_option('web_invoice_moneybookers_ip', $_POST['web_invoice_moneybookers_ip']);

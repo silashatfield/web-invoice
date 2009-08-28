@@ -154,7 +154,7 @@ class Web_Invoice_Moneybookers {
 			print 'We were not expecting you. REF: MB1';
 			exit(0);
 		}
-		if (($this->pay_to_email != get_option('web_invoice_moneybookers_address'))) {
+		if (($this->pay_to_email != get_option('web_invoice_moneybookers_address')) or ($this->pay_to_email != get_option('web_invoice_moneybookers_recurring_address'))) {
 			$this->_logFailure('Invalid pay_to_email');
 
 			header('HTTP/1.0 400 Bad Request');
