@@ -1839,7 +1839,11 @@ function web_invoice_show_paypal_receipt($invoice_id) {
 
 function web_invoice_show_already_paid($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
-	return '<p>'.sprintf(__('This invoice was paid on %s.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('paid_date')).'</p>';
+?>
+	<div id="invoice_paid" class="clearfix">
+		<p><?php print sprintf(__('This invoice was paid on %s.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('paid_date')); ?></p>
+	</div>
+<?php 
 }
 
 function web_invoice_show_invoice_overview($invoice_id) {

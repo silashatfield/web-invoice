@@ -56,7 +56,7 @@ if($recurring)  web_invoice_show_recurring_info($invoice_id);
 if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
 
 if(web_invoice_paid_status($invoice_id)) {
-	return web_invoice_show_already_paid($invoice_id);
+	web_invoice_show_already_paid($invoice_id);
 } else {
 	//Show Billing Information
 	web_invoice_show_billing_information($invoice_id);
