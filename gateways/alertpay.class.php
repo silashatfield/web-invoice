@@ -83,10 +83,10 @@ class Web_Invoice_AlertPay {
 			$end_ip = $this->_quadIpToInt($end_ips);
 
 			if (($this->int_ip >= $start_ip) && ($end_ip >= $this->int_ip)) {
-				if ($end_ip == 0 && $start_ip == $this->int_ip) continue;
-
 				return true;
 			}
+			
+			if ($end_ip == 0 && $start_ip == $this->int_ip) return true;
 		}
 
 		return false;
