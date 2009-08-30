@@ -66,6 +66,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.8**
+
+* Moneybookers recurring payment IPN bug fix
+
 **Version 1.9.7**
 
 * IP verification bug fix (Moneybookers and AlertPay)
