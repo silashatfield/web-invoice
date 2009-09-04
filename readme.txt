@@ -40,7 +40,7 @@ Would you like to see this plugin in other languages? Please show your interest 
 the [Web Invoice community forum](http://mohanjith.com/forum/). You could also help us
 translate this plugin to your language.
 
-Web Invoice is already translated to
+Web Invoice is already translated to:
 
 * Italian (it_IT) by Dukessa
 
