@@ -194,10 +194,7 @@ function web_invoice_recurring_overview($message='')
 
 	<?php if(web_invoice_is_not_merchant() && (get_option('web_invoice_moneybookers_merchant') == 'False')) { ?>
 <div class="web_invoice_rounded_box">
-<p><?php printf(__('You need a %4$s account with Merchant status or a credit card processing account to use recurring billing. </b>
-			You may get an ARB (Automated Recurring Billing) account from %1$s (800-546-1997),
-			%2$s (888-845-9457) or
-			%3$s (866-400-9706).', WEB_INVOICE_TRANS_DOMAIN), '<a href="http://keti.ws/37281">MerchantPlus</a>', '<a href="http://keti.ws/37282">MerchantExpress.com</a>', '<a href="http://keti.ws/36282">MerchantWarehouse</a>', '<a href="http://keti.ws/27481" alt="moneybookers.com">Moneybookers</a>'); ?></p>
+<p><?php printf(__('You need a %4$s account with Merchant status or a credit card processing account to use recurring billing. You may get an ARB (Automated Recurring Billing) account from %1$s (800-546-1997), %2$s (888-845-9457) or %3$s (866-400-9706).', WEB_INVOICE_TRANS_DOMAIN), '<a href="http://keti.ws/37281">MerchantPlus</a>', '<a href="http://keti.ws/37282">MerchantExpress.com</a>', '<a href="http://keti.ws/36282">MerchantWarehouse</a>', '<a href="http://keti.ws/27481" alt="moneybookers.com">Moneybookers</a>'); ?></p>
 <p><?php _e('Once you have an account, enter in your username and transaction key into the ', WEB_INVOICE_TRANS_DOMAIN); ?><a
 	href="admin.php?page=web_invoice_settings"><?php _e('settings page', WEB_INVOICE_TRANS_DOMAIN); ?></a>.</p>
 </div>
@@ -452,6 +449,8 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 	$user_email = $profileuser->user_email;
 	$first_name = $profileuser->first_name;
 	$last_name = $profileuser->last_name;
+	$company_name = $profileuser->company_name;
+	$tax_id = $profileuser->tax_id;
 	$streetaddress = $profileuser->streetaddress;
 	$city = $profileuser->city;
 	$state = $profileuser->state;
@@ -542,21 +541,33 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 			class="web_invoice_make_editable<?php if(!$last_name) echo " web_invoice_unset"; ?>"
 			id="web_invoice_last_name"><?php if($last_name) echo $last_name; else echo __("Set Last Name", WEB_INVOICE_TRANS_DOMAIN); ?></span><br />
 		<span
+			class="web_invoice_make_editable<?php if(!$company_name) echo " web_invoice_unset"; ?>"
+			id="web_invoice_company_name"><?php if($company_name) echo $company_name; else echo __("Set Company", WEB_INVOICE_TRANS_DOMAIN); ?></span><br/>
+		<span
 			class="web_invoice_make_editable<?php if(!$streetaddress) echo " web_invoice_unset"; ?>"
 			id="web_invoice_streetaddress"><?php if($streetaddress) echo $streetaddress; else echo __("Set Street Address", WEB_INVOICE_TRANS_DOMAIN); ?></span><br />
 		<span
 			class="web_invoice_make_editable<?php if(!$city) echo " web_invoice_unset"; ?>"
-			id="web_invoice_city"><?php if($city) echo $city; else echo __("Set City", WEB_INVOICE_TRANS_DOMAIN); ?></span>
+			id="web_invoice_city"><?php if($city) echo $city; else echo __("Set City", WEB_INVOICE_TRANS_DOMAIN); ?></span><br/>
 		<span
 			class="web_invoice_make_editable<?php if(!$state) echo " web_invoice_unset"; ?>"
 			id="web_invoice_state"><?php if($state) echo $state; else echo __("Set State", WEB_INVOICE_TRANS_DOMAIN); ?></span>
 		<span
 			class="web_invoice_make_editable<?php if(!$zip) echo " web_invoice_unset"; ?>"
-			id="web_invoice_zip"><?php if($zip) echo $zip; else echo __("Set Zip Code", WEB_INVOICE_TRANS_DOMAIN); ?></span>
+			id="web_invoice_zip"><?php if($zip) echo $zip; else echo __("Set Zip Code", WEB_INVOICE_TRANS_DOMAIN); ?></span><br/>
 		<span
 			class="web_invoice_make_editable<?php if(!$country) echo " web_invoice_unset"; ?>"
-			id="web_invoice_country"><?php if($country) echo $country; else echo __("Set Country", WEB_INVOICE_TRANS_DOMAIN); ?></span>
-
+			id="web_invoice_country"><?php if($country) echo $country; else echo __("Set Country", WEB_INVOICE_TRANS_DOMAIN); ?></span><br/>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<th><?php _e("Tax ID", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td>
+		<div id="web_invoice_edit_tax_form_invoice">
+			<span
+				class="web_invoice_make_editable<?php if(!$tax_id) echo " web_invoice_unset"; ?>"
+				id="web_invoice_tax_id"><?php if($tax_id) echo $tax_id; else echo __("Set Tax ID", WEB_INVOICE_TRANS_DOMAIN); ?></span>
 		</div>
 		</td>
 	</tr>
@@ -1172,6 +1183,14 @@ function web_invoice_show_settings()
 			value="<?php echo stripslashes(get_option('web_invoice_business_phone')); ?>" />
 		</td>
 	</tr>
+	
+	<tr>
+		<th width="200"><?php _e("Business Tax ID", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input name="web_invoice_business_tax_id" type="text"
+			class="input_field"
+			value="<?php echo stripslashes(get_option('web_invoice_business_tax_id')); ?>" />
+		</td>
+	</tr>
 
 	<tr>
 		<th><a class="web_invoice_tooltip"
@@ -1765,6 +1784,12 @@ function web_invoice_user_profile_fields()
 <table class="form-table">
 
 	<tr>
+		<th><label for="company_name"><?php _e('Company', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<td><input type="text" name="company_name" id="company_name"
+			value="<?php echo get_usermeta($user_id,'company_name'); ?>" /></td>
+	</tr>
+	
+	<tr>
 		<th><label for="streetaddress"><?php _e('Street Address', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
 		<td><input type="text" name="streetaddress" id="streetaddress"
 			value="<?php echo get_usermeta($user_id,'streetaddress'); ?>" /></td>
@@ -1801,6 +1826,12 @@ function web_invoice_user_profile_fields()
 	<tr>
 		<th><label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
 		<td><?php echo web_invoice_draw_select('country',web_invoice_country_array(),get_usermeta($user_id,'country')); ?></td>
+	</tr>
+	
+	<tr>
+		<th><label for="tax_id"><?php _e('Tax ID', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<td><input type="text" name="tax_id" id="tax_id"
+			value="<?php echo get_usermeta($user_id,'tax_id'); ?>" /></td>
 	</tr>
 
 	<tr>
@@ -1870,6 +1901,8 @@ function web_invoice_show_business_address() {
 <h2 class="invoice_page_subheading"><?php _e('Bill From:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <p class="web_invoice_business_name"><?php echo get_option('web_invoice_business_name'); ?></p>
 <p class="web_invoice_business_address"><?php echo nl2br(get_option('web_invoice_business_address')); ?></p>
+<p class="web_invoice_business_phone"><?php echo get_option('web_invoice_business_phone'); ?></p>
+<p class="web_invoice_business_tax_id"><?php _e('Tax ID:', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo get_option('web_invoice_business_tax_id'); ?></p>
 </div>
 
 	<?php

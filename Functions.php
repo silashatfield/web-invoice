@@ -553,6 +553,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_business_name');
 	delete_option('web_invoice_business_address');
 	delete_option('web_invoice_business_phone');
+	delete_option('web_invoice_business_tax_id');
 	delete_option('web_invoice_default_currency_code');
 	delete_option('web_invoice_web_invoice_page');
 	delete_option('web_invoice_billing_meta');
@@ -715,6 +716,8 @@ function web_invoice_profile_update() {
 	global $wpdb;
 	$user_id =  $_REQUEST['user_id'];
 
+	if(isset($_POST['company_name'])) update_usermeta($user_id, 'company_name', $_POST['company_name']);
+	if(isset($_POST['tax_id'])) update_usermeta($user_id, 'tax_id', $_POST['tax_id']);
 	if(isset($_POST['streetaddress'])) update_usermeta($user_id, 'streetaddress', $_POST['streetaddress']);
 	if(isset($_POST['zip']))  update_usermeta($user_id, 'zip', $_POST['zip']);
 	if(isset($_POST['state'])) update_usermeta($user_id, 'state', $_POST['state']);
@@ -1058,6 +1061,8 @@ function web_invoice_process_cc_transaction($cc_data) {
 			update_usermeta($wp_users_id,'city',$_POST['city']);
 			update_usermeta($wp_users_id,'state',$_POST['state']);
 			update_usermeta($wp_users_id,'zip',$_POST['zip']);
+			update_usermeta($wp_users_id,'tax_id',$_POST['tax_id']);
+			update_usermeta($wp_users_id,'company_name',$_POST['company_name']);
 			update_usermeta($wp_users_id,'streetaddress',$_POST['address']);
 			update_usermeta($wp_users_id,'phonenumber',$_POST['phonenumber']);
 			update_usermeta($wp_users_id,'country',$_POST['country']);
@@ -1220,6 +1225,8 @@ function web_invoice_process_invoice_update($invoice_id) {
 
 	$web_invoice_first_name = $_REQUEST['web_invoice_first_name'];
 	$web_invoice_last_name = $_REQUEST['web_invoice_last_name'];
+	$web_invoice_tax_id = $_REQUEST['web_invoice_tax_id'];
+	$web_invoice_company_name = $_REQUEST['web_invoice_company_name'];
 	$web_invoice_streetaddress = $_REQUEST['web_invoice_streetaddress'];
 	$web_invoice_city = $_REQUEST['web_invoice_city'];
 	$web_invoice_state = $_REQUEST['web_invoice_state'];
@@ -1330,6 +1337,8 @@ function web_invoice_process_invoice_update($invoice_id) {
 	//Update User Information
 	if(!empty($web_invoice_first_name)) update_usermeta($user_id, 'first_name', $web_invoice_first_name);
 	if(!empty($web_invoice_last_name)) update_usermeta($user_id, 'last_name', $web_invoice_last_name);
+	if(!empty($web_invoice_company_name)) update_usermeta($user_id, 'company_name', $web_invoice_company_name);
+	if(!empty($web_invoice_tax_id)) update_usermeta($user_id, 'tax_id', $web_invoice_tax_id);
 	if(!empty($web_invoice_streetaddress)) update_usermeta($user_id, 'streetaddress', $web_invoice_streetaddress);
 	if(!empty($web_invoice_city)) update_usermeta($user_id, 'city', $web_invoice_city);
 	if(!empty($web_invoice_state)) update_usermeta($user_id, 'state', $web_invoice_state);
@@ -1360,8 +1369,9 @@ function web_invoice_process_settings() {
 	global $wpdb;
 
 	// Save General Settings
-	if(isset($_POST['web_invoice_business_name'])) { update_option('web_invoice_business_name', $_POST['web_invoice_business_name']); }
+	if(isset($_POST['web_invoice_business_name'])) update_option('web_invoice_business_name', $_POST['web_invoice_business_name']);
 	if(isset($_POST['web_invoice_business_phone'])) update_option('web_invoice_business_phone', $_POST['web_invoice_business_phone']);
+	if(isset($_POST['web_invoice_business_tax_id'])) update_option('web_invoice_business_tax_id', $_POST['web_invoice_business_tax_id']);
 	if(isset($_POST['web_invoice_business_address'])) update_option('web_invoice_business_address', $_POST['web_invoice_business_address']);
 	if(isset($_POST['web_invoice_default_currency_code'])) update_option('web_invoice_default_currency_code', $_POST['web_invoice_default_currency_code']);
 	if(isset($_POST['web_invoice_using_godaddy'])) update_option('web_invoice_using_godaddy', $_POST['web_invoice_using_godaddy']);
@@ -1379,7 +1389,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_web_invoice_page'])) update_option('web_invoice_web_invoice_page', $_POST['web_invoice_web_invoice_page']);
 	if(isset($_POST['web_invoice_reminder_message'])) update_option('web_invoice_reminder_message', $_POST['web_invoice_reminder_message']);
 
-	if(isset($_POST['web_invoice_business_name']) || $_POST['web_invoice_business_address']|| $_POST['web_invoice_email_address'] || isset($_POST['web_invoice_business_phone']) || isset($_POST['web_invoice_payment_link'])) $message = "Information saved.";
+	if(isset($_POST['web_invoice_business_name']) || $_POST['web_invoice_business_address']|| $_POST['web_invoice_email_address'] || isset($_POST['web_invoice_business_phone']) || isset($_POST['web_invoice_business_tax_id']) || isset($_POST['web_invoice_payment_link'])) $message = "Information saved.";
 
 	// Save Gateway Settings
 	if(isset($_POST['web_invoice_recurring_gateway_url'])) update_option('web_invoice_recurring_gateway_url', $_POST['web_invoice_recurring_gateway_url']);

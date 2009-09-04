@@ -40,6 +40,10 @@ Would you like to see this plugin in other languages? Please show your interest 
 the [Web Invoice community forum](http://mohanjith.com/forum/). You could also help us
 translate this plugin to your language.
 
+Web Invoice is already translated to
+
+* Italian (it_IT) by Dukessa
+
 If you like this plugin please give it a good rating, and consider saying thanks, sponsoring a feature or making a donation.
 
 This is a fork of [WP-Invoice](http://wordpress.org/extend/plugins/wp-invoice/), however now lot of things have changed since.
@@ -65,6 +69,13 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.9.9**
+
+* Localized to Italian
+* Company name and Tax ID as user information
+* Billing Tax ID
+* Display Billing Phone and TAX ID
 
 **Version 1.9.8**
 

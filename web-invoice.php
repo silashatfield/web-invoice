@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.9.8
+ Version: 1.9.9
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -360,6 +360,8 @@ class Web_Invoice {
 		$all_users_with_meta = $wpdb->get_col("SELECT DISTINCT user_id FROM $wpdb->usermeta");
 		if(!empty($all_users_with_meta)) {
 			foreach ($all_users_with_meta as $user) {
+				if(get_usermeta($user, 'company_name')) { update_usermeta($user, 'company_name',get_usermeta($user, 'company_name')); }
+				if(get_usermeta($user, 'tax_id')) { update_usermeta($user, 'tax_id',get_usermeta($user, 'tax_id')); }
 				if(get_usermeta($user, 'street_address')) { update_usermeta($user, 'streetaddress',get_usermeta($user, 'street_address')); }
 				if(get_usermeta($user, 'phone_number')) { update_usermeta($user, 'phonenumber',get_usermeta($user, 'phone_number')); }
 				if(get_usermeta($user, 'country')) { update_usermeta($user, 'country',get_usermeta($user, 'country')); }
@@ -590,6 +592,14 @@ class Web_Invoice_GetInfo {
 
 			case 'country':
 				if(get_usermeta($uid,'country')) return get_usermeta($uid,'country');  else  return "US";
+				break;
+			
+			case 'company_name':
+				if(get_usermeta($uid,'company_name')) return get_usermeta($uid,'company_name');  else  return "";
+				break;
+			
+			case 'tax_id':
+				if(get_usermeta($uid,'tax_id')) return get_usermeta($uid,'tax_id');  else  return "";
 				break;
 		}
 
