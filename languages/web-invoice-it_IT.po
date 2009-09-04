@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Web Invoice 1.9.9\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/web-invoice\n"
 "POT-Creation-Date: 2009-09-04 19:24+0000\n"
-"PO-Revision-Date: 2009-09-05 01:05+0530\n"
+"PO-Revision-Date: 2009-09-05 01:11+0530\n"
 "Last-Translator: S H Mohanjith <moha@mohanjith.net>\n"
 "Language-Team: it_IT <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1280,14 +1280,14 @@ msgstr "Grazie! <br />Il pagamento è andato a buon fine!"
 
 #: Functions.php:349
 msgid "Y-m-d H:i:s"
-msgstr ""
+msgstr "d-m-Y H:i:s"
 
 #: Functions.php:370
 #: web-invoice.php:567
 #: web-invoice.php:611
 #: web-invoice.php:616
 msgid "M d Y"
-msgstr ""
+msgstr "d M Y"
 
 #: Functions.php:375
 msgid "."
@@ -1360,7 +1360,7 @@ msgstr "pagina delle impostazioni"
 #: web-invoice.php:649
 #: web-invoice.php:709
 msgid "Y-m-d"
-msgstr ""
+msgstr "d-m-Y"
 
 #. Plugin Name of an extension
 msgid "Web Invoice"
