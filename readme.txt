@@ -43,6 +43,7 @@ translate this plugin to your language.
 Web Invoice is already translated to:
 
 * Italian (it_IT) by Dukessa
+* Belarusian (be_BY) by iam, http://www.antsar.info
 
 If you like this plugin please give it a good rating, and consider saying thanks, sponsoring a feature or making a donation.
 
@@ -69,6 +70,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.9.10**
+
+* Localized to Belarusian
+* Moneybookers recurring payment bug fix
 
 **Version 1.9.9**
 
