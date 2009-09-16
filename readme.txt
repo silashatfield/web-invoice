@@ -71,6 +71,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.11**
+
+* Bug fixes
+
 **Version 1.9.10**
 
 * Localized to Belarusian
