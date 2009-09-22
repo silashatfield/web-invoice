@@ -234,6 +234,9 @@ jQuery(document)
 					if (payment_method_array.indexOf && payment_method_array.indexOf('paypal') != -1) {
 						jQuery('.paypal_info').show();
 					}
+					if (payment_method_array.indexOf && payment_method_array.indexOf('other') != -1) {
+						jQuery('.other_info').show();
+					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('moneybookers') != -1) {
 						jQuery('.moneybookers_info').show();
 
@@ -275,6 +278,7 @@ jQuery(document)
 												.val() + "");
 
 										jQuery('.paypal_info').hide();
+										jQuery('.other_info').hide();
 										jQuery('.moneybookers_info').hide();
 										jQuery('.alertpay_info').hide();
 										jQuery('.google_checkout_info').hide();
@@ -282,6 +286,10 @@ jQuery(document)
 										if (payment_method_array
 												.indexOf('paypal') != -1) {
 											jQuery('.paypal_info').show();
+										}
+										if (payment_method_array
+												.indexOf('other') != -1) {
+											jQuery('.other_info').show();
 										}
 										if (payment_method_array
 												.indexOf('moneybookers') != -1) {

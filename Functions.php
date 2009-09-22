@@ -390,7 +390,12 @@ function web_invoice_email_variables($invoice_id) {
 	$recipient = new Web_Invoice_GetInfo($invoice_id);
 
 	$web_invoices_email_variables = array(
-		'call_sign' => $recipient->recipient('callsign'), 
+		'call_sign' => $recipient->recipient('callsign'),
+		'streetaddress' => $recipient->recipient('streetaddress'), 
+		'city' => $recipient->recipient('city'), 
+		'zip' => $recipient->recipient('zip'), 
+		'state' => $recipient->recipient('state'), 
+		'country' => $recipient->recipient('country'), 
 		'business_name' => stripslashes(get_option("web_invoice_business_name")),
 		'recurring' => (web_invoice_recurring($invoice_id) ? " recurring " : ""),
 		'amount' => $invoice_info->display('display_amount'),
@@ -557,6 +562,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_default_currency_code');
 	delete_option('web_invoice_web_invoice_page');
 	delete_option('web_invoice_billing_meta');
+	delete_option('web_invoice_show_billing_address');
 	delete_option('web_invoice_show_quantities');
 	delete_option('web_invoice_use_css');
 	delete_option('web_invoice_hide_page_title');
@@ -582,6 +588,9 @@ function web_invoice_complete_removal()
 	// PayPal
 	delete_option('web_invoice_paypal_address');
 	delete_option('web_invoice_paypal_only_button');
+	
+	// PayPal
+	delete_option('web_invoice_other_details');
 
 	// Moneybookers
 	delete_option('web_invoice_moneybookers_address');
@@ -1383,6 +1392,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_send_thank_you_email'])) update_option('web_invoice_send_thank_you_email', $_POST['web_invoice_send_thank_you_email']);
 	if(isset($_POST['web_invoice_cc_thank_you_email'])) update_option('web_invoice_cc_thank_you_email', $_POST['web_invoice_cc_thank_you_email']);
 	if(isset($_POST['web_invoice_show_business_address'])) update_option('web_invoice_show_business_address', $_POST['web_invoice_show_business_address']);
+	if(isset($_POST['web_invoice_show_billing_address'])) update_option('web_invoice_show_billing_address', $_POST['web_invoice_show_billing_address']);
 	if(isset($_POST['web_invoice_show_quantities'])) update_option('web_invoice_show_quantities', $_POST['web_invoice_show_quantities']);
 	if(isset($_POST['web_invoice_use_css'])) update_option('web_invoice_use_css', $_POST['web_invoice_use_css']);
 	if(isset($_POST['web_invoice_user_level'])) update_option('web_invoice_user_level', $_POST['web_invoice_user_level']);
@@ -1410,6 +1420,9 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 	if(isset($_POST['web_invoice_paypal_only_button'])) update_option('web_invoice_paypal_only_button', $_POST['web_invoice_paypal_only_button']);
 
+	// Other/Bank
+	if(isset($_POST['web_invoice_other_details'])) update_option('web_invoice_other_details', $_POST['web_invoice_other_details']);
+	
 	// Moneybookers
 	if(isset($_POST['web_invoice_moneybookers_address'])) update_option('web_invoice_moneybookers_address', $_POST['web_invoice_moneybookers_address']);
 	if(isset($_POST['web_invoice_moneybookers_recurring_address'])) update_option('web_invoice_moneybookers_recurring_address', $_POST['web_invoice_moneybookers_recurring_address']);

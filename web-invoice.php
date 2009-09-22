@@ -174,7 +174,8 @@ class Web_Invoice {
 		$web_invoice_web_invoice_page = get_option("web_invoice_web_invoice_page");
 
 		if(!$web_invoice_web_invoice_page) {
-			$Web_Invoice_Decider = new Web_Invoice_Decider('web_invoice_show_welcome_message');
+			$Web_Invoice_Decider = new Web_Invoice_Decider('overview');
+			// $Web_Invoice_Decider = new Web_Invoice_Decider('web_invoice_show_welcome_message');
 		} else {
 			$Web_Invoice_Decider = new Web_Invoice_Decider('overview');
 		}
@@ -215,7 +216,7 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery'), '1.8.0');
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.9.0');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.9.10');
 		} else {
 
 			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.9.2');
@@ -372,6 +373,7 @@ class Web_Invoice {
 		add_option('web_invoice_email_address',get_bloginfo('admin_email'));
 		add_option('web_invoice_business_name', get_bloginfo('blogname'));
 		add_option('web_invoice_business_address', '');
+		add_option('web_invoice_show_billing_address', 'no');
 		add_option('web_invoice_show_business_address', 'no');
 		add_option('web_invoice_payment_method','');
 		add_option('web_invoice_protocol','http');
@@ -404,6 +406,9 @@ class Web_Invoice {
 		// PayPal
 		add_option('web_invoice_paypal_address','');
 		add_option('web_invoice_paypal_only_button', 'False');
+		
+		// PayPal
+		add_option('web_invoice_other_details','');
 
 		// Moneybookers
 		add_option('web_invoice_moneybookers_address','');

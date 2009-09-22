@@ -31,6 +31,16 @@ function web_invoice_default($message='')
 	// The error takes precedence over others being that nothing can be done w/o tables
 	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) { $warning_message = ""; }
 
+	if(get_option("web_invoice_web_invoice_page") == '') { $warning_message .= __('Invoice page not selected. ', WEB_INVOICE_TRANS_DOMAIN); }
+	if(get_option("web_invoice_payment_method") == '') { $warning_message .= __('Payment method not set. ', WEB_INVOICE_TRANS_DOMAIN); }
+	if(get_option("web_invoice_payment_method") == '' || get_option("web_invoice_web_invoice_page") == '') {
+		$warning_message .= __("Visit ", WEB_INVOICE_TRANS_DOMAIN)."<a href='admin.php?page=web_invoice_settings'>settings page</a>".__(" to configure.", WEB_INVOICE_TRANS_DOMAIN);
+	}
+
+	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('meta')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) {
+		$warning_message = __("The plugin database tables are gone, deactivate and reactivate plugin to re-create them.", WEB_INVOICE_TRANS_DOMAIN);
+	}
+
 	if($warning_message) echo "<div id=\"message\" class='error' ><p>$warning_message</p></div>";
 	if($message) echo "<div id=\"message\" class='updated fade' ><p>$message</p></div>";
 
@@ -808,220 +818,6 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 <?php } ?> <?php
 }
 
-function web_invoice_show_welcome_message() {
-
-	global $wpdb; ?>
-
-<h2><?php _e("Web Invoice Setup Steps", WEB_INVOICE_TRANS_DOMAIN) ?></h2>
-	<?php
-	$web_invoice_web_invoice_page = get_option("web_invoice_web_invoice_page");
-	$web_invoice_paypal_address = get_option("web_invoice_paypal_address");
-	$web_invoice_moneybookers_address = get_option("web_invoice_moneybookers_address");
-	$web_invoice_moneybookers_recurring_address = get_option("web_invoice_moneybookers_recurring_address");
-	$web_invoice_alertpay_address = get_option("web_invoice_alertpay_address");
-	$web_invoice_gateway_username = get_option("web_invoice_gateway_username");
-	$web_invoice_payment_method = get_option("web_invoice_payment_method");
-
-	?>
-<form action="admin.php?page=new_web_invoice" method="POST"><input
-	type="hidden" name="web_invoice_action" value="first_setup" />
-<ol style="list-style-type: decimal; padding-left: 20px;"
-	id="web_invoice_first_time_setup">
-	<?php if(empty($web_invoice_web_invoice_page) ) { ?>
-	<li><a class="web_invoice_tooltip"
-		title="<?php _e("Your clients will have to follow their secure link to this page to see their invoice. Opening this page without following a link will result in the standard page content begin shown.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Select a page to display your web invoices", WEB_INVOICE_TRANS_DOMAIN) ?></a>:
-	<select name='web_invoice_web_invoice_page'>
-		<option></option>
-		<?php $list_pages = $wpdb->get_results("SELECT ID, post_title, post_name, guid FROM ". $wpdb->prefix ."posts WHERE post_status = 'publish' AND post_type = 'page' ORDER BY post_title");
-		foreach ($list_pages as $page)
-		{
-			echo "<option  style='padding-right: 10px;'";
-			if(isset($web_invoice_web_invoice_page) && $web_invoice_web_invoice_page == $page->ID) echo " SELECTED ";
-			echo " value=\"".$page->ID."\">". $page->post_title . "</option>\n";
-		} ?>
-	</select></li>
-	<?php } ?>
-	<?php if(empty($web_invoice_payment_method)) { ?>
-	<li><?php _e("Select how you want to accept money:", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<select id="web_invoice_payment_method"
-		name="web_invoice_payment_method[]" multiple="multiple" size="3">
-		<option></option>
-		<option value="paypal" style="padding-right: 10px;"
-		<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>><?php _e("PayPal", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		<option value="moneybookers" style="padding-right: 10px;"
-		<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>><?php _e("Moneybookers", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		<option value="alertpay" style="padding-right: 10px;"
-		<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>><?php _e("AlertPay", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		<option value="google_checkout" style="padding-right: 10px;"
-		<?php if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) echo 'selected="yes"';?>><?php _e("Google Checkout", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		<option value="cc" style="padding-right: 10px;"
-		<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-	</select></li>
-
-
-	<li class="paypal_info"><?php _e("Your PayPal username: ", WEB_INVOICE_TRANS_DOMAIN) ?><input
-		id='web_invoice_paypal_address' name="web_invoice_paypal_address"
-		class="search-input input_field" type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" /></li>
-
-	<li class="paypal_info"><?php _e("Just PayPal button (No form)", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<select id='web_invoice_paypal_only_button'
-		name="web_invoice_paypal_only_button">
-		<option value="True"
-		<?php echo (get_option('web_invoice_paypal_only_button')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		<option value="False"
-		<?php echo (get_option('web_invoice_paypal_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-	</select></li>
-
-	<li class="moneybookers_info"><?php _e("Your Moneybookers username: ", WEB_INVOICE_TRANS_DOMAIN) ?><input
-		id='web_invoice_moneybookers_address'
-		name="web_invoice_moneybookers_address"
-		class="search-input input_field" type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
-	<a href="http://keti.ws/27481" alt="moneybookers.com"
-		class="web_invoice_click_me"><?php _e("Do you need a Moneybookers account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
-	</li>
-	<li class="moneybookers_info"><?php _e("Moneybookers username for recurring payments (optional): ", WEB_INVOICE_TRANS_DOMAIN) ?><input
-		id='web_invoice_moneybookers_recurring_address'
-		name="web_invoice_moneybookers_recurring_address"
-		class="search-input input_field" type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_moneybookers_recurring_address')); ?>" />
-	</li>
-	<li class="moneybookers_info"><?php _e("Enable Moneybookers payment notifications: ", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<select id='web_invoice_moneybookers_merchant'
-		name="web_invoice_moneybookers_merchant">
-		<option value="True"
-		<?php echo (get_option('web_invoice_moneybookers_merchant')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		<option value="False"
-		<?php echo (get_option('web_invoice_moneybookers_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-	</select></li>
-	<li class="moneybookers_info moneybookers_info_merchant"><?php _e("Moneybookers payment notification secret: ", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<input id='web_invoice_moneybookers_secret'
-		name="web_invoice_moneybookers_secret"
-		class="search-input input_field" type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_moneybookers_secret')); ?>" />
-	</li>
-	<li class="moneybookers_info moneybookers_info_merchant"><?php _e("Moneybookers payment notification IP: ", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<input id='web_invoice_moneybookers_ip'
-		name="web_invoice_moneybookers_ip" class="search-input input_field"
-		type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" />
-	</li>
-
-	<li class="alertpay_info"><?php _e("Your AlertPay username: ", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<input id='web_invoice_alertpay_address'
-		name="web_invoice_alertpay_address" class="search-input input_field"
-		type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
-	<a href="http://keti.ws/36283" alt="alertpay.com"
-		class="web_invoice_click_me"><?php _e("Do you need an AlertPay account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
-	</li>
-	<li class="alertpay_info"><?php _e("Enable AlertPay IPN:", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<select id='web_invoice_alertpay_merchant'
-		name="web_invoice_alertpay_merchant">
-		<option value="True"
-		<?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		<option value="False"
-		<?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-	</select> <span class="web_invoice_alertpay_url web_invoice_info"><?php _e("Your alert URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<a title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
-		href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br />
-		<?php _e("Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).", WEB_INVOICE_TRANS_DOMAIN) ?>
-	</span></li>
-	<li class="alertpay_info alertpay_info_merchant"><?php _e("AlertPay IPN security code: ", WEB_INVOICE_TRANS_DOMAIN) ?><input
-		id='web_invoice_alertpay_secret' name="web_invoice_alertpay_secret"
-		class="search-input input_field" type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" />
-	</li>
-
-	<li class="alertpay_info alertpay_info_merchant"><?php _e("AlertPay IPN IP: ", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<input id='web_invoice_alertpay_ip' name="web_invoice_alertpay_ip"
-		class="search-input input_field" type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_alertpay_ip')); ?>" />
-	</li>
-	
-	<li class="google_checkout_info">
-		<?php _e("Google Checkout Merchant Id:", WEB_INVOICE_TRANS_DOMAIN) ?>
-		<input id='web_invoice_google_checkout_merchant_id'
-			name="web_invoice_google_checkout_merchant_id" class="input_field"
-			type="text"
-			value="<?php echo stripslashes(get_option('web_invoice_google_checkout_merchant_id')); ?>" />
-		<a id="web_invoice_google_checkout_register_link" href="http://keti.ws/60282"
-			alt="checkout.google.com/sell/" class="web_invoice_click_me"><?php _e("Do you need a Google Checkout account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
-	</li>
-
-	<li class="google_checkout_info">
-		<?php _e("Enable Google Checkout Level 2 integration:", WEB_INVOICE_TRANS_DOMAIN) ?>
-		<select id='web_invoice_google_checkout_level2'
-			name="web_invoice_google_checkout_level2">
-			<option value="True"
-			<?php echo (get_option('web_invoice_google_checkout_level2')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-			<option value="False"
-			<?php echo (get_option('web_invoice_google_checkout_level2')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		</select>
-		<span class="web_invoice_google_checkout_url web_invoice_info"><?php _e("HTML API callback URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
-		<a title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
-			href="<?php echo web_invoice_get_google_checkout_api_url(); ?>"><?php echo web_invoice_get_google_checkout_api_url(); ?></a></span>
-	</li>
-	
-	<li class="google_checkout_info google_checkout_info_merchant">
-		<?php _e("Google Checkout merchant key:", WEB_INVOICE_TRANS_DOMAIN) ?>
-		<input id='web_invoice_google_checkout_merchant_key'
-			name="web_invoice_google_checkout_merchant_key"
-			class="search-input input_field" type="text"
-			value="<?php echo stripslashes(get_option('web_invoice_google_checkout_merchant_key')); ?>" />
-	</li>
-
-	<li class="gateway_info"><a class="web_invoice_tooltip"
-		title="<?php _e("Your credit card processor will provide you with a gateway username.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Gateway Username", WEB_INVOICE_TRANS_DOMAIN) ?></a>
-	<input autocomplete="off" name="web_invoice_gateway_username"
-		class="input_field search-input" type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_gateway_username')); ?>" />
-	</li>
-
-	<li class="gateway_info"><a class="web_invoice_tooltip"
-		title="<?php _e("You will be able to generate this in our credit card processor's control panel.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Gateway Transaction Key", WEB_INVOICE_TRANS_DOMAIN) ?></a>
-	<input autocomplete="off" name="web_invoice_gateway_tran_key"
-		class="input_field search-input" type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_gateway_tran_key')); ?>" />
-	</li>
-
-	<li class="gateway_info"><?php _e("Gateway URL", WEB_INVOICE_TRANS_DOMAIN) ?>
-	<input name="web_invoice_gateway_url" class="input_field search-input"
-		type="text"
-		value="<?php echo stripslashes(get_option('web_invoice_gateway_url')); ?>" />
-	</li>
-
-	<?php } ?>
-
-	<li><?php _e("Send an invoice:", WEB_INVOICE_TRANS_DOMAIN) ?> <select
-		name='user_id' class='user_selection'>
-		<option></option>
-		<?php
-		$get_all_users = $wpdb->get_results("SELECT * FROM ". $wpdb->prefix . "users LEFT JOIN ". $wpdb->prefix . "usermeta on ". $wpdb->prefix . "users.id=". $wpdb->prefix . "usermeta.user_id and ". $wpdb->prefix . "usermeta.meta_key='last_name' ORDER BY ". $wpdb->prefix . "usermeta.meta_value");
-		foreach ($get_all_users as $user)
-		{
-			$profileuser = get_user_to_edit($user->ID);
-			echo "<option ";
-			if(isset($user_id) && $user_id == $user->ID) echo " SELECTED ";
-			if(!empty($profileuser->last_name) && !empty($profileuser->first_name)) { echo " value=\"".$user->ID."\">". $profileuser->last_name. ", " . $profileuser->first_name . " (".$profileuser->user_email.")</option>\n";  }
-			else
-			{
-				echo " value=\"".$user->ID."\">". $profileuser->user_login. " (".$profileuser->user_email.")</option>\n";
-			}
-		}
-		?>
-	</select></li>
-
-</ol>
-<input type='submit' class='button'
-	value='<?php _e("Save Settings and Create Invoice", WEB_INVOICE_TRANS_DOMAIN) ?>' />
-</form>
-		<?php  if(web_invoice_is_not_merchant()) web_invoice_cc_setup(false); ?>
-
-		<?php
-}
-
 function web_invoice_show_email_templates()
 {
 	global $wpdb;
@@ -1260,7 +1056,18 @@ function web_invoice_show_settings()
 			<?php if(get_option('web_invoice_show_business_address') == 'no') echo 'selected="yes"';?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
 	</tr>
-
+	
+	<tr>
+		<th><a class="web_invoice_tooltip"
+			title="<?php _e("Show billing name and address on invoice.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Show Billing Address on Invoice", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
+		<td><select name="web_invoice_show_billing_address">
+			<option></option>
+			<option style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_show_billing_address') == 'yes') echo 'selected="yes"';?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_show_billing_address') == 'no') echo 'selected="yes"';?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
 
 	<tr>
 		<th width="200"><a class="web_invoice_tooltip"
@@ -1296,35 +1103,18 @@ function web_invoice_show_settings()
 		<th><?php _e("Payment Method:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><select id="web_invoice_payment_method"
 			name="web_invoice_payment_method[]" multiple="multiple" size="3">
-			<option value="paypal" style="padding-right: 10px;"
-			<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>><?php _e("PayPal", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="moneybookers" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>><?php _e("Moneybookers", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="alertpay" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>><?php _e("AlertPay", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="google_checkout" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) echo 'selected="yes"';?>><?php _e("Google Checkout", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="paypal" style="padding-right: 10px;"
+			<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>><?php _e("PayPal", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="other" style="padding-right: 10px;"
+			<?php if(stristr(get_option('web_invoice_payment_method'), 'other')) echo 'selected="yes"';?>><?php _e("Other/Bank details", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="cc" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		</select></td>
-	</tr>
-
-	<tr class="paypal_info">
-		<th width="200"><?php _e("PayPal Username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
-		<td><input id='web_invoice_paypal_address'
-			name="web_invoice_paypal_address" class="input_field" type="text"
-			value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" />
-		</td>
-	</tr>
-
-	<tr class="paypal_info">
-		<th width="200"><?php _e("Just PayPal button (No form):", WEB_INVOICE_TRANS_DOMAIN) ?></th>
-		<td><select id='web_invoice_paypal_only_button'
-			name="web_invoice_paypal_only_button">
-			<option value="True"
-			<?php echo (get_option('web_invoice_paypal_only_button')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-			<option value="False"
-			<?php echo (get_option('web_invoice_paypal_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
 	</tr>
 
@@ -1436,7 +1226,6 @@ function web_invoice_show_settings()
 			alt="checkout.google.com/sell/" class="web_invoice_click_me"><?php _e("Do you need a Google Checkout account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
-
 	<tr class="google_checkout_info">
 		<th width="200"><?php _e("Enable Google Checkout Level 2 integration:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><select id='web_invoice_google_checkout_level2'
@@ -1458,6 +1247,31 @@ function web_invoice_show_settings()
 			name="web_invoice_google_checkout_merchant_key"
 			class="search-input input_field" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_google_checkout_merchant_key')); ?>" /></td>
+	</tr>
+	
+	<tr class="paypal_info">
+		<th width="200"><?php _e("PayPal Username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_paypal_address'
+			name="web_invoice_paypal_address" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" />
+		</td>
+	</tr>
+
+	<tr class="paypal_info">
+		<th width="200"><?php _e("Just PayPal button (No form):", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_paypal_only_button'
+			name="web_invoice_paypal_only_button">
+			<option value="True"
+			<?php echo (get_option('web_invoice_paypal_only_button')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_paypal_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
+	
+	<tr class="other_info">
+		<th width="200"><?php _e("Other/Bank details:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><textarea id='web_invoice_other_details'
+			name="web_invoice_other_details"><?php echo get_option('web_invoice_other_details'); ?></textarea></td>
 	</tr>
 
 	<tr>
@@ -1902,12 +1716,29 @@ function web_invoice_show_business_address() {
 <p class="web_invoice_business_name"><?php echo get_option('web_invoice_business_name'); ?></p>
 <p class="web_invoice_business_address"><?php echo nl2br(get_option('web_invoice_business_address')); ?></p>
 <p class="web_invoice_business_phone"><?php echo get_option('web_invoice_business_phone'); ?></p>
-<p class="web_invoice_business_tax_id"><?php _e('Tax ID:', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo get_option('web_invoice_business_tax_id'); ?></p>
+<p class="web_invoice_business_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo get_option('web_invoice_business_tax_id'); ?></p>
 </div>
 
 	<?php
 }
 
+function web_invoice_show_billing_address($invoice_id) {
+	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	?>
+<div id="invoice_business_info" class="clearfix">
+<h2 class="invoice_page_subheading"><?php _e('Bill To:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+<p class="web_invoice_billing_name"><?php echo "{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"; ?></p>
+<p class="web_invoice_billing_name"><?php echo $invoice->recipient('company_name'); ?></p>
+<p class="web_invoice_billing_address"><?php echo nl2br("{$invoice->recipient('streetaddress')}
+{$invoice->recipient('city')}
+{$invoice->recipient('state')} {$invoice->recipient('zip')}
+{$invoice->recipient('country')}"); ?></p>
+<p class="web_invoice_billing_phone"><?php echo $invoice->recipient('phonenumber'); ?></p>
+<p class="web_invoice_billing_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo $invoice->recipient('tax_id'); ?></p>
+</div>
+
+	<?php
+}
 
 function web_invoice_show_billing_information($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
@@ -1921,6 +1752,7 @@ function web_invoice_show_billing_information($invoice_id) {
 	if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) { $alertpay = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) { $gc = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'other')) { $other = true; $method_count++; }
 
 	?>
 
@@ -1948,7 +1780,11 @@ function web_invoice_show_billing_information($invoice_id) {
 <a href="#paypal_payment_form"
 	title="<?php _e('PayPal', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png"
-	alt="PayPal" width="80" height="45" /></a> <?php } ?>
+	alt="PayPal" width="80" height="45" /></a> <?php } ?> <?php if ($other) { ?>
+<a href="#other_payment_form"
+	title="<?php _e('Other', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	src="<?php echo Web_Invoice::frontend_path(); ?>/images/bank_logo.png"
+	alt="Other" width="80" height="45" /></a> <?php } ?>
 <?php } ?>
 </p>
 </div>
@@ -1959,6 +1795,7 @@ function web_invoice_show_billing_information($invoice_id) {
 	if ($mb) web_invoice_show_moneybookers_form($invoice_id, $invoice);
 	if ($gc) web_invoice_show_google_checkout_form($invoice_id, $invoice);
 	if ($pp) web_invoice_show_paypal_form($invoice_id, $invoice);
+	if ($other) web_invoice_show_other_form($invoice_id, $invoice);
 
 	?></div>
 	<script type="text/javascript">
@@ -2205,6 +2042,12 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 
 </form>
 </div>
+	<?php
+}
+
+function web_invoice_show_other_form($invoice_id, $invoice) {
+	?>
+<div id="other_payment_form" class="payment_form"><?php print get_option('web_invoice_other_details'); ?></div>
 	<?php
 }
 

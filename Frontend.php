@@ -46,6 +46,8 @@ function web_invoice_the_content($content) {
 		?>
 <div id="invoice_page" class="clearfix"><?php
 
+if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
+
 //If this is not recurring invoice, show regular message
 if(!($recurring = web_invoice_recurring($invoice_id)))  web_invoice_show_invoice_overview($invoice_id);
 
