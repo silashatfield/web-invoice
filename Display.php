@@ -1782,9 +1782,9 @@ function web_invoice_show_billing_information($invoice_id) {
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png"
 	alt="PayPal" width="80" height="45" /></a> <?php } ?> <?php if ($other) { ?>
 <a href="#other_payment_form"
-	title="<?php _e('Other', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	title="<?php _e('Other/Bank', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/bank_logo.png"
-	alt="Other" width="80" height="45" /></a> <?php } ?>
+	alt="Other/Bank" width="80" height="45" /></a> <?php } ?>
 <?php } ?>
 </p>
 </div>
