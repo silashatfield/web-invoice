@@ -71,6 +71,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.12**
+
+* Other/Bank as payment option
+* Show billing billing details
+
 **Version 1.9.11**
 
 * Bug fixes
