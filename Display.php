@@ -2047,7 +2047,7 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 
 function web_invoice_show_other_form($invoice_id, $invoice) {
 	?>
-<div id="other_payment_form" class="payment_form"><?php print get_option('web_invoice_other_details'); ?></div>
+<div id="other_payment_form" class="payment_form"><?php print nl2br(get_option('web_invoice_other_details')); ?></div>
 	<?php
 }
 
