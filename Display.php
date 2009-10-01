@@ -1729,10 +1729,10 @@ function web_invoice_show_billing_address($invoice_id) {
 <h2 class="invoice_page_subheading"><?php _e('Bill To:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <p class="web_invoice_billing_name"><?php echo "{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"; ?></p>
 <p class="web_invoice_billing_name"><?php echo $invoice->recipient('company_name'); ?></p>
-<p class="web_invoice_billing_address"><?php echo nl2br("{$invoice->recipient('streetaddress')}
-{$invoice->recipient('city')}
-{$invoice->recipient('state')} {$invoice->recipient('zip')}
-{$invoice->recipient('country')}"); ?></p>
+<p class="web_invoice_billing_address"><?php echo nl2br("{$invoice->recipient('streetaddress')}\n".
+"{$invoice->recipient('city')}\n".
+"{$invoice->recipient('state')} {$invoice->recipient('zip')}\n".
+"{$invoice->recipient('country')}"); ?></p>
 <p class="web_invoice_billing_phone"><?php echo $invoice->recipient('phonenumber'); ?></p>
 <p class="web_invoice_billing_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo $invoice->recipient('tax_id'); ?></p>
 </div>
