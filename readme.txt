@@ -71,6 +71,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.15**
+
+* Mark recurring invoices as paid
+* Send reminders for recurring invoices
+
 **Version 1.9.14**
 
 * New Moneybookers IPs

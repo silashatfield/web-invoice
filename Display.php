@@ -215,6 +215,8 @@ function web_invoice_recurring_overview($message='')
 <div class="alignleft"><select name="web_invoice_action">
 	<option value="-1" selected="selected"><?php _e('-- Actions --', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	<option value="send_invoice"><?php _e('Send Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+	<option value="send_reminder"><?php _e('Send Reminder(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+	<option value="mark_as_paid"><?php _e('Mark as Paid', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	<option value="archive_invoice"><?php _e('Archive Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	<option value="unrachive_invoice"><?php _e('Un-Archive Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	<option value="stop_web_invoice_recurring_billing"><?php _e('Stop Recurring Billing', WEB_INVOICE_TRANS_DOMAIN); ?></option>
