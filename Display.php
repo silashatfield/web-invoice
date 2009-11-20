@@ -1696,8 +1696,8 @@ function web_invoice_show_already_paid($invoice_id) {
 function web_invoice_show_invoice_overview($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	?>
-<div id="invoice_overview" class="clearfix">
-<h2 id="web_invoice_welcome_message" class="invoice_page_subheading"><?php printf(__('Welcome, %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->recipient('callsign')); ?>!</h2>
+<div id="invoice_overview" class="clearfix"><div class="noprint">
+<h2 id="web_invoice_welcome_message" class="invoice_page_subheading"><?php printf(__('Welcome, %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->recipient('callsign')); ?>!</h2></div>
 <p class="web_invoice_main_description"><?php printf(__('We have sent you invoice <b>%1$s</b> with a total amount of %2$s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id'), $invoice->display('display_amount')); ?>.</p>
 	<?php if($invoice->display('due_date')) { ?>
 <p class="web_invoice_due_date"><?php printf(__('Due Date: %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?>
@@ -1727,6 +1727,12 @@ function web_invoice_show_business_address() {
 function web_invoice_show_billing_address($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	?>
+<div class="noprint"><p>You can print a copy of this Invoice for your records; just
+select the 'Print' item under the 'File' menu in your browser, or use the
+&lt;CTRL&gt; + 'P' key combination to print a hard-copy in a more traditional,
+neatly laid-out format. <em>Thank you</em> for your business <em>and</em> your prompt
+payment!</p></div>
+
 <div id="invoice_business_info" class="clearfix">
 <h2 class="invoice_page_subheading"><?php _e('Bill To:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <p class="web_invoice_billing_name"><?php echo "{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"; ?></p>
@@ -1738,7 +1744,6 @@ function web_invoice_show_billing_address($invoice_id) {
 <p class="web_invoice_billing_phone"><?php echo $invoice->recipient('phonenumber'); ?></p>
 <p class="web_invoice_billing_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo $invoice->recipient('tax_id'); ?></p>
 </div>
-
 	<?php
 }
 
@@ -1843,7 +1848,7 @@ $env_base_url = "checkout.google.com";
 	?>
 <div id="google_checkout_payment_form" class="payment_form">
 <form action="https://<?php echo $env_base_url; ?>/api/checkout/v2/checkoutForm/Merchant/<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>" method="post"
-	class="clearfix"><?php 
+	class="clearfix" accept-charset="utf-8"><input type="hidden" name="_charset_"/><?php 
 if ($invoice->display('tax')) {
 	if (get_option('web_invoice_google_checkout_tax_state') == 'UK') {
 	?><input type="hidden" name="tax_uk_country" value="<?php echo get_option('web_invoice_google_checkout_tax_state'); ?>"/><?php 
@@ -1854,7 +1859,7 @@ if ($invoice->display('tax')) {
 <p>Tax may not be applied if you are from a different state</p>
 <?php 
 }
-	// Convert Itemized List into Moneybookers Item List
+	// Convert Itemized List into Google Checkout Item List
 	if(is_array($invoice->display('itemized'))) {
 		echo web_invoice_create_google_checkout_itemized_list($invoice->display('itemized'),$invoice_id);
 	}
@@ -2300,19 +2305,21 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array,$invoi
 
 	foreach($itemized_array as $itemized_item) {
 		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
+		
+		$output .= "<input type='hidden' name='item_name_{$counter}' value='".$itemized_item[name]."' />\n";
+		$output .= "<input type='hidden' name='item_description_{$counter}' value='".$itemized_item[description]."' />\n";
+			
+		$output .= "<input type='hidden' name='item_quantity_{$counter}' value='".$itemized_item[quantity]."' />\n";
+		$output .= "<input type='hidden' name='item_price_{$counter}' value='".number_format($itemized_item[price], 2)."' />\n";
+		$output .= "<input type='hidden' name='item_currency_{$counter}' value='".$currency."' />\n";
+		
+		$counter++;
 	}
 
 	if(!empty($tax)) {
 		$output .= "
 		<input type='hidden' name='tax_rate' value='".($tax/100)."' />\n";
 	}
-	
-	$output .= "<input type='hidden' name='item_name_{$counter}' value='Reference Invoice #:' />\n";
-	$output .= "<input type='hidden' name='item_description_{$counter}' value='".$display_id."' />\n";
-		
-	$output .= "<input type='hidden' name='item_quantity_{$counter}' value='1' />\n";
-	$output .= "<input type='hidden' name='item_price_{$counter}' value='".$tax_free_sum."' />\n";
-	$output .= "<input type='hidden' name='item_currency_{$counter}' value='".$currency."' />\n";
 
 	return $output;
 }

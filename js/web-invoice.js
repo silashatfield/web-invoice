@@ -1,3 +1,7 @@
+var month;
+var myDate;
+var jQuery;
+
 if (!Array.indexOf) {
 	Object.indexOf = Array.indexOf = [].indexOf ? function(arr, obj, from) {
 		return arr.indexOf(obj, from);
