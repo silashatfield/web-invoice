@@ -185,6 +185,143 @@ function web_invoice_default($message='')
 	if(web_invoice_is_not_merchant()) web_invoice_cc_setup(false);
 }
 
+function web_invoice_user_default($message='')
+{
+	global $wpdb, $current_user;
+	//Make sure tables exist
+
+	// The error takes precedence over others being that nothing can be done w/o tables
+	if(!$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('main')."';") || !$wpdb->query("SHOW TABLES LIKE '".Web_Invoice::tablename('log')."';")) { $warning_message = ""; }
+
+	if($warning_message) echo "<div id=\"message\" class='error' ><p>$warning_message</p></div>";
+	if($message) echo "<div id=\"message\" class='updated fade' ><p>$message</p></div>";
+
+	$all_invoices = $wpdb->get_results("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num != '' AND user_id = {$current_user->ID}");
+
+	?>
+<form id="invoices-filter" action="" method="post">
+<h2><?php _e('Invoices', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+<div class="tablenav clearfix">
+
+<div class="alignleft"></div>
+
+<div class="alignright">
+<ul class="subsubsub" style="margin: 0;">
+	<li><?php _e('Filter:', WEB_INVOICE_TRANS_DOMAIN); ?></li>
+	<li><a href='#' class="" id=""><?php _e('All Invoices', WEB_INVOICE_TRANS_DOMAIN); ?></a>
+	|</li>
+	<li><a href='#' class="paid" id=""><?php _e('Paid', WEB_INVOICE_TRANS_DOMAIN); ?></a>
+	|</li>
+	<li><a href='#' class="sent" id=""><?php _e('Unpaid', WEB_INVOICE_TRANS_DOMAIN); ?></a>
+	|</li>
+	<li><?php _e('Custom: ', WEB_INVOICE_TRANS_DOMAIN); ?><input
+		type="text" id="FilterTextBox" class="search-input"
+		name="FilterTextBox" /></li>
+</ul>
+</div>
+</div>
+<br class="clear" />
+
+<table class="widefat" id="invoice_sorter_table">
+	<thead>
+		<tr>
+			<th class="invoice_id_col"><?php _e('Invoice Id', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+			<th><?php _e('Subject', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+			<th><?php _e('Amount', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+			<th><?php _e('Status', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+
+	$x_counter = 0;
+	foreach ($all_invoices as $invoice) {
+		// Stop if this is a recurring bill
+		if(!web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
+			$x_counter++;
+			unset($class_settings);
+
+			//Basic Settings
+			$invoice_id = $invoice->invoice_num;
+			$subject = $invoice->subject;
+			$invoice_link = web_invoice_build_invoice_link($invoice_id);
+			$user_id = $invoice->user_id;
+
+			//Determine if unique/custom id used
+			$custom_id = web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id');
+			$display_id = ($custom_id ? $custom_id : $invoice_id);
+
+			// Determine Currency
+			$currency_code = web_invoice_determine_currency($invoice_id);
+			$show_money = web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($invoice->amount);
+
+			// Determine What to Call Recipient
+			$profileuser = get_user_to_edit($user_id);
+			$first_name = $profileuser->first_name;
+			$last_name = $profileuser->last_name;
+			$user_nicename = $profileuser->user_nicename;
+			if(empty($first_name) || empty($last_name)) $call_me_this = $user_nicename; else $call_me_this = $first_name . " " . $last_name;
+
+			// Color coding
+			if(web_invoice_paid_status($invoice_id)) $class_settings .= " alternate ";
+			if(web_invoice_meta($invoice_id,'archive_status') == 'archived')  $class_settings .= " web_invoice_archived ";
+
+			//Days since sent
+
+			// Days Since Sent
+			if(web_invoice_paid_status($invoice_id)) {
+				$days_since = "<span style='display:none;'>-1</span>".__(' Paid', WEB_INVOICE_TRANS_DOMAIN); }
+				else {
+					if(web_invoice_meta($invoice_id,'sent_date')) {
+
+						$date1 = web_invoice_meta($invoice_id,'sent_date');
+						$date2 = date("Y-m-d", time());
+						$difference = abs(strtotime($date2) - strtotime($date1));
+						$days = round(((($difference/60)/60)/24), 0);
+						if($days == 0) { $days_since = "<span style='display:none;'>$days</span>".__('Sent Today. ', WEB_INVOICE_TRANS_DOMAIN); }
+						elseif($days == 1) { $days_since = "<span style='display:none;'>$days</span>".__('Sent Yesterday. ', WEB_INVOICE_TRANS_DOMAIN); }
+						elseif($days > 1) { $days_since = "<span style='display:none;'>$days</span>".sprintf(__('Sent %s days ago. ', WEB_INVOICE_TRANS_DOMAIN),$days); }
+					}
+					else {
+						$days_since ="<span style='display:none;'>999</span>".__('Not Sent', WEB_INVOICE_TRANS_DOMAIN);	}
+				}
+
+
+				$output_row  = "<tr class='$class_settings'>\n";
+				$output_row .= "	<td>$display_id</td>\n";
+				$output_row .= "	<td>$subject</td>\n";
+				$output_row .= "	<td>$show_money</td>\n";
+				$output_row .= "	<td>$days_since</td>\n";
+				$output_row .= "	<td><a href='$invoice_link'>".__('View Web Invoice', WEB_INVOICE_TRANS_DOMAIN)."</a></td>\n";
+				$output_row .= "</tr>";
+
+				echo $output_row;
+		} /* Recurring Billing Stop */
+	}
+	if($x_counter == 0) {
+		// No result
+		?>
+		<tr>
+			<td colspan="6" align="center">
+			<div style="padding: 20px;"><?php _e('You do not have any invoices yet', WEB_INVOICE_TRANS_DOMAIN); ?></div>
+			</td>
+		</tr>
+		<?php
+
+	}
+	?>
+	</tbody>
+</table>
+	<?php if($wpdb->query("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived'")) { ?><a
+	href="" id="web_invoice_show_archived"><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
+</form>
+	<?php
+
+	// web_invoice_options_manageInvoice();
+	if(web_invoice_is_not_merchant()) web_invoice_cc_setup(false);
+}
+
 function web_invoice_recurring_overview($message='')
 {
 	global $wpdb;
@@ -1585,7 +1722,7 @@ function web_invoice_draw_itemized_table_plaintext($invoice_id) {
 
 function web_invoice_user_profile_fields()
 {
-	global $wpdb;
+	global $wpdb, $web_invoice;
 
 	if (isset($_REQUEST['user_id'])) {
 		$user_id = $_REQUEST['user_id'];
@@ -1649,7 +1786,8 @@ function web_invoice_user_profile_fields()
 		<td><input type="text" name="tax_id" id="tax_id"
 			value="<?php echo get_usermeta($user_id,'tax_id'); ?>" /></td>
 	</tr>
-
+	<?php 
+		if ($current_user->allcaps[$web_invoice->web_invoice_user_level] == 1) {?>
 	<tr>
 		<th></th>
 		<td><input type='button'
@@ -1658,6 +1796,7 @@ function web_invoice_user_profile_fields()
 			value='<?php _e('Create New Invoice For This User', WEB_INVOICE_TRANS_DOMAIN); ?>' />
 		</td>
 	</tr>
+	<?php } ?>
 </table>
 	<?php
 }

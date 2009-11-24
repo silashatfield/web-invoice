@@ -45,6 +45,8 @@ require_once("Functions.php");
 require_once("Display.php");
 require_once("Frontend.php");
 
+global $web_invoice;
+
 $web_invoice = new Web_Invoice();
 $web_invoice->security();
 
@@ -127,6 +129,8 @@ class Web_Invoice {
 		add_submenu_page($file, __("Recurring Billing"), __("Recurring Billing"), $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
 		add_submenu_page($file, __("E-mail templates"), __("E-mail templates"), $this->web_invoice_user_level, 'web_invoice_email_templates', array(&$this,'email_template_page'));
 		add_submenu_page($file, __("Settings"), __("Settings"), $this->web_invoice_user_level, 'web_invoice_settings', array(&$this,'settings_page'));
+	
+		add_submenu_page('profile.php', __("Your invoices"), __("Invoices"), 0, 'user_invoice_overview', array(&$this,'user_invoice_overview'));
 	}
 
 	function security() {
@@ -173,15 +177,19 @@ class Web_Invoice {
 	function invoice_overview() {
 		$web_invoice_web_invoice_page = get_option("web_invoice_web_invoice_page");
 
-		if(!$web_invoice_web_invoice_page) {
-			$Web_Invoice_Decider = new Web_Invoice_Decider('overview');
-			// $Web_Invoice_Decider = new Web_Invoice_Decider('web_invoice_show_welcome_message');
-		} else {
-			$Web_Invoice_Decider = new Web_Invoice_Decider('overview');
-		}
+		$Web_Invoice_Decider = new Web_Invoice_Decider('overview');
 
 		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
 		if(!function_exists('curl_exec')) echo "<div id=\"message\" class='error' ><p>cURL is not turned on on your server, credit card processing will not work. If you have access to your php.ini file, activate <b>extension=php_curl.dll</b>.</p></div>";
+		echo $Web_Invoice_Decider->display();
+	}
+	
+	function user_invoice_overview() {
+		$web_invoice_web_invoice_page = get_option("web_invoice_web_invoice_page");
+
+		$Web_Invoice_Decider = new Web_Invoice_Decider('user_overview');
+
+		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
 		echo $Web_Invoice_Decider->display();
 	}
 

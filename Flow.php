@@ -66,6 +66,10 @@ class Web_Invoice_Decider {
 			case "overview":
 				web_invoice_default();
 				break;
+				
+			case "user_overview":
+				web_invoice_user_default();
+				break;
 
 			case "web_invoice_show_welcome_message":
 				web_invoice_show_welcome_message();

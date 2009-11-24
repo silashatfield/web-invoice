@@ -74,6 +74,8 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 **Version 1.9.17**
 
 * Strip slashes when displaying invoice
+* List user invoices under Profile
+* Do not list create invoice under Profile for users who lack permission to create invoices
 
 **Version 1.9.16**
 
