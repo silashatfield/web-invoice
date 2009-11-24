@@ -3,7 +3,7 @@ Contributors: mohanjith
 Donate link: http://mohanjith.com/wordpress
 Tags: bill, moneybookers, google checkout, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
-Tested up to: 2.8.4
+Tested up to: 2.8.6
 Stable tag: trunk
 
 Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
@@ -70,6 +70,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.9.17**
+
+* Strip slashes when displaying invoice
 
 **Version 1.9.16**
 

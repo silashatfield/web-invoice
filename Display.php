@@ -1704,7 +1704,7 @@ function web_invoice_show_invoice_overview($invoice_id) {
 	<?php if($invoice->display('description')) { ?>
 
 
-<p><?php echo $invoice->display('description');  ?></p>
+<p><?php echo stripcslashes($invoice->display('description'));  ?></p>
 <?php  } ?> <?php echo web_invoice_draw_itemized_table($invoice_id); ?>
 </div>
 <?php
@@ -1715,8 +1715,8 @@ function web_invoice_show_business_address() {
 	?>
 <div id="invoice_business_info" class="clearfix">
 <h2 class="invoice_page_subheading"><?php _e('Bill From:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
-<p class="web_invoice_business_name"><?php echo get_option('web_invoice_business_name'); ?></p>
-<p class="web_invoice_business_address"><?php echo nl2br(get_option('web_invoice_business_address')); ?></p>
+<p class="web_invoice_business_name"><?php echo stripcslashes(get_option('web_invoice_business_name')); ?></p>
+<p class="web_invoice_business_address"><?php echo stripcslashes(nl2br(get_option('web_invoice_business_address'))); ?></p>
 <p class="web_invoice_business_phone"><?php echo get_option('web_invoice_business_phone'); ?></p>
 <p class="web_invoice_business_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo get_option('web_invoice_business_tax_id'); ?></p>
 </div>
@@ -1735,12 +1735,12 @@ payment!</p></div>
 
 <div id="invoice_business_info" class="clearfix">
 <h2 class="invoice_page_subheading"><?php _e('Bill To:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
-<p class="web_invoice_billing_name"><?php echo "{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"; ?></p>
-<p class="web_invoice_billing_name"><?php echo $invoice->recipient('company_name'); ?></p>
-<p class="web_invoice_billing_address"><?php echo nl2br("{$invoice->recipient('streetaddress')}\n".
+<p class="web_invoice_billing_name"><?php echo stripcslashes("{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"); ?></p>
+<p class="web_invoice_billing_name"><?php echo stripcslashes($invoice->recipient('company_name')); ?></p>
+<p class="web_invoice_billing_address"><?php echo stripcslashes(nl2br("{$invoice->recipient('streetaddress')}\n".
 "{$invoice->recipient('city')}\n".
 "{$invoice->recipient('state')} {$invoice->recipient('zip')}\n".
-"{$invoice->recipient('country')}"); ?></p>
+"{$invoice->recipient('country')}")); ?></p>
 <p class="web_invoice_billing_phone"><?php echo $invoice->recipient('phonenumber'); ?></p>
 <p class="web_invoice_billing_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo $invoice->recipient('tax_id'); ?></p>
 </div>
