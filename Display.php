@@ -238,7 +238,7 @@ function web_invoice_user_default($message='')
 	$x_counter = 0;
 	foreach ($all_invoices as $invoice) {
 		// Stop if this is a recurring bill
-		if(!web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
+		//if(!web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
 			$x_counter++;
 			unset($class_settings);
 
@@ -286,6 +286,10 @@ function web_invoice_user_default($message='')
 					else {
 						$days_since ="<span style='display:none;'>999</span>".__('Not Sent', WEB_INVOICE_TRANS_DOMAIN);	}
 				}
+				
+				if (web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
+					$subject .= ' (Recurring)';
+				}
 
 
 				$output_row  = "<tr class='$class_settings'>\n";
@@ -297,7 +301,7 @@ function web_invoice_user_default($message='')
 				$output_row .= "</tr>";
 
 				echo $output_row;
-		} /* Recurring Billing Stop */
+		//} /* Recurring Billing Stop */
 	}
 	if($x_counter == 0) {
 		// No result

@@ -79,7 +79,7 @@ class Web_Invoice {
 		$this->uri = WP_PLUGIN_URL."/".$this->directory;
 		$this->the_path = $this->the_path();
 
-		add_action('init',  array($this, 'init'),0);
+		add_action('init',  array($this, 'init'), 0);
 		add_action('profile_update','web_invoice_profile_update');
 		add_action('edit_user_profile', 'web_invoice_user_profile_fields');
 		add_action('show_user_profile', 'web_invoice_user_profile_fields');

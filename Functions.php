@@ -206,7 +206,7 @@ function web_invoice_delete($invoice_id) {
 
 			}
 		}
-		return $counter . " invoice(s) uccessfully deleted.";
+		return $counter . " invoice(s) successfully deleted.";
 
 	}
 	else
