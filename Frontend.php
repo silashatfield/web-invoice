@@ -57,12 +57,15 @@ if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_bu
 
 if(web_invoice_paid_status($invoice_id)) {
 	web_invoice_show_already_paid($invoice_id);
+	do_action('web_invoice_front_paid', $invoice_id);
 } else {
 	//Show Billing Information
 	web_invoice_show_billing_information($invoice_id);
+	do_action('web_invoice_front_unpaid', $invoice_id);
 }
 ?></div>
 <?php
+	do_action('web_invoice_front', $invoice_id);
 	} else return $content;
 }
 
