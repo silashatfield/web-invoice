@@ -74,6 +74,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 **Version 1.9.18**
 
+* Use wp_dropdown_roles to list the roles (Makes Web Invoice compatible with Capabilities Manager plugin)
+
+**Version 1.9.18**
+
 * More actions to integrate with other plugins 
 
 **Version 1.9.17**

@@ -1165,8 +1165,11 @@ function web_invoice_show_settings()
 	</tr>
 
 	<tr>
-		<th><?php _e("Minimum User Level to Manage web-invoice", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
-		<td><?php echo web_invoice_draw_select('web_invoice_user_level',array("level_0" => __("Subscriber", WEB_INVOICE_TRANS_DOMAIN),"level_0" => __("Contributor", WEB_INVOICE_TRANS_DOMAIN),"level_2" => __("Author", WEB_INVOICE_TRANS_DOMAIN),"level_5" => __("Editor", WEB_INVOICE_TRANS_DOMAIN),"level_8" => __("Administrator", WEB_INVOICE_TRANS_DOMAIN)), get_option('web_invoice_user_level')); ?>
+		<th><?php _e("User Level to Manage web-invoice", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
+		<td><select name="web_invoice_user_level" id="web_invoice_user_level">
+		<option value=""></option>
+		<?php echo wp_dropdown_roles(get_option('web_invoice_user_level')); ?>
+		</select>
 		</td>
 	</tr>
 
