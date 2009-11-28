@@ -44,6 +44,8 @@ function web_invoice_the_content($content) {
 		?>
 <div id="invoice_page" class="clearfix"><?php
 
+do_action('web_invoice_front_top', $invoice_id);
+	
 if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
 
 //If this is not recurring invoice, show regular message
@@ -65,7 +67,7 @@ if(web_invoice_paid_status($invoice_id)) {
 }
 ?></div>
 <?php
-	do_action('web_invoice_front', $invoice_id);
+	do_action('web_invoice_front_bottom', $invoice_id);
 	} else return $content;
 }
 
