@@ -1726,12 +1726,11 @@ function web_invoice_draw_itemized_table_plaintext($invoice_id) {
 
 function web_invoice_user_profile_fields()
 {
-	global $wpdb, $web_invoice;
+	global $wpdb, $web_invoice, $current_user;
 
 	if (isset($_REQUEST['user_id'])) {
 		$user_id = $_REQUEST['user_id'];
 	} else {
-		global $current_user;
 		$user_id = $current_user->ID;
 	}
 
