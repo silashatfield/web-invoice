@@ -72,7 +72,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
-**Version 1.9.18**
+**Version 1.9.20**
+
+* Capabilities based authentication
+
+**Version 1.9.19**
 
 * Use wp_dropdown_roles to list the roles (Makes Web Invoice compatible with Capabilities Manager plugin)
 

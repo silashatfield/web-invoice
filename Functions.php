@@ -1395,7 +1395,20 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_show_billing_address'])) update_option('web_invoice_show_billing_address', $_POST['web_invoice_show_billing_address']);
 	if(isset($_POST['web_invoice_show_quantities'])) update_option('web_invoice_show_quantities', $_POST['web_invoice_show_quantities']);
 	if(isset($_POST['web_invoice_use_css'])) update_option('web_invoice_use_css', $_POST['web_invoice_use_css']);
-	if(isset($_POST['web_invoice_user_level'])) update_option('web_invoice_user_level', $_POST['web_invoice_user_level']);
+	if(isset($_POST['web_invoice_user_level'])) {
+		if (is_array($_POST['web_invoice_user_level']) && count($_POST['web_invoice_user_level']) > 0) {
+			$ro = new WP_Roles();
+			foreach ($ro->role_objects as $role) {
+				if ($role->has_cap('manage_web_invoice') && !in_array($role->name, $_POST['web_invoice_user_level'])) {
+					$role->remove_cap('manage_web_invoice');
+				}
+				if (!$role->has_cap('manage_web_invoice') && in_array($role->name, $_POST['web_invoice_user_level'])) {
+					$role->add_cap('manage_web_invoice', true);
+				}
+			}
+		}
+		update_option('web_invoice_user_level', $_POST['web_invoice_user_level']);	
+	}
 	if(isset($_POST['web_invoice_web_invoice_page'])) update_option('web_invoice_web_invoice_page', $_POST['web_invoice_web_invoice_page']);
 	if(isset($_POST['web_invoice_reminder_message'])) update_option('web_invoice_reminder_message', $_POST['web_invoice_reminder_message']);
 

@@ -434,6 +434,6 @@ div.jqi button {
 	margin: 0 10px;
 }
 
-select#web_invoice_payment_method {
+select#web_invoice_payment_method, select#web_invoice_user_level  {
 	height: 6em;
 }

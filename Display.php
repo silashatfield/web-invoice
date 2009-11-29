@@ -1166,9 +1166,16 @@ function web_invoice_show_settings()
 
 	<tr>
 		<th><?php _e("User Level to Manage web-invoice", WEB_INVOICE_TRANS_DOMAIN) ?>:</th>
-		<td><select name="web_invoice_user_level" id="web_invoice_user_level">
-		<option value=""></option>
-		<?php echo wp_dropdown_roles(get_option('web_invoice_user_level')); ?>
+		<td><select name="web_invoice_user_level[]" id="web_invoice_user_level" size="3" multiple="multiple" >
+		<?php
+			foreach (get_editable_roles() as $role => $details) {
+				$name = translate_user_role($details['name'] );
+		?>
+			<option value="<?php print $role; ?>" style="padding-right: 10px;"
+			<?php if(in_array($role, get_option('web_invoice_user_level'))) echo 'selected="yes"';?>><?php _e($name, WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		<?php 
+			}
+		?>
 		</select>
 		</td>
 	</tr>
