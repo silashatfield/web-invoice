@@ -122,7 +122,7 @@ class Web_Invoice {
 	}
 
 	function admin_head() {
-		echo "<link rel='stylesheet' href='".$this->uri."/css/wp_admin.css' type='text/css'type='text/css' media='all' />";
+		echo "<link rel='stylesheet' href='".$this->uri."/css/wp_admin.css?v=1.9.20' type='text/css'type='text/css' media='all' />";
 	}
 
 	function web_invoice_add_pages() {
