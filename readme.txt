@@ -72,6 +72,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.9.21**
+
+* Bug fixes, permission issue in new installations
+
 **Version 1.9.20**
 
 * Capabilities based authentication
