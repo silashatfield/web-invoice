@@ -389,11 +389,18 @@ class Web_Invoice {
 		add_option('web_invoice_show_business_address', 'no');
 		add_option('web_invoice_payment_method','');
 		add_option('web_invoice_protocol','http');
-		add_option('web_invoice_user_level',array('administrator'));
+		add_option('web_invoice_user_level', array('administrator'));
+		
+		$current_role = get_option('web_invoice_user_level');
+		
+		if (!is_array($current_role) || in_array('level_8', $current_role)) {
+			$current_role = array('administrator');
+			update_option('web_invoice_user_level', $current_role);
+		}
 		
 		$ro = new WP_Roles();
 		foreach ($ro->role_objects as $role) {
-			if (in_array($role->name, get_option('web_invoice_user_level'))) {
+			if (in_array($role->name, $current_role)) {
 				$role->add_cap('manage_web_invoice', true);
 			}
 		}
