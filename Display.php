@@ -1172,7 +1172,7 @@ function web_invoice_show_settings()
 				$name = translate_user_role($details['name'] );
 		?>
 			<option value="<?php print $role; ?>" style="padding-right: 10px;"
-			<?php if(in_array($role, get_option('web_invoice_user_level', 'administrator'))) echo 'selected="yes"';?>><?php _e($name, WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<?php if(in_array($role, get_option('web_invoice_user_level', array('administrator')))) echo 'selected="yes"';?>><?php _e($name, WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		<?php 
 			}
 		?>
