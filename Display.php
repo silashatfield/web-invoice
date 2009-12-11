@@ -1995,12 +1995,12 @@ function web_invoice_show_alertpay_form($invoice_id, $invoice) {
 }
 
 function web_invoice_show_google_checkout_form($invoice_id, $invoice) {
-// $env_base_url = "sandbox.google.com/checkout";
-$env_base_url = "checkout.google.com";
+$env_base_url = "sandbox.google.com/checkout";
+// $env_base_url = "checkout.google.com";
 	?>
 <div id="google_checkout_payment_form" class="payment_form">
 <form action="https://<?php echo $env_base_url; ?>/api/checkout/v2/checkoutForm/Merchant/<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>" method="post"
-	class="clearfix" accept-charset="utf-8"><input type="hidden" name="_charset_"/><?php 
+	class="clearfix" accept-charset="utf-8"><input type="hidden" name="_charset_"/><?php
 if ($invoice->display('tax')) {
 	if (get_option('web_invoice_google_checkout_tax_state') == 'UK') {
 	?><input type="hidden" name="tax_uk_country" value="<?php echo get_option('web_invoice_google_checkout_tax_state'); ?>"/><?php 
@@ -2012,8 +2012,8 @@ if ($invoice->display('tax')) {
 <?php 
 }
 	// Convert Itemized List into Google Checkout Item List
-	if(is_array($invoice->display('itemized'))) {
-		echo web_invoice_create_google_checkout_itemized_list($invoice->display('itemized'),$invoice_id);
+	if (is_array($invoice->display('itemized'))) {
+		echo web_invoice_create_google_checkout_itemized_list($invoice->display('itemized'),$invoice_id, web_invoice_recurring($invoice_id));
 	}
 	?>
 <fieldset id="credit_card_information">
@@ -2438,7 +2438,29 @@ function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
 	return $output;
 }
 
-function web_invoice_create_google_checkout_itemized_list($itemized_array,$invoice_id) {
+function web_invoice_google_checkout_convert_interval($length, $val) {
+	switch ($val) {
+		case 'months':
+			switch ($length) {
+				case 1: return 'MONTHLY';
+				case 2: return 'EVERY_TWO_MONTHS';
+				case 3: return 'QUARTERLY';
+				case 12: return 'YEARLY';
+				default: return 'DAILY';
+			}
+		case 'days':
+			switch ($length) {
+				case 7: return 'WEEKLY';
+				case 14: return 'SEMI_MONTHLY';
+				case 30: return 'MONTHLY';
+				case 31: return 'MONTHLY';
+				default: return 'DAILY';
+			}
+		default: return 'DAILY';
+	}
+}
+
+function web_invoice_create_google_checkout_itemized_list($itemized_array, $invoice_id, $recurring) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	$tax = $invoice->display('tax_percent');
 	$amount = $invoice->display('amount');
@@ -2454,20 +2476,70 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array,$invoi
 	} else if (count($itemized_array) >  2) {
 		$single_item = true;
 	}
-
+	
+	$desc = array();
+	
 	foreach($itemized_array as $itemized_item) {
 		$tax_free_sum = $tax_free_sum + $itemized_item[price] * $itemized_item[quantity];
 		
-		$output .= "<input type='hidden' name='item_name_{$counter}' value='".$itemized_item[name]."' />\n";
-		$output .= "<input type='hidden' name='item_description_{$counter}' value='".$itemized_item[description]."' />\n";
-			
-		$output .= "<input type='hidden' name='item_quantity_{$counter}' value='".$itemized_item[quantity]."' />\n";
-		$output .= "<input type='hidden' name='item_price_{$counter}' value='".number_format($itemized_item[price], 2)."' />\n";
-		$output .= "<input type='hidden' name='item_currency_{$counter}' value='".$currency."' />\n";
+		$desc[] = "{$itemized_item[name]} {$itemized_item[quantity]} @ {$currency} ".number_format($itemized_item[price], 2);
+	}
+	
+	$desc = join(', ', $desc);
+	
+	if (!$recurring) {
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='Invoice #{$display_id} ' />\n";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-description' value='{$invoice->display('subject')}' />\n";
+				
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.quantity' value='1' />\n";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price.currency' value='{$currency}' />\n";
+				
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='0' />\n";
 		
+	} else {
+		
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='Recurring invoice #{$display_id}: ".$invoice->display('subscription_name')."' />\n";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-description' value='{$desc}' />\n";
+			
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.quantity' value='1' />\n";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price.currency' value='{$currency}' />\n";
+		
+		if (strtotime($invoice->display('startDate')) != strtotime(date('Y-m-d'))) {
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='0' />\n";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.start-date' value='".date('Y-m-d', strtotime($invoice->display('startDate')))."' />";
+		} else {
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='".number_format($tax_free_sum, 2)."' />\n";
+		}
+		
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.type' value='google'/>";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.period' value='".web_invoice_google_checkout_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit'))."' />";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.times' value='{$invoice->display('totalOccurrences')}' />";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge' value='".number_format($tax_free_sum, 2)."' />";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge.currency' value='{$currency}' />";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-name' value='Recurring invoice #{$display_id}' />";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-description' value='{$desc}' />";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.quantity' value='1' />";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price' value='".number_format($tax_free_sum, 2)."' />";
+		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price.currency' value='{$currency}' />";
+	}
+	
+	$counter++;
+
+	foreach($itemized_array as $itemized_item) {
+		if (!$recurring) {
+			
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='{$itemized_item[name]}' />\n";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-description' value='{$itemized_item[description]}' />\n";
+				
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.quantity' value='{$itemized_item[quantity]}' />\n";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price.currency' value='{$currency}' />\n";
+				
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='".number_format($itemized_item[price], 2)."' />\n";
+		}
+			
 		$counter++;
 	}
-
+	
 	if(!empty($tax)) {
 		$output .= "
 		<input type='hidden' name='tax_rate' value='".($tax/100)."' />\n";

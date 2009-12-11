@@ -219,6 +219,31 @@ function web_invoice_delete($invoice_id) {
 	}
 }
 
+function web_invoice_stop_recurring_billing($invoice_id) {
+	global $wpdb;
+
+	// Check to see if array is passed or single.
+	if(is_array($invoice_id))
+	{
+		$counter=0;
+		foreach ($invoice_id as $single_invoice_id) {
+			$counter++;
+
+			do_action('web_invoice_stop_recurring_billing', $single_invoice_id);
+			web_invoice_update_log($single_invoice_id, "stopped_recurring_billing", "Stopped on ");
+		}
+		return $counter . " invoice(s) successfully had their recurring payment stopped.";
+
+	}
+	else
+	{
+		do_action('web_invoice_stop_recurring_billing', $invoice_id);
+		// Make log entry
+		web_invoice_update_log($invoice_id, "stopped_recurring_billing", "Stopped on ");
+		return "Recurring payment successfully stopped.";
+	}
+}
+
 function web_invoice_archive($invoice_id) {
 	global $wpdb;
 
@@ -1494,6 +1519,14 @@ function web_invoice_gc_serial_to_invoice($serial_number)
 	return $invoice_id;
 }
 
+function web_invoice_gc_name_to_invoice($name)
+{
+	global $wpdb;
+
+	$invoice_id = preg_replace('/.*#([0-9]+).*/', '$1', $name);
+
+	return $invoice_id;
+}
 
 function web_invoice_md5_to_invoice($md5) {
 	global $wpdb, $_web_invoice_md5_to_invoice_cache;

@@ -123,6 +123,11 @@ class Web_Invoice_Decider {
 				web_invoice_show_message(web_invoice_delete($_REQUEST['multiple_invoices']));
 				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 				break;
+				
+			case "stop_web_invoice_recurring_billing":
+				web_invoice_show_message(web_invoice_stop_recurring_billing($_REQUEST['multiple_invoices']));
+				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+				break;
 
 			case "send_invoice":
 				if(empty($_REQUEST['multiple_invoices'])) { web_invoice_show_message("No invoices selected, nothing sent."); }

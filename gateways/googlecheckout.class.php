@@ -56,7 +56,7 @@ class Web_Invoice_GoogleCheckout {
 		
 		switch ($_type) {
 			case 'new-order-notification':
-				$this->invoice = new Web_Invoice_GetInfo($request['shopping-cart_items_item-1_item-description']);
+				$this->invoice = new Web_Invoice_GetInfo(web_invoice_gc_name_to_invoice($request['shopping-cart_items_item-1_item-name']));
 				break;
 			default:
 				$this->invoice = new Web_Invoice_GetInfo(web_invoice_gc_serial_to_invoice($request['google-order-number']));
