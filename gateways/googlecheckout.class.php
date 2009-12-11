@@ -129,6 +129,9 @@ class Web_Invoice_GoogleCheckout {
 			case 'order-state-change-notification':
 				$this->_processCharge($ip, $request);
 				break;
+			case 'cancelled-subscription-notification':
+				$this->_processSubscriptionCancel($ip, $request);
+				break;
 			default:
 				$this->_processRequest($ip, $request);
 		}
@@ -225,5 +228,18 @@ class Web_Invoice_GoogleCheckout {
 		}
 		
 		web_invoice_mark_as_paid($this->invoice->id);
+	}
+	
+	function _processSubscriptionCancel($ip, $request) {		
+		$this->gc_status = 'cancelled';
+		
+		$this->_logSuccess('Subscription cancelled ('.$request['reason'].')');
+		
+		web_invoice_mark_as_cancelled($this->invoice->id);
+
+		header('HTTP/1.0 200 OK');
+		header('Content-type: text/plain; charset=UTF-8');
+		print 'Thank you very much for letting us know. REF: Cancelled subscription';
+		exit(0);
 	}
 }

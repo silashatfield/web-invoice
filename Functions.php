@@ -194,53 +194,26 @@ function web_invoice_delete($invoice_id) {
 			$counter++;
 			$wpdb->query("DELETE FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '$single_invoice_id'");
 
+			do_action('web_invoice_delete', $single_invoice_id);
 			web_invoice_update_log($single_invoice_id, "deleted", "Deleted on ");
 
 			// Get all meta keys for this invoice, then delete them
 
 			$all_invoice_meta_values = $wpdb->get_col("SELECT invoice_id FROM ".Web_Invoice::tablename('meta')." WHERE invoice_id = '$single_invoice_id'");
 
-			//print_r($all_invoice_meta_values);
 			foreach ($all_invoice_meta_values as $meta_key) {
 				web_invoice_delete_invoice_meta($single_invoice_id);
-
 			}
 		}
 		return $counter . " invoice(s) successfully deleted.";
-
-	}
-	else
-	{
+	} else {
 		// Delete Single
 		$wpdb->query("DELETE FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '$invoice_id'");
 		// Make log entry
+		
+		do_action('web_invoice_delete', $invoice_id);
 		web_invoice_update_log($invoice_id, "deleted", "Deleted on ");
 		return "Invoice successfully deleted.";
-	}
-}
-
-function web_invoice_stop_recurring_billing($invoice_id) {
-	global $wpdb;
-
-	// Check to see if array is passed or single.
-	if(is_array($invoice_id))
-	{
-		$counter=0;
-		foreach ($invoice_id as $single_invoice_id) {
-			$counter++;
-
-			do_action('web_invoice_stop_recurring_billing', $single_invoice_id);
-			web_invoice_update_log($single_invoice_id, "stopped_recurring_billing", "Stopped on ");
-		}
-		return $counter . " invoice(s) successfully had their recurring payment stopped.";
-
-	}
-	else
-	{
-		do_action('web_invoice_stop_recurring_billing', $invoice_id);
-		// Make log entry
-		web_invoice_update_log($invoice_id, "stopped_recurring_billing", "Stopped on ");
-		return "Recurring payment successfully stopped.";
 	}
 }
 
@@ -301,6 +274,40 @@ function web_invoice_mark_as_paid($invoice_id) {
 		}
 		else{
 			return $counter . " invoice marked as paid.";
+		}
+	}
+}
+
+function web_invoice_mark_as_cancelled($invoice_id) {
+	global $wpdb;
+
+	$counter=0;
+	// Check to see if array is passed or single.
+	if(is_array($invoice_id))
+	{
+		foreach ($invoice_id as $single_invoice_id) {
+			if (!web_invoice_paid_status($single_invoice_id)) continue; 
+			$counter++;
+			web_invoice_update_invoice_meta($single_invoice_id,'paid_status','cancelled');
+			web_invoice_update_log($single_invoice_id,'paid',"Invoice marked as cancelled");
+			
+			do_action('web_invoice_mark_as_cancel', $single_invoice_id);
+		}
+
+		return $counter . " invoice(s) marked as cancelled.";
+	}
+	else
+	{
+		if (web_invoice_paid_status($single_invoice_id)) {
+			$counter++;
+			web_invoice_update_invoice_meta($invoice_id,'paid_status','cancelled');
+			web_invoice_update_log($invoice_id,'paid',"Invoice marked as cancelled");
+			
+			do_action('web_invoice_mark_as_cancel', $invoice_id);
+			
+			return $counter . " invoice marked as cancelled.";
+		} else {
+			return "No invoices marked as cancelled.";
 		}
 	}
 }
@@ -502,7 +509,8 @@ function web_invoice_paid_status($invoice_id) {
 	//Merged with paid_status in class
 	global $wpdb;
 	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
-	if(!empty($invoice_id) && web_invoice_meta($invoice_id,'paid_status') || $invoice_id->status) return true;
+	if(!empty($invoice_id) && web_invoice_meta($invoice_id,'paid_status')) return web_invoice_meta($invoice_id,'paid_status');
+	if ($invoice_id->status) return $invoice_id->status;
 }
 
 function web_invoice_paid_date($invoice_id) {

@@ -131,8 +131,8 @@ function web_invoice_default($message='')
 
 			// Days Since Sent
 			if(web_invoice_paid_status($invoice_id)) {
-				$days_since = "<span style='display:none;'>-1</span>".__(' Paid', WEB_INVOICE_TRANS_DOMAIN); }
-				else {
+				$days_since = "<span style='display:none;'>-1</span>".__(' Paid', WEB_INVOICE_TRANS_DOMAIN);  
+			} else {
 					if(web_invoice_meta($invoice_id,'sent_date')) {
 
 						$date1 = web_invoice_meta($invoice_id,'sent_date');
@@ -360,7 +360,6 @@ function web_invoice_recurring_overview($message='')
 	<option value="mark_as_paid"><?php _e('Mark as Paid', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	<option value="archive_invoice"><?php _e('Archive Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	<option value="unrachive_invoice"><?php _e('Un-Archive Invoice(s)', WEB_INVOICE_TRANS_DOMAIN); ?></option>
-	<option value="stop_web_invoice_recurring_billing"><?php _e('Stop Recurring Billing', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 	<option value="delete_invoice"
 		onClick="if(confirm('<?php _e('If you delete a recurring invoice, the subscription will be cancelled.', WEB_INVOICE_TRANS_DOMAIN); ?>')) {return true;} return false;"><?php _e('Delete', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 </select> <input type="submit"
@@ -430,9 +429,11 @@ function web_invoice_recurring_overview($message='')
 			//Days since sent
 
 			// Days Since Sent
-			if(web_invoice_paid_status($invoice_id)) {
-				$days_since = "<span style='display:none;'>-2</span>".__(' Paid', WEB_INVOICE_TRANS_DOMAIN); }
-				else {
+			if(web_invoice_paid_status($invoice_id) == 'cancelled') {
+				$days_since = "<span style='display:none;'>-1</span>".__(' Cancelled', WEB_INVOICE_TRANS_DOMAIN); 
+			} else if(web_invoice_paid_status($invoice_id)) {
+				$days_since = "<span style='display:none;'>-2</span>".__(' Paid', WEB_INVOICE_TRANS_DOMAIN); 
+			} else {
 					if(web_invoice_meta($invoice_id,'sent_date')) {
 
 						$date1 = web_invoice_meta($invoice_id,'sent_date');
