@@ -107,6 +107,10 @@
 	display: none;
 }
 
+#web_invoice_first_time_setup .payflow_info {
+	display: none;
+}
+
 #web_invoice_first_time_setup .other_info {
 	display: none;
 }
@@ -352,7 +356,7 @@
 	display: none;
 }
 
-#settings_page_table  .paypal_info {
+#settings_page_table  .payflow_info {
 	display: none;
 }
 

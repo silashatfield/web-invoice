@@ -93,6 +93,11 @@ class Web_Invoice_Decider {
 				// PayPal
 				if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 				if(isset($_POST['web_invoice_paypal_only_button'])) update_option('web_invoice_paypal_only_button', $_POST['web_invoice_paypal_only_button']);
+				// Payflow
+				if(isset($_POST['web_invoice_payflow_login'])) update_option('web_invoice_payflow_login', $_POST['web_invoice_payflow_login']);
+				if(isset($_POST['web_invoice_payflow_partner'])) update_option('web_invoice_payflow_partner', $_POST['web_invoice_payflow_partner']);
+				if(isset($_POST['web_invoice_payflow_only_button'])) update_option('web_invoice_payflow_only_button', $_POST['web_invoice_payflow_only_button']);
+				if(isset($_POST['web_invoice_payflow_silent_post'])) update_option('web_invoice_payflow_silent_post', $_POST['web_invoice_payflow_silent_post']);
 				// Other/Bank
 				if(isset($_POST['web_invoice_other_details'])) update_option('web_invoice_other_details', $_POST['web_invoice_other_details']);
 				// Moneybookers

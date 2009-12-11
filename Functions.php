@@ -622,6 +622,12 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_paypal_address');
 	delete_option('web_invoice_paypal_only_button');
 	
+	// Payflow
+	delete_option('web_invoice_payflow_login');
+	delete_option('web_invoice_payflow_partner');
+	delete_option('web_invoice_payflow_only_button');
+	delete_option('web_invoice_payflow_silent_post');
+	
 	// PayPal
 	delete_option('web_invoice_other_details');
 
@@ -640,6 +646,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_alertpay_ip');
 	
 	// Google Checkout
+	delete_option('web_invoice_google_checkout_env');
 	delete_option('web_invoice_google_checkout_merchant_id');
 	delete_option('web_invoice_google_checkout_level2');
 	delete_option('web_invoice_google_checkout_merchant_key');
@@ -1466,6 +1473,12 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 	if(isset($_POST['web_invoice_paypal_only_button'])) update_option('web_invoice_paypal_only_button', $_POST['web_invoice_paypal_only_button']);
 
+	// Payflow
+	if(isset($_POST['web_invoice_payflow_login'])) update_option('web_invoice_payflow_login', $_POST['web_invoice_payflow_login']);
+	if(isset($_POST['web_invoice_payflow_partner'])) update_option('web_invoice_payflow_partner', $_POST['web_invoice_payflow_partner']);
+	if(isset($_POST['web_invoice_payflow_only_button'])) update_option('web_invoice_payflow_only_button', $_POST['web_invoice_payflow_only_button']);
+	if(isset($_POST['web_invoice_payflow_silent_post'])) update_option('web_invoice_payflow_silent_post', $_POST['web_invoice_payflow_silent_post']);
+	
 	// Other/Bank
 	if(isset($_POST['web_invoice_other_details'])) update_option('web_invoice_other_details', $_POST['web_invoice_other_details']);
 	
@@ -1484,6 +1497,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_alertpay_ip'])) update_option('web_invoice_alertpay_ip', $_POST['web_invoice_alertpay_ip']);
 		
 	// Google Checkout
+	if(isset($_POST['web_invoice_google_checkout_env'])) update_option('web_invoice_google_checkout_env', $_POST['web_invoice_google_checkout_env']);
 	if(isset($_POST['web_invoice_google_checkout_merchant_id'])) update_option('web_invoice_google_checkout_merchant_id', $_POST['web_invoice_google_checkout_merchant_id']);
 	if(isset($_POST['web_invoice_google_checkout_level2'])) update_option('web_invoice_google_checkout_level2', $_POST['web_invoice_google_checkout_level2']);
 	if(isset($_POST['web_invoice_google_checkout_merchant_key'])) update_option('web_invoice_google_checkout_merchant_key', $_POST['web_invoice_google_checkout_merchant_key']);
@@ -1558,6 +1572,10 @@ function web_invoice_get_alertpay_api_url() {
 }
 
 function web_invoice_get_google_checkout_api_url() {
+	return get_permalink(get_option('web_invoice_web_invoice_page'));
+}
+
+function web_invoice_get_payflow_silent_post_url() {
 	return get_permalink(get_option('web_invoice_web_invoice_page'));
 }
 

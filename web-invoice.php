@@ -173,6 +173,10 @@ class Web_Invoice {
 				require_once("gateways/googlecheckout.class.php");
 				$gc_obj = new Web_Invoice_GoogleCheckout($_POST['_type'], $_POST);
 				$gc_obj->processRequest($_SERVER['REMOTE_ADDR'], $_POST);
+			} else if((get_option('web_invoice_payflow_silent_post') == 'True') && isset($_POST['PNREF'])) {
+				require_once("gateways/payflow.class.php");
+				$pf_obj = new Web_Invoice_Payflow($_POST['CUSTID'], $_POST);
+				$pf_obj->processRequest($_SERVER['REMOTE_ADDR'], $_POST);
 			}
 		}
 	}
@@ -433,6 +437,12 @@ class Web_Invoice {
 		add_option('web_invoice_paypal_address','');
 		add_option('web_invoice_paypal_only_button', 'False');
 		
+		// Payflow
+		add_option('web_invoice_payflow_login','');
+		add_option('web_invoice_payflow_partner','');
+		add_option('web_invoice_paypal_only_button', 'False');
+		add_option('web_invoice_payflow_silent_post', 'False');
+		
 		// PayPal
 		add_option('web_invoice_other_details','');
 
@@ -451,6 +461,7 @@ class Web_Invoice {
 		add_option('web_invoice_alertpay_ip', '67.205.87.225-67.205.87.226,67.205.87.235');
 
 		// Google Checkout
+		add_option('web_invoice_google_checkout_env','live');
 		add_option('web_invoice_google_checkout_merchant_id','');
 		add_option('web_invoice_google_checkout_level2','False');
 		add_option('web_invoice_google_checkout_merchant_key','');

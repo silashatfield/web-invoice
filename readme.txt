@@ -22,9 +22,9 @@ Some features:
 * Prefill customer information using the WordPress user list
 * Send invoice notifications to customers with a secured link back to the web invoice
 * Send invoice reminders to customers with a secured link back to the web invoice
-* Accept credit card payment via Authorize.net or MerchantPlus NaviGate
-* Moneybookers, AlertPay, Google Checkout (Sponsored by Aaron Petz, http://aaronpetz.com) or PayPal available if you don't have a credit card processing account
-* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature, Google Checkout Subscriptions (Sponsored by Sean Ham, http://consulting.dynamisart.com) or Moneybookers
+* Accept credit card payment via PayPal Payflow, Authorize.net or MerchantPlus NaviGate
+* Moneybookers, AlertPay, Google Checkout or PayPal available if you don't have a credit card processing account
+* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature, Google Checkout Subscriptions or Moneybookers
 * Force web invoice pages to be viewed in SSL mode
 * Archive old invoices
 * Easily use old invoices as templates for new ones
@@ -36,6 +36,11 @@ Some features:
 * All user interfaces are internationalized
 * E-mail templates and hooks to allow you to customize the e-mails sent to your clients
 * Integrate with other plugins, actions available: web_invoice_mark_as_paid, web_invoice_content_append, web_invoice_front_top, web_invoice_front_bottom, web_invoice_front_top, web_invoice_front_paid, web_invoice_front_unpaid
+
+Sponsored features:
+
+* Google Checkout support sponsored by Aaron Petz, http://aaronpetz.com
+* Google Checkout Subscriptions and PayPal Payflow support sponsored by Sean Ham, http://consulting.dynamisart.com
 
 Would you like to see this plugin in other languages? Please show your interest in
 the [Web Invoice community forum](http://mohanjith.com/forum/). You could also help us
@@ -76,6 +81,7 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 * Bug fixes, Google Checkout mark invoice as paid (2nd Level integration)
 * Google Checkout Subscription (recurring) support
+* PayPal Payflow support (experimental)
 
 **Version 1.9.22**
 

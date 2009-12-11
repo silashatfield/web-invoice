@@ -1265,6 +1265,8 @@ function web_invoice_show_settings()
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) echo 'selected="yes"';?>><?php _e("Google Checkout", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="paypal" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>><?php _e("PayPal", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="payflow" style="padding-right: 10px;"
+			<?php if(stristr(get_option('web_invoice_payment_method'), 'payflow')) echo 'selected="yes"';?>><?php _e("PayPal Payflow", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="other" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'other')) echo 'selected="yes"';?>><?php _e("Other/Bank details", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="cc" style="padding-right: 10px;"
@@ -1381,6 +1383,15 @@ function web_invoice_show_settings()
 		</td>
 	</tr>
 	<tr class="google_checkout_info">
+		<th><?php _e('Sandbox / Live Mode:', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<td><select name="web_invoice_google_checkout_env">
+			<option value="sandbox" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_google_checkout_env') == 'sandbox') echo 'selected="yes"';?>><?php _e('Sandbox - Do Not Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+			<option value="live" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_google_checkout_env') == 'live') echo 'selected="yes"';?>><?php _e('Live - Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		</select></td>
+	</tr>
+	<tr class="google_checkout_info">
 		<th width="200"><?php _e("Enable Google Checkout Level 2 integration:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><select id='web_invoice_google_checkout_level2'
 			name="web_invoice_google_checkout_level2">
@@ -1410,7 +1421,6 @@ function web_invoice_show_settings()
 			value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" />
 		</td>
 	</tr>
-
 	<tr class="paypal_info">
 		<th width="200"><?php _e("Just PayPal button (No form):", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><select id='web_invoice_paypal_only_button'
@@ -1420,6 +1430,45 @@ function web_invoice_show_settings()
 			<option value="False"
 			<?php echo (get_option('web_invoice_paypal_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
+	</tr>
+	<tr class="payflow_info">
+		<th width="200"><?php _e("PayPal Payflow Username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_payflow_login'
+			name="web_invoice_payflow_login" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_payflow_login')); ?>" />
+		</td>
+	</tr>
+	<tr class="payflow_info">
+		<th width="200"><?php _e("PayPal Payflow Partner name:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_payflow_partner'
+			name="web_invoice_payflow_partner" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_payflow_partner')); ?>" />
+		</td>
+	</tr>
+	<tr class="payflow_info">
+		<th width="200"><?php _e("Just PayPal Payflow button (No form):", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_payflow_only_button'
+			name="web_invoice_payflow_only_button">
+			<option value="True"
+			<?php echo (get_option('web_invoice_payflow_only_button')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_payflow_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
+	<tr class="payflow_info">
+		<th width="200"><?php _e("Enable PayPal Payflow silent post integration:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_payflow_silent_post'
+			name="web_invoice_payflow_silent_post">
+			<option value="True"
+			<?php echo (get_option('web_invoice_payflow_silent_post')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_payflow_silent_post')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select>
+		<span class="web_invoice_payflow_silent_post_url web_invoice_info"><?php _e("Silent post URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
+		<a
+			title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
+			href="<?php echo web_invoice_get_payflow_silent_post_url(); ?>"><?php echo web_invoice_get_payflow_silent_post_url(); ?></a></span>
+			</td>
 	</tr>
 	
 	<tr class="other_info">
@@ -1903,11 +1952,12 @@ payment!</p></div>
 function web_invoice_show_billing_information($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	$Web_Invoice = new Web_Invoice();
-	$pp = false; $cc = false; $mb = false; $alertpay = false; $gc = false;
+	$pp = false; $pf = false; $cc = false; $mb = false; $alertpay = false; $gc = false;
 	
 	$method_count = 0;
 	
 	if(stristr(get_option('web_invoice_payment_method'),'paypal')) { $pp = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'),'payflow')) { $pf = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) { $mb = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) { $alertpay = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true; $method_count++; }
@@ -1940,7 +1990,11 @@ function web_invoice_show_billing_information($invoice_id) {
 <a href="#paypal_payment_form"
 	title="<?php _e('PayPal', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png"
-	alt="PayPal" width="80" height="45" /></a> <?php } ?> <?php if ($other) { ?>
+	alt="PayPal" width="80" height="45" /></a> <?php } ?> <?php if ($pf) { ?>
+<a href="#payflow_payment_form"
+	title="<?php _e('PayPal Payflow', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	src="<?php echo Web_Invoice::frontend_path(); ?>/images/payflow_logo.png"
+	alt="PayPal Payflow" width="80" height="45" /></a> <?php } ?> <?php if ($other) { ?>
 <a href="#other_payment_form"
 	title="<?php _e('Other/Bank', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/bank_logo.png"
@@ -1955,6 +2009,7 @@ function web_invoice_show_billing_information($invoice_id) {
 	if ($mb) web_invoice_show_moneybookers_form($invoice_id, $invoice);
 	if ($gc) web_invoice_show_google_checkout_form($invoice_id, $invoice);
 	if ($pp) web_invoice_show_paypal_form($invoice_id, $invoice);
+	if ($pf) web_invoice_show_payflow_form($invoice_id, $invoice);
 	if ($other) web_invoice_show_other_form($invoice_id, $invoice);
 
 	?></div>
@@ -1996,8 +2051,11 @@ function web_invoice_show_alertpay_form($invoice_id, $invoice) {
 }
 
 function web_invoice_show_google_checkout_form($invoice_id, $invoice) {
-$env_base_url = "sandbox.google.com/checkout";
-// $env_base_url = "checkout.google.com";
+	if (get_option('web_invoice_google_checkout_env') == 'sandbox') {
+		$env_base_url = "sandbox.google.com/checkout";
+	} else {
+		$env_base_url = "checkout.google.com";
+	}
 	?>
 <div id="google_checkout_payment_form" class="payment_form">
 <form action="https://<?php echo $env_base_url; ?>/api/checkout/v2/checkoutForm/Merchant/<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>" method="post"
@@ -2196,6 +2254,68 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 		style="border: 0; width: 107px; height: 26px; padding: 0;"
 		name="submit"
 		alt="Make payments with PayPal - it's fast, free and secure!" /></li>
+
+	<br class="cb" />
+</ol>
+
+</form>
+</div>
+	<?php
+}
+
+function web_invoice_show_payflow_form($invoice_id, $invoice) {
+	?>
+<div id="payflow_payment_form" class="payment_form"><?php if (get_option('web_invoice_payflow_only_button') == 'False') { ?>
+<h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+	<?php } ?>
+<form action="https://payflowlink.paypal.com" method="post"
+	class="clearfix"><input type="hidden" name="currency_code"
+	value="<?php echo $invoice->display('currency'); ?>" /> <input type="hidden" name="LOGIN"
+	value="<?php echo get_option('web_invoice_payflow_login'); ?>" />
+	<input type="hidden" name="PARTNER"
+	value="<?php echo get_option('web_invoice_payflow_partner'); ?>" /> <input type="hidden" name="AMOUNT"
+	value="<?php echo $invoice->display('amount'); ?>" /> <input type="hidden" name="ECHODATA"
+	value="true" /> <input type="hidden" name="TYPE"
+	value="S" /> <input type="hidden" name="METHOD"
+	value="CC" /> <input type="hidden" name="CUSTID"
+	value="<?php echo $invoice->display('display_id'); ?>" /> <?php
+	?>
+<fieldset id="credit_card_information">
+<ol>
+
+<?php if (get_option('web_invoice_payflow_only_button') == 'False') { ?>
+	<li><label for="name"><?php _e('Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("NAME","{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"); ?>
+	</li>
+	<li><label for="day_phone_a"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("PHONE", $invoice->recipient('paypal_phonenumber'),' style="width:85px;" size="10" maxlength="15" '); ?>
+	</li>
+
+	<li><label for="address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("ADDRESS",$invoice->recipient('streetaddress')); ?>
+	</li>
+
+	<li><label for="city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("CITY",$invoice->recipient('city')); ?>
+	</li>
+
+	<li><label for="state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php print web_invoice_draw_inputfield('STATE',$invoice->recipient('state'));  ?>
+	</li>
+
+	<li><label for="zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("ZIP",$invoice->recipient('zip')); ?>
+	</li>
+
+	<li><label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_select('COUNTRY',web_invoice_country_array(),$invoice->recipient('country')); ?>
+	</li>
+	<?php }	?>
+	<li><label for="submit">&nbsp;</label> <input type="submit"
+		style="border: 0; width: 107px; height: 26px; padding: 0;"
+		name="submit"
+		value="Pay now!"
+		alt="Make payments with PayPal Payflow" /></li>
 
 	<br class="cb" />
 </ol>
@@ -2488,43 +2608,47 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array, $invo
 	
 	$desc = join(', ', $desc);
 	
-	if (!$recurring) {
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='Invoice #{$display_id} ' />\n";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-description' value='{$invoice->display('subject')}' />\n";
-				
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.quantity' value='1' />\n";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price.currency' value='{$currency}' />\n";
-				
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='0' />\n";
-		
-	} else {
-		
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='Recurring invoice #{$display_id}: ".$invoice->display('subscription_name')."' />\n";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-description' value='{$desc}' />\n";
-			
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.quantity' value='1' />\n";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price.currency' value='{$currency}' />\n";
-		
-		if (strtotime($invoice->display('startDate')) != strtotime(date('Y-m-d'))) {
+	if ((get_option('web_invoice_google_checkout_level2') == 'True')) {
+		if (!$recurring) {
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='Invoice #{$display_id} ' />\n";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-description' value='{$invoice->display('subject')}' />\n";
+					
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.quantity' value='1' />\n";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price.currency' value='{$currency}' />\n";
+					
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='0' />\n";
-			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.start-date' value='".date('Y-m-d', strtotime($invoice->display('startDate')))."' />";
-		} else {
-			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='".number_format($tax_free_sum, 2)."' />\n";
+
+			$counter++;
 		}
-		
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.type' value='google'/>";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.period' value='".web_invoice_google_checkout_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit'))."' />";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.times' value='{$invoice->display('totalOccurrences')}' />";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge' value='".number_format($tax_free_sum, 2)."' />";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge.currency' value='{$currency}' />";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-name' value='Recurring invoice #{$display_id}' />";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-description' value='{$desc}' />";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.quantity' value='1' />";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price' value='".number_format($tax_free_sum, 2)."' />";
-		$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price.currency' value='{$currency}' />";
+	} else {
+		if ($recurring) {
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='Recurring invoice #{$display_id}: ".$invoice->display('subscription_name')."' />\n";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-description' value='{$desc}' />\n";
+				
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.quantity' value='1' />\n";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price.currency' value='{$currency}' />\n";
+			
+			if (strtotime($invoice->display('startDate')) != strtotime(date('Y-m-d'))) {
+				$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='0' />\n";
+				$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.start-date' value='".date('Y-m-d', strtotime($invoice->display('startDate')))."' />";
+			} else {
+				$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='".number_format($tax_free_sum, 2)."' />\n";
+			}
+			
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.type' value='google'/>";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.period' value='".web_invoice_google_checkout_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit'))."' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.times' value='{$invoice->display('totalOccurrences')}' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge' value='".number_format($tax_free_sum, 2)."' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge.currency' value='{$currency}' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-name' value='Recurring invoice #{$display_id}' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-description' value='{$desc}' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.quantity' value='1' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price' value='".number_format($tax_free_sum, 2)."' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price.currency' value='{$currency}' />";
+			
+			$counter++;
+		}
 	}
-	
-	$counter++;
 
 	foreach($itemized_array as $itemized_item) {
 		if (!$recurring) {
