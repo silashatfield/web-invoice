@@ -38,7 +38,6 @@ Some features:
 * Integrate with other plugins, actions available: web_invoice_mark_as_paid, web_invoice_content_append, web_invoice_front_top, web_invoice_front_bottom, web_invoice_front_top, web_invoice_front_paid, web_invoice_front_unpaid
 
 Sponsored features:
-
 * Google Checkout support sponsored by Aaron Petz, http://aaronpetz.com
 * Google Checkout Subscriptions and PayPal Payflow support sponsored by Sean Ham, http://consulting.dynamisart.com
 
@@ -47,7 +46,6 @@ the [Web Invoice community forum](http://mohanjith.com/forum/). You could also h
 translate this plugin to your language.
 
 Web Invoice is already translated to:
-
 * Italian (it_IT) by Dukessa
 * Belarusian (be_BY) by iam, http://www.antsar.info
 
