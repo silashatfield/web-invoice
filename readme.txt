@@ -75,6 +75,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.10.2**
+
+* PayPal Payflow support is production ready (upgraded from experimental)
+
 **Version 1.10.1**
 
 * Bug fixes, Google Checkout mark invoice as paid (2nd Level integration)

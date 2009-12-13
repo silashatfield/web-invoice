@@ -9,3 +9,11 @@ jQuery(document).ready( function() {
 		jQuery(jQuery(this).attr("href")).show();
 	});
 });
+
+function payflow_copy_billing(suffix) {
+	_payflow_billing_fields = ['NAME', 'EMAIL', 'PHONE', 'ADDRESS', 'CITY', 'STATE', 'ZIP', 'COUNTRY'];
+	
+	for (_i=0; _i<_payflow_billing_fields.length; _i++) {
+		jQuery('form#payflow_form #'+_payflow_billing_fields[_i]+suffix).val(jQuery('form#payflow_form #'+_payflow_billing_fields[_i]).val());
+	}
+}
