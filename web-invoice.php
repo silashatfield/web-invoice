@@ -36,7 +36,6 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
 define("WEB_INVOICE_VERSION_NUM", "1.9.14");
 define("WEB_INVOICE_TRANS_DOMAIN", "web-invoice");
 
