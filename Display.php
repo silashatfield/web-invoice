@@ -2317,7 +2317,7 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 	</li>
 </ol>
 
-<span class="invoice_action" style="float: right"><a href="javascript:payflow_copy_billing('TOSHIP');">Copy billing details</a></span>
+<span class="invoice_action" style="float: right"><a href="javascript:payflow_copy_billing('TOSHIP');"><?php _e('Same as Shipping', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
 <h2 class="invoice_page_subheading"><?php _e('Shipping Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <fieldset id="credit_card_information">
 <ol>

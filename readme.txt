@@ -38,6 +38,7 @@ Some features:
 * Integrate with other plugins, actions available: web_invoice_mark_as_paid, web_invoice_content_append, web_invoice_front_top, web_invoice_front_bottom, web_invoice_front_top, web_invoice_front_paid, web_invoice_front_unpaid
 
 Sponsored features:
+
 * Google Checkout support sponsored by Aaron Petz, http://aaronpetz.com
 * Google Checkout Subscriptions and PayPal Payflow support sponsored by Sean Ham, http://consulting.dynamisart.com
 
