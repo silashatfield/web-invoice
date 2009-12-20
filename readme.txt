@@ -3,7 +3,7 @@ Contributors: mohanjith
 Donate link: http://mohanjith.com/wordpress
 Tags: bill, moneybookers, google checkout, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
-Tested up to: 2.8.6
+Tested up to: 2.9.0
 Stable tag: trunk
 
 Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
@@ -24,7 +24,7 @@ Some features:
 * Send invoice reminders to customers with a secured link back to the web invoice
 * Accept credit card payment via PayPal Payflow, Authorize.net or MerchantPlus NaviGate
 * Moneybookers, AlertPay, Google Checkout or PayPal available if you don't have a credit card processing account
-* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature, Google Checkout Subscriptions or Moneybookers
+* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature, Google Checkout Subscriptions, PayPal or Moneybookers
 * Force web invoice pages to be viewed in SSL mode
 * Archive old invoices
 * Easily use old invoices as templates for new ones
@@ -75,6 +75,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.10.3**
+
+* Recurring payments with PayPal
 
 **Version 1.10.2**
 

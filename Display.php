@@ -525,7 +525,7 @@ function web_invoice_saved_preview($invoice_id)
 function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 {
 	global $wpdb;
-
+	
 	//Load Defaults
 	$currency = get_option("web_invoice_default_currency_code");
 
@@ -636,7 +636,10 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 	?>
 	<?php if(!isset($invoice_id)) { ?>
 <h2><?php _e('New Web Invoice', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
-	<?php  web_invoice_draw_user_selection_form($user_id); } ?>
+	<?php  web_invoice_draw_user_selection_form($user_id); 
+		  } else {
+			$_SESSION['last_new_invoice'] = false;
+	      } ?>
 	<?php if(isset($user_id) && isset($invoice_id)) { ?>
 <h2><?php _e('Manage Invoice', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 	<?php } ?>
@@ -1162,6 +1165,18 @@ function web_invoice_show_settings()
 			<?php if(get_option('web_invoice_cc_thank_you_email') == 'yes') echo 'selected="yes"';?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option style="padding-right: 10px;"
 			<?php if(get_option('web_invoice_cc_thank_you_email') == 'no') echo 'selected="yes"';?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
+	
+	<tr>
+		<th><a class="web_invoice_tooltip"
+			title="<?php _e("Redirect to new invoice page after adding user.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Redirect after adding user", WEB_INVOICE_TRANS_DOMAIN) ?></a>:</th>
+		<td><select name="web_invoice_redirect_after_user_add">
+			<option></option>
+			<option style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_redirect_after_user_add') == 'yes') echo 'selected="yes"';?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_redirect_after_user_add') == 'no') echo 'selected="yes"';?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
 	</tr>
 
@@ -2184,6 +2199,19 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 	<?php
 }
 
+function web_invoice_paypal_convert_interval($val) {
+	switch ($val) {
+		case 'months':
+			return 'M';
+		case 'weeks':
+			return 'W';
+		case 'years':
+			return 'Y';
+		case 'days':
+		default: return 'D';
+	}
+}
+
 function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	?>
 <div id="paypal_payment_form" class="payment_form"><?php if (get_option('web_invoice_paypal_only_button') == 'False') { ?>
@@ -2197,13 +2225,22 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	value="<?php echo get_option('web_invoice_paypal_address'); ?>" /> <input
 	type="hidden" name="return"
 	value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" /> <input
-	type="hidden" name="rm" value="2" /> <input type="hidden" name="amount"
-	value="<?php echo $invoice->display('amount'); ?>" /> <input
+	type="hidden" name="rm" value="2" /> <input
 	type="hidden" name="invoice" id="invoice_num"
 	value="<?php echo  $invoice->display('display_id'); ?>" /> <?php
+	if (web_invoice_recurring($invoice_id)) { ?>
+	<input type="hidden" name="cmd" value="_xclick-subscriptions" />
+	<input type="hidden" name="t3" value="<?php echo web_invoice_paypal_convert_interval($invoice->display('interval_unit')); ?>" />
+	<input type="hidden" name="p3" value="<?php echo $invoice->display('totalOccurrences'); ?>" />
+	<input type="hidden" name="a3" value="<?php echo $invoice->display('amount'); ?>" />
+	<input type="hidden" name="item_name" value="<?php echo $invoice->display('subscription_name'); ?>">
+	<input type="hidden" name="item_number" value="<?php echo $invoice->display('display_id').date('YMD'); ?>">
+	<?php 
+	} else
 	// Convert Itemized List into PayPal Item List
 	if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemized_list($invoice->display('itemized'),$invoice_id);
 	?>
+	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" /> 
 <fieldset id="credit_card_information">
 <ol>
 
@@ -2249,12 +2286,22 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
 	</li>
 	<?php }	?>
+	<?php
+	if (web_invoice_recurring($invoice_id)) { ?>
+	<li><label for="submit">&nbsp;</label> <input type="image"
+		src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif"
+		style="border: 0; width: 107px; height: 26px; padding: 0;"
+		name="submit"
+		alt="Subscribe with PayPal - it's fast, free and secure!" /></li>
+	<?php 
+	} else { ?>
 	<li><label for="submit">&nbsp;</label> <input type="image"
 		src="https://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif"
 		style="border: 0; width: 107px; height: 26px; padding: 0;"
 		name="submit"
 		alt="Make payments with PayPal - it's fast, free and secure!" /></li>
-
+	<?php 
+	} ?>
 	<br class="cb" />
 </ol>
 
@@ -2495,7 +2542,9 @@ echo web_invoice_meta($invoice_id,'web_invoice_subscription_start_day') .", ". w
 
 
 function web_invoice_draw_user_selection_form($user_id) {
-	global $wpdb; ?>
+	global $wpdb;
+	$_SESSION['last_new_invoice'] = true;
+	?>
 
 <div class="postbox" id="wp_new_web_invoice_div">
 <div class="inside">

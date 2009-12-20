@@ -594,6 +594,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_business_tax_id');
 	delete_option('web_invoice_default_currency_code');
 	delete_option('web_invoice_web_invoice_page');
+	delete_option('web_invoice_redirect_after_user_add');
 	delete_option('web_invoice_billing_meta');
 	delete_option('web_invoice_show_billing_address');
 	delete_option('web_invoice_show_quantities');
@@ -1431,6 +1432,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_protocol'])) update_option('web_invoice_protocol', $_POST['web_invoice_protocol']);
 	if(isset($_POST['web_invoice_send_thank_you_email'])) update_option('web_invoice_send_thank_you_email', $_POST['web_invoice_send_thank_you_email']);
 	if(isset($_POST['web_invoice_cc_thank_you_email'])) update_option('web_invoice_cc_thank_you_email', $_POST['web_invoice_cc_thank_you_email']);
+	if(isset($_POST['web_invoice_redirect_after_user_add'])) update_option('web_invoice_redirect_after_user_add', $_POST['web_invoice_redirect_after_user_add']);
 	if(isset($_POST['web_invoice_show_business_address'])) update_option('web_invoice_show_business_address', $_POST['web_invoice_show_business_address']);
 	if(isset($_POST['web_invoice_show_billing_address'])) update_option('web_invoice_show_billing_address', $_POST['web_invoice_show_billing_address']);
 	if(isset($_POST['web_invoice_show_quantities'])) update_option('web_invoice_show_quantities', $_POST['web_invoice_show_quantities']);
