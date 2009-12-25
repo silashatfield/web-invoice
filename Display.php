@@ -1269,7 +1269,8 @@ function web_invoice_show_settings()
 	</tr>
 
 	<tr>
-		<th><?php _e("Payment Method:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<th><a class="web_invoice_tooltip"
+			title="<?php _e("Some payment processors may not be available unless protocol is https and enforce https is selected.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Payment Method:", WEB_INVOICE_TRANS_DOMAIN) ?></a></th>
 		<td><select id="web_invoice_payment_method"
 			name="web_invoice_payment_method[]" multiple="multiple" size="3">
 			<option value="moneybookers" style="padding-right: 10px;"
@@ -1282,9 +1283,11 @@ function web_invoice_show_settings()
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'paypal')) echo 'selected="yes"';?>><?php _e("PayPal", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="payflow" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'payflow')) echo 'selected="yes"';?>><?php _e("PayPal Payflow", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="pfp" <?php print (!stristr(get_option('web_invoice_protocol'), 'https') || !stristr(get_option('web_invoice_force_https'), 'true'))?'disabled="disabled"':''; ?> style="padding-right: 10px;"
+			<?php if(stristr(get_option('web_invoice_payment_method'), 'pfp')) echo 'selected="yes"';?>><?php _e("PayPal Payflow Pro", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="other" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'other')) echo 'selected="yes"';?>><?php _e("Other/Bank details", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-			<option value="cc" style="padding-right: 10px;"
+			<option value="cc" <?php print (!stristr(get_option('web_invoice_protocol'), 'https') || !stristr(get_option('web_invoice_force_https'), 'true'))?'disabled="disabled"':''; ?> style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
 	</tr>
@@ -1484,6 +1487,61 @@ function web_invoice_show_settings()
 			title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
 			href="<?php echo web_invoice_get_payflow_silent_post_url(); ?>"><?php echo web_invoice_get_payflow_silent_post_url(); ?></a></span>
 			</td>
+	</tr>
+	
+	<tr class="pfp_info">
+		<th width="200"><?php _e("PayPal Payflow Pro Partner name:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_pfp_partner'
+			name="web_invoice_pfp_partner" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_pfp_partner')); ?>" />
+		</td>
+	</tr>
+	<tr class="pfp_info">
+		<th><?php _e('Sandbox / Live Mode:', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<td><select name="web_invoice_pfp_env">
+			<option value="sandbox" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_pfp_env') == 'sandbox') echo 'selected="yes"';?>><?php _e('Sandbox - Do Not Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+			<option value="live" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_pfp_env') == 'live') echo 'selected="yes"';?>><?php _e('Live - Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		</select></td>
+	</tr>
+	<tr class="pfp_info">
+		<th width="200"><?php _e("PayPal Payflow Pro authentication mode:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_pfp_authentication'
+			name="web_invoice_pfp_authentication">
+			<option value="3token"
+			<?php echo (get_option('web_invoice_pfp_authentication')=='3token')?'selected="selected"':''; ?>><?php _e("3TOKEN", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="unipay"
+			<?php echo (get_option('web_invoice_pfp_authentication')=='unipay')?'selected="selected"':''; ?>><?php _e("UNIPAY", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
+	<tr class="pfp_info 3token">
+		<th width="200"><?php _e("PayPal Payflow Pro Username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_pfp_username'
+			name="web_invoice_pfp_username" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_pfp_username')); ?>" />
+		</td>
+	</tr>
+	<tr class="pfp_info 3token">
+		<th width="200"><?php _e("PayPal Payflow Pro Password:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_pfp_password'
+			name="web_invoice_pfp_password" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_pfp_password')); ?>" />
+		</td>
+	</tr>
+	<tr class="pfp_info 3token">
+		<th width="200"><?php _e("PayPal Payflow Pro Signature:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_pfp_signature'
+			name="web_invoice_pfp_signature" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_pfp_signature')); ?>" />
+		</td>
+	</tr>
+	<tr class="pfp_info unipay">
+		<th width="200"><?php _e("PayPal Payflow Pro Third party e-mail address:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_pfp_3rdparty_email'
+			name="web_invoice_pfp_3rdparty_email" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_pfp_3rdparty_email')); ?>" />
+		</td>
 	</tr>
 	
 	<tr class="other_info">
@@ -1935,7 +1993,9 @@ function web_invoice_show_business_address() {
 <p class="web_invoice_business_name"><?php echo stripcslashes(get_option('web_invoice_business_name')); ?></p>
 <p class="web_invoice_business_address"><?php echo stripcslashes(nl2br(get_option('web_invoice_business_address'))); ?></p>
 <p class="web_invoice_business_phone"><?php echo get_option('web_invoice_business_phone'); ?></p>
+<?php if (get_option('web_invoice_business_tax_id') != '') { ?>
 <p class="web_invoice_business_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo get_option('web_invoice_business_tax_id'); ?></p>
+<?php } ?>
 </div>
 
 	<?php
@@ -1967,12 +2027,13 @@ payment!</p></div>
 function web_invoice_show_billing_information($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	$Web_Invoice = new Web_Invoice();
-	$pp = false; $pf = false; $cc = false; $mb = false; $alertpay = false; $gc = false;
+	$pp = false; $pf = false; $pfp = false; $cc = false; $mb = false; $alertpay = false; $gc = false;
 	
 	$method_count = 0;
 	
 	if(stristr(get_option('web_invoice_payment_method'),'paypal')) { $pp = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'),'payflow')) { $pf = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'),'pfp')) { $pfp = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) { $mb = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) { $alertpay = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true; $method_count++; }
@@ -1987,11 +2048,11 @@ function web_invoice_show_billing_information($invoice_id) {
 <?php if ($method_count > 1) { ?>
 <br />
 	<?php if ($cc) { ?> <a href="#cc_payment_form"
-	title="<?php _e('Visa Master American Express', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	title="<?php _e('Visa Master American Express', WEB_INVOICE_TRANS_DOMAIN); ?>" class="payment_select cc"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/cc_logo.png"
 	alt="Visa Master American Express" width="265" height="45" /></a> <?php } ?>
 	<?php if ($alertpay) { ?> <a href="#alertpay_payment_form"
-	title="<?php _e('AlertPay', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	title="<?php _e('AlertPay', WEB_INVOICE_TRANS_DOMAIN); ?>" class="payment_select moneybookers"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/alertpay_logo.png"
 	alt="AlertPay" width="81" height="45" /></a> <?php } ?> <?php if ($mb) { ?>
 <a href="#moneybookers_payment_form"
@@ -1999,19 +2060,22 @@ function web_invoice_show_billing_information($invoice_id) {
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/moneybookers_logo.png"
 	alt="Moneybookers" width="75" height="42" /></a> <?php } ?> <?php if ($gc) { ?>
 <a href="#google_checkout_payment_form"
-	title="<?php _e('Google Checkout', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	title="<?php _e('Google Checkout', WEB_INVOICE_TRANS_DOMAIN); ?>" class="payment_select google_checkout"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/google_checkout.gif"
 	alt="Google Checkout" height="46" width="180" /></a> <?php } ?> <?php if ($pp) { ?>
 <a href="#paypal_payment_form"
-	title="<?php _e('PayPal', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	title="<?php _e('PayPal', WEB_INVOICE_TRANS_DOMAIN); ?>" class="payment_select paypal"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/paypal_logo.png"
-	alt="PayPal" width="80" height="45" /></a> <?php } ?> <?php if ($pf) { ?>
+	alt="PayPal" width="80" height="45" /></a> <?php } ?> <?php if ($pfp) { ?> <a href="#pfp_payment_form"
+	title="<?php _e('Visa Master American Express', WEB_INVOICE_TRANS_DOMAIN); ?>" class="payment_select pfp"><img
+	src="<?php echo Web_Invoice::frontend_path(); ?>/images/cc_logo.png"
+	alt="Visa Master American Express" width="265" height="45" /></a> <?php } ?> <?php if ($pf) { ?>
 <a href="#payflow_payment_form"
-	title="<?php _e('PayPal Payflow', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	title="<?php _e('PayPal Payflow', WEB_INVOICE_TRANS_DOMAIN); ?>" class="payment_select payflow"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/payflow_logo.png"
 	alt="PayPal Payflow" width="80" height="45" /></a> <?php } ?> <?php if ($other) { ?>
 <a href="#other_payment_form"
-	title="<?php _e('Other/Bank', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	title="<?php _e('Other/Bank', WEB_INVOICE_TRANS_DOMAIN); ?>" class="payment_select other"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/bank_logo.png"
 	alt="Other/Bank" width="80" height="45" /></a> <?php } ?>
 <?php } ?>
@@ -2025,6 +2089,7 @@ function web_invoice_show_billing_information($invoice_id) {
 	if ($gc) web_invoice_show_google_checkout_form($invoice_id, $invoice);
 	if ($pp) web_invoice_show_paypal_form($invoice_id, $invoice);
 	if ($pf) web_invoice_show_payflow_form($invoice_id, $invoice);
+	if ($pfp) web_invoice_show_pfp_form($invoice_id, $invoice);
 	if ($other) web_invoice_show_other_form($invoice_id, $invoice);
 
 	?></div>
@@ -2057,7 +2122,7 @@ function web_invoice_show_alertpay_form($invoice_id, $invoice) {
 	<li><label for="submit">&nbsp;</label> <input type="image"
 		src="https://www.alertpay.com/PayNow/4FF7280888FE4FD4AE1B4A286ED9B8D5a.gif"
 		style="border: 0; width: 170px; height: 70px; padding: 0;"
-		name="submit" alt="Pay now with AlertPay" /></li>
+		name="submit" alt="Pay now with AlertPay" class="pay_button alertpay" /></li>
 </ol>
 </fieldset>
 </form>
@@ -2094,7 +2159,7 @@ if ($invoice->display('tax')) {
 <ol>
 	<li><label for="submit">&nbsp;</label> <input type="image" name="Google Checkout" 
 		alt="Fast checkout through Google" height="46" width="180"
-		style="border: 0; width: 180px; height: 46px; padding: 0;"
+		style="border: 0; width: 180px; height: 46px; padding: 0;"  class="pay_button google_checkout"
 		src="https://<?php echo $env_base_url; ?>/buttons/checkout.gif?merchant_id=<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>&w=180&h=46&style=white&variant=text&loc=en_US"/>
 		</li>
 </ol>
@@ -2189,7 +2254,7 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 
 	<li><label for="submit">&nbsp;</label> <input type="image"
 		src="https://www.moneybookers.com/images/logos/checkout_logos/checkoutlogo_CCs_240x80.gif"
-		style="border: 0; width: 240px; height: 80px; padding: 0;"
+		style="border: 0; width: 240px; height: 80px; padding: 0;" class="pay_button moneybookers"
 		name="submit" alt="Moneybookers.com and money moves" /></li>
 	<br class="cb" />
 </ol>
@@ -2291,14 +2356,14 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	<li><label for="submit">&nbsp;</label> <input type="image"
 		src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif"
 		style="border: 0; width: 107px; height: 26px; padding: 0;"
-		name="submit"
+		name="submit" class="pay_button paypal_subscription"
 		alt="Subscribe with PayPal - it's fast, free and secure!" /></li>
 	<?php 
 	} else { ?>
 	<li><label for="submit">&nbsp;</label> <input type="image"
 		src="https://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif"
 		style="border: 0; width: 107px; height: 26px; padding: 0;"
-		name="submit"
+		name="submit" class="pay_button paypal"
 		alt="Make payments with PayPal - it's fast, free and secure!" /></li>
 	<?php 
 	} ?>
@@ -2405,7 +2470,7 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 	<li><label for="submit">&nbsp;</label> <input type="submit"
 		style="border: 0; width: 107px; height: 26px; padding: 0;"
 		name="submit"
-		value="Pay now!"
+		value="Pay now!" class="pay_button payflow"
 		alt="Make payments with PayPal Payflow" /></li>
 
 	<br class="cb" />
@@ -2414,6 +2479,103 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 </form>
 </div>
 	<?php
+}
+
+function web_invoice_show_pfp_form($invoice_id, $invoice) {
+	?>
+<div id="pfp_payment_form" class="payment_form">
+<h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+<form method="post" name="checkout_form" id="pfp_checkout_form"
+	class="online_payment_form"
+	onsubmit="process_cc_checkout('pfp'); return false;" class="clearfix"><input
+	type="hidden" name="amount"
+	value="<?php echo $invoice->display('amount'); ?>" /> <input
+	type="hidden" name="processor"
+	value="pfp" /> <input
+	type="hidden" name="user_id"
+	value="<?php echo $invoice->recipient('user_id'); ?>" /> <input
+	type="hidden" name="email_address"
+	value="<?php echo $invoice->recipient('email_address'); ?>" /> <input
+	type="hidden" name="invoice_num" value="<?php echo  $invoice_id; ?>" />
+<input type="hidden" name="currency_code" id="currency_code"
+	value="<?php echo $invoice->display('currency'); ?>" /> <input
+	type="hidden" name="web_invoice_id_hash"
+	value="<?php echo $invoice->display('hash'); ?>" />
+<fieldset id="credit_card_information">
+<ol>
+	<li><label for="first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("first_name",$invoice->recipient('first_name')); ?>
+	</li>
+
+	<li><label for="last_name"><?php _e('Last Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("last_name",$invoice->recipient('last_name')); ?>
+	</li>
+
+	<li><label for="email"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("email_address",$invoice->recipient('email_address')); ?>
+	</li>
+
+	<li><label class="inputLabel" for="phonenumber"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<input name="phonenumber" class="input_field" type="text"
+		id="phonenumber" size="40" maxlength="50"
+		value="<?php print $invoice->recipient('phonenumber'); ?>" /></li>
+
+	<li><label for="address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
+	</li>
+
+	<li><label for="city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
+	</li>
+
+	<li><label for="state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php print web_invoice_draw_inputfield('state',$invoice->recipient('state'));  ?>
+	</li>
+
+	<li><label for="zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("zip",$invoice->recipient('zip')); ?>
+	</li>
+
+	<li><label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
+	</li>
+
+	<li class="hide_after_success"><label class="inputLabel" for="pf_card_num"><?php _e('Credit Card Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<input name="card_num" autocomplete="off" onkeyup="cc_card_pick('#pfp_cardimage', '#pf_card_num');"
+		id="pf_card_num" class="credit_card_number input_field" type="text"
+		size="22" maxlength="22" /></li>
+
+	<li class="hide_after_success nocard cardimage"  id="pfp_cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/images/card_array.png) no-repeat;">
+	</li>
+
+	<li class="hide_after_success"><label class="inputLabel"
+		for="exp_month"><?php _e('Expiration Date', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+		<?php _e('Month', WEB_INVOICE_TRANS_DOMAIN); ?> <select
+		name="exp_month" id="exp_month">
+		<?php print web_invoice_printMonthDropdown(); ?>
+	</select> <?php _e('Year', WEB_INVOICE_TRANS_DOMAIN); ?> <select
+		name="exp_year" id="exp_year">
+		<?php print web_invoice_printYearDropdown('', true); ?>
+	</select></li>
+
+	<li class="hide_after_success"><label class="inputLabel"
+		for="card_code"><?php _e('Security Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<input id="card_code" autocomplete="off" name="card_code"
+		class="input_field" style="width: 70px;" type="text" size="4"
+		maxlength="4" /></li>
+
+	<li id="web_invoice_process_wait"><label for="submit"><span></span>&nbsp;</label>
+	<button type="submit" id="cc_pay_button" class="pay_button pfp"
+		class="hide_after_success submit_button"><?php printf(__('Pay %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_amount')); ?></button>
+	</li>
+</ol>
+<br class="cb" />
+&nbsp;
+<div id="wp_pfp_response"></div>
+
+</form>
+</div>
+		<?php
 }
 
 function web_invoice_show_other_form($invoice_id, $invoice) {
@@ -2433,8 +2595,6 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 	value="<?php echo $invoice->display('amount'); ?>" /> <input
 	type="hidden" name="user_id"
 	value="<?php echo $invoice->recipient('user_id'); ?>" /> <input
-	type="hidden" name="email_address"
-	value="<?php echo $invoice->recipient('email_address'); ?>" /> <input
 	type="hidden" name="invoice_num" value="<?php echo  $invoice_id; ?>" />
 <input type="hidden" name="currency_code" id="currency_code"
 	value="<?php echo $invoice->display('currency'); ?>" /> <input
@@ -2484,7 +2644,7 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 		id="card_num" class="credit_card_number input_field" type="text"
 		size="22" maxlength="22" /></li>
 
-	<li class="hide_after_success nocard"  id="cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/images/card_array.png) no-repeat;">
+	<li class="hide_after_success nocard cardimage"  id="cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/images/card_array.png) no-repeat;">
 	</li>
 
 	<li class="hide_after_success"><label class="inputLabel"
@@ -2504,7 +2664,7 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 		maxlength="4" /></li>
 
 	<li id="web_invoice_process_wait"><label for="submit"><span></span>&nbsp;</label>
-	<button type="submit" id="cc_pay_button"
+	<button type="submit" id="cc_pay_button" class="pay_button cc"
 		class="hide_after_success submit_button"><?php printf(__('Pay %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_amount')); ?></button>
 	</li>
 </ol>
@@ -2650,6 +2810,16 @@ function web_invoice_create_paypal_itemized_list($itemized_array,$invoice_id) {
 	<input type='hidden' name='cmd' value='_ext-enter' />
 	<input type='hidden' name='redirect_cmd' value='_cart' />\n";
 	return $output;
+}
+
+function web_invoice_pfp_convert_interval($length, $val) {
+	switch ($val) {
+		case 'months':
+			return 'Month';
+		case 'days':
+			return 'Day';
+		default: return 'Day';
+	}
 }
 
 function web_invoice_google_checkout_convert_interval($length, $val) {

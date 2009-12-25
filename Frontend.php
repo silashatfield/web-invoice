@@ -87,27 +87,45 @@ function web_invoice_frontend_js() {
 		?>
 <script type="text/javascript">
 
-function cc_card_pick(){
-	numLength = jQuery('#card_num').val().length;
-	number = jQuery('#card_num').val();
-	if(numLength > 10)
+function cc_card_pick(card_image, card_num){
+	if (card_image == null) {
+		card_image = '#cardimage';
+	}
+	if (card_num == null) {
+		card_num = '#card_num';
+	}
+
+	numLength = jQuery(card_num).val().length;
+	number = jQuery(card_num).val();
+	if (numLength > 10)
 	{
-		if((number.charAt(0) == '4') && ((numLength == 13)||(numLength==16))) { jQuery('#cardimage').removeClass(); jQuery('#cardimage').addClass('visa_card'); }
-		else if((number.charAt(0) == '5' && ((number.charAt(1) >= '1') && (number.charAt(1) <= '5'))) && (numLength==16)) { jQuery('#cardimage').removeClass(); jQuery('#cardimage').addClass('mastercard'); }
-		else if(number.substring(0,4) == "6011" && (numLength==16)) 	{ jQuery('#cardimage').removeClass(); jQuery('#cardimage').addClass('amex'); }
-		else if((number.charAt(0) == '3' && ((number.charAt(1) == '4') || (number.charAt(1) == '7'))) && (numLength==15)) { jQuery('#cardimage').removeClass(); jQuery('#cardimage').addClass('discover_card'); }
-		else { jQuery('#cardimage').removeClass(); jQuery('#cardimage').addClass('nocard'); }
+		if((number.charAt(0) == '4') && ((numLength == 13)||(numLength==16))) { jQuery(card_image).removeClass(); jQuery(card_image).addClass('cardimage visa_card'); }
+		else if((number.charAt(0) == '5' && ((number.charAt(1) >= '1') && (number.charAt(1) <= '5'))) && (numLength==16)) { jQuery(card_image).removeClass(); jQuery(card_image).addClass('cardimage mastercard'); }
+		else if(number.substring(0,4) == "6011" && (numLength==16)) 	{ jQuery(card_image).removeClass(); jQuery(card_image).addClass('cardimage amex'); }
+		else if((number.charAt(0) == '3' && ((number.charAt(1) == '4') || (number.charAt(1) == '7'))) && (numLength==15)) { jQuery(card_image).removeClass(); jQuery(card_image).addClass('cardimage discover_card'); }
+		else { jQuery(card_image).removeClass(); jQuery(card_image).addClass('cardimage nocard'); }
 
 	}
 }
 
-function process_cc_checkout() {
+function process_cc_checkout(type) {
+	if (type == null) {
+		type = 'pfp';
+	}
 
 	jQuery('#web_invoice_process_wait span').html('<img src="<?php echo Web_Invoice::frontend_path(); ?>/images/processing-ajax.gif">');
 
 	site_url = '<?php echo web_invoice_curPageURL(); ?>';
-	link_id = 'wp_cc_response';
-	var req = jQuery.post ( site_url, jQuery('#checkout_form').serialize(), function(html) {
+	
+	if (type == 'pfp') {
+		link_id = 'wp_pfp_response';
+		checkout_form = 'pfp_checkout_form';
+	} else {
+		link_id = 'wp_cc_response';
+		checkout_form = 'checkout_form';
+	}
+
+	var req = jQuery.post ( site_url, jQuery('#' + checkout_form).serialize(), function(html) {
 
 			var explode = html.toString().split('\n');
 			var shown = false;
@@ -137,12 +155,12 @@ function process_cc_checkout() {
 			{
 			if(html == 'Transaction okay.') {
 
-				jQuery('#wp_cc_response').fadeIn("slow");
-				jQuery('#wp_cc_response').html("<?php _e('Thank you! <br />Payment processed successfully!', WEB_INVOICE_TRANS_DOMAIN); ?>");
+				jQuery('#' + link_id).fadeIn("slow");
+				jQuery('#' + link_id).html("<?php _e('Thank you! <br />Payment processed successfully!', WEB_INVOICE_TRANS_DOMAIN); ?>");
 				jQuery("#credit_card_information").hide();
 
-				jQuery("#welcome_message").html('Invoice Paid!');
 				jQuery('#' + link_id).show();
+				window.location = '';
 				}
 			}
 			else {

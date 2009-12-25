@@ -76,6 +76,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.10.4**
+
+* PayPal Payflow Pro support
+* Automatic Payflow Recurring profile creation
+
 **Version 1.10.3**
 
 * Recurring payments with PayPal

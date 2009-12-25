@@ -629,6 +629,15 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_payflow_only_button');
 	delete_option('web_invoice_payflow_silent_post');
 	
+	// Payflow Pro
+	delete_option('web_invoice_pfp_partner');
+	delete_option('web_invoice_pfp_env');
+	delete_option('web_invoice_pfp_authentication');
+	delete_option('web_invoice_pfp_username');
+	delete_option('web_invoice_pfp_password');
+	delete_option('web_invoice_pfp_signature');
+	delete_option('web_invoice_pfp_3rdparty_email');
+	
 	// PayPal
 	delete_option('web_invoice_other_details');
 
@@ -872,7 +881,7 @@ function web_invoice_fix_billing_meta_array($arr){
 	return $narr;
 }
 
-function web_invoice_printYearDropdown($sel='')
+function web_invoice_printYearDropdown($sel='', $pfp = false)
 {
 	$localDate=getdate();
 	$minYear = $localDate["year"];
@@ -880,8 +889,13 @@ function web_invoice_printYearDropdown($sel='')
 
 	$output =  "<option value=''>--</option>";
 	for($i=$minYear; $i<$maxYear; $i++) {
-		$output .= "<option value='". substr($i, 2, 2) ."'".($sel==(substr($i, 2, 2))?' selected':'').
+		if ($pfp) {
+			$output .= "<option value='". substr($i, 0, 4) ."'".($sel==(substr($i, 0, 4))?' selected':'').
+			">". $i ."</option>";
+		} else {
+			$output .= "<option value='". substr($i, 2, 2) ."'".($sel==(substr($i, 2, 2))?' selected':'').
 		">". $i ."</option>";
+		}
 	}
 	return($output);
 }
@@ -994,6 +1008,208 @@ function web_invoice_country3_array() {
 	return array("AFG" => "AF","ALA" => "AX","ALB" => "AL","DZA" => "DZ","ASM" => "AS","AND" => "AD","AGO" => "AO","AIA" => "AI","ATA" => "AQ","ATG" => "AG","ARG" => "AR","ARM" => "AM","ABW" => "AW","AUS" => "AU","AUT" => "AT","AZE" => "AZ","BHS" => "BS","BHR" => "BH","BGD" => "BD","BRB" => "BB","BLR" => "BY","BEL" => "BE","BLZ" => "BZ","BEN" => "BJ","BMU" => "BM","BTN" => "BT","BOL" => "BO","BIH" => "BA","BWA" => "BW","BVT" => "BV","BRA" => "BR","IOT" => "IO","BRN" => "BN","BGR" => "BG","BFA" => "BF","BDI" => "BI","KHM" => "KH","CMR" => "CM","CAN" => "CA","CPV" => "CV","CYM" => "KY","CAF" => "CF","TCD" => "TD","CHL" => "CL","CHN" => "CN","CXR" => "CX","CCK" => "CC","COL" => "CO","COM" => "KM","COG" => "CG","COD" => "CD","COK" => "CK","CRI" => "CR","CIV" => "CI","HRV" => "HR","CUB" => "CU","CYP" => "CY","CZE" => "CZ","DNK" => "DK","DJI" => "DJ","DMA" => "DM","DOM" => "DO","ECU" => "EC","EGY" => "EG","SLV" => "SV","GNQ" => "GQ","ERI" => "ER","EST" => "EE","ETH" => "ET","FLK" => "FK","FRO" => "FO","FJI" => "FJ","FIN" => "FI","FRA" => "FR","GUF" => "GF","PYF" => "PF","ATF" => "TF","GAB" => "GA","GMB" => "GM","GEO" => "GE","DEU" => "DE","GHA" => "GH","GIB" => "GI","GRC" => "GR","GRL" => "GL","GRD" => "GD","GLP" => "GP","GUM" => "GU","GTM" => "GT","GGY" => "GG","GIN" => "GN","GNB" => "GW","GUY" => "GY","HTI" => "HT","HMD" => "HM","VAT" => "VA","HND" => "HN","HKG" => "HK","HUN" => "HU","ISL" => "IS","IND" => "IN","IDN" => "ID","IRN" => "IR","IRQ" => "IQ","IRL" => "IE","IMN" => "IM","ISR" => "IL","ITA" => "IT","JAM" => "JM","JPN" => "JP","JEY" => "JE","JOR" => "JO","KAZ" => "KZ","KEN" => "KE","KIR" => "KI","PRK" => "KP","KOR" => "KR","KWT" => "KW","KGZ" => "KG","LAO" => "LA","LVA" => "LV","LBN" => "LB","LSO" => "LS","LBR" => "LR","LBY" => "LY","LIE" => "LI","LTU" => "LT","LUX" => "LU","MAC" => "MO","MKD" => "MK","MDG" => "MG","MWI" => "MW","MYS" => "MY","MDV" => "MV","MLI" => "ML","MLT" => "MT","MHL" => "MH","MTQ" => "MQ","MRT" => "MR","MUS" => "MU","MYT" => "YT","MEX" => "MX","FSM" => "FM","MDA" => "MD","MCO" => "MC","MNG" => "MN","MNE" => "ME","MSR" => "MS","MAR" => "MA","MOZ" => "MZ","MMR" => "MM","NAM" => "NA","NRU" => "NR","NPL" => "NP","NLD" => "NL","ANT" => "AN","NCL" => "NC","NZL" => "NZ","NIC" => "NI","NER" => "NE","NGA" => "NG","NIU" => "NU","NFK" => "NF","MNP" => "MP","NOR" => "NO","OMN" => "OM","PAK" => "PK","PLW" => "PW","PSE" => "PS","PAN" => "PA","PNG" => "PG","PRY" => "PY","PER" => "PE","PHL" => "PH","PCN" => "PN","POL" => "PL","PRT" => "PT","PRI" => "PR","QAT" => "QA","REU" => "RE","ROU" => "RO","RUS" => "RU","RWA" => "RW","BLM" => "BL","SHN" => "SH","KNA" => "KN","LCA" => "LC","MAF" => "MF","SPM" => "PM","VCT" => "VC","WSM" => "WS","SMR" => "SM","STP" => "ST","SAU" => "SA","SEN" => "SN","SRB" => "RS","SYC" => "SC","SLE" => "SL","SGP" => "SG","SVK" => "SK","SVN" => "SI","SLB" => "SB","SOM" => "SO","ZAF" => "ZA","SGS" => "GS","ESP" => "ES","LKA" => "LK","SDN" => "SD","SUR" => "SR","SJM" => "SJ","SWZ" => "SZ","SWE" => "SE","CHE" => "CH","SYR" => "SY","TWN" => "TW","TJK" => "TJ","TZA" => "TZ","THA" => "TH","TLS" => "TL","TGO" => "TG","TKL" => "TK","TON" => "TO","TTO" => "TT","TUN" => "TN","TUR" => "TR","TKM" => "TM","TCA" => "TC","TUV" => "TV","UGA" => "UG","UKR" => "UA","ARE" => "AE","GBR" => "GB","USA" => "US","UMI" => "UM","URY" => "UY","UZB" => "UZ","VUT" => "VU","VEN" => "VE","VNM" => "VN","VGB" => "VG","VIR" => "VI","WLF" => "WF","ESH" => "EH","YEM" => "YE","ZMB" => "ZM","ZWE" => "ZW");
 }
 
+function web_invoice_countrynum_array() {
+	return array(
+		"TD" => "148",
+		"CL" => "152",
+		"CN" => "156",
+		"CX" => "162",
+		"CC" => "166",
+		"CO" => "170",
+		"KM" => "174",
+		"CD" => "180",
+		"CG" => "178",
+		"CK" => "184",
+		"CR" => "188",
+		"CI" => "384",
+		"HR" => "191",
+		"CU" => "192",
+		"CY" => "196",
+		"CZ" => "203",
+		"DK" => "208",
+		"DJ" => "262",
+		"DM" => "212",
+		"DO" => "214",
+		"EC" => "218",
+		"EG" => "818",
+		"SV" => "222",
+		"GQ" => "226",
+		"ER" => "232",
+		"EE" => "233",
+		"ET" => "231",
+		"FK" => "238",
+		"FO" => "234",
+		"FJ" => "242",
+		"FI" => "246",
+		"FR" => "250",
+		"GF" => "254",
+		"PF" => "258",
+		"TF" => "260",
+		"GA" => "266",
+		"GM" => "270",
+		"GE" => "268",
+		"DE" => "276",
+		"GH" => "288",
+		"GI" => "292",
+		"GR" => "300",
+		"GL" => "304",
+		"GD" => "308",
+		"GP" => "312",
+		"GU" => "316",
+		"GT" => "320",
+		"GN" => "324",
+		"GW" => "624",
+		"GY" => "328",
+		"HT" => "332",
+		"HM" => "334",
+		"HN" => "340",
+		"HK" => "344",
+		"HU" => "348",
+		"IS" => "352",
+		"IN" => "356",
+		"ID" => "360",
+		"IR" => "364",
+		"IQ" => "368",
+		"IE" => "372",
+		"IL" => "376",
+		"IT" => "380",
+		"JM" => "388",
+		"JP" => "392",
+		"JO" => "400",
+		"KZ" => "398",
+		"KE" => "404",
+		"KI" => "296",
+		"KP" => "408",
+		"KR" => "410",
+		"KW" => "414",
+		"KG" => "417",
+		"LA" => "418",
+		"LV" => "428",
+		"LB" => "422",
+		"LS" => "426",
+		"LR" => "430",
+		"LY" => "434",
+		"LI" => "438",
+		"LT" => "440",
+		"LU" => "442",
+		"MO" => "446",
+		"MK" => "807",
+		"MG" => "450",
+		"MW" => "454",
+		"MY" => "458",
+		"MV" => "462",
+		"ML" => "466",
+		"MT" => "470",
+		"MH" => "584",
+		"MQ" => "474",
+		"MR" => "478",
+		"MU" => "480",
+		"YT" => "175",
+		"MX" => "484",
+		"FM" => "583",
+		"MD" => "498",
+		"MC" => "492",
+		"MN" => "496",
+		"MS" => "500",
+		"MA" => "504",
+		"MZ" => "508",
+		"MM" => "104",
+		"NA" => "516",
+		"NR" => "520",
+		"NP" => "524",
+		"NL" => "528",
+		"AN" => "530",
+		"NC" => "540",
+		"NZ" => "554",
+		"NI" => "558",
+		"NE" => "562",
+		"NG" => "566",
+		"NU" => "570",
+		"NF" => "574",
+		"MP" => "580",
+		"NO" => "578",
+		"OM" => "512",
+		"PK" => "586",
+		"PW" => "585",
+		"PS" => "275",
+		"PA" => "591",
+		"PG" => "598",
+		"PY" => "600",
+		"PE" => "604",
+		"PH" => "608",
+		"PN" => "612",
+		"PL" => "616",
+		"PT" => "620",
+		"PR" => "630",
+		"QA" => "634",
+		"RE" => "638",
+		"RO" => "642",
+		"RU" => "643",
+		"RW" => "646",
+		"SH" => "654",
+		"KN" => "659",
+		"LC" => "662",
+		"PM" => "666",
+		"VC" => "670",
+		"WS" => "882",
+		"SM" => "674",
+		"ST" => "678",
+		"SA" => "682",
+		"SN" => "686",
+		"CS" => "891",
+		"SC" => "690",
+		"SL" => "694",
+		"SG" => "702",
+		"SK" => "703",
+		"SI" => "705",
+		"SB" => "090",
+		"SO" => "706",
+		"ZA" => "710",
+		"GS" => "239",
+		"ES" => "724",
+		"LK" => "144",
+		"SD" => "736",
+		"SR" => "740",
+		"SJ" => "744",
+		"SZ" => "748",
+		"SE" => "752",
+		"CH" => "756",
+		"SY" => "760",
+		"TW" => "158",
+		"TJ" => "762",
+		"TZ" => "834",
+		"TH" => "764",
+		"TL" => "626",
+		"TG" => "768",
+		"TK" => "772",
+		"TO" => "776",
+		"TT" => "780",
+		"TN" => "788",
+		"TR" => "792",
+		"TM" => "795",
+		"TC" => "796",
+		"TV" => "798",
+		"UG" => "800",
+		"UA" => "804",
+		"AE" => "784",
+		"GB" => "826",
+		"US" => "840",
+		"UM" => "581",
+		"UY" => "858",
+		"UZ" => "860",
+		"VU" => "548",
+		"VA" => "336",
+		"VE" => "862",
+		"VN" => "704",
+		"VG" => "092",
+		"VI" => "850",
+		"WF" => "876",
+		"EH" => "732",
+		"YE" => "887",
+		"ZM" => "894",
+		"ZW" => "716");
+}
+
 function web_invoice_map_country3_to_country($country3) {
 	$country_map = web_invoice_country3_array();
 	if (isset($country_map[$country3])) {
@@ -1026,11 +1242,7 @@ function web_invoice_go_secure($destination) {
 	header($reload);
 }
 
-
-
 function web_invoice_process_cc_transaction($cc_data) {
-
-
 
 	$errors = array ();
 	$errors_msg = null;
@@ -1042,15 +1254,12 @@ function web_invoice_process_cc_transaction($cc_data) {
 
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 
-
-
 	// Accomodate Custom Invoice IDs by changing the post value, this is passed to Authorize.net account
 	$web_invoice_custom_invoice_id = web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id');
 	// If there is a custom invoice id, we're setting the $_POST['invoice_num'] to the custom id, because that is what's getting passed to authorize.net
 	if($web_invoice_custom_invoice_id) { $_POST['invoice_num'] = $web_invoice_custom_invoice_id; }
 
 	$wp_users_id = get_web_invoice_user_id($invoice_id);
-
 
 	if(empty($_POST['first_name'])){$errors [ 'first_name' ] [] = "Please enter your first name.";$stop_transaction = true;}
 	if(empty($_POST['last_name'])){$errors [ 'last_name' ] [] = "Please enter your last name. ";$stop_transaction = true;}
@@ -1069,113 +1278,240 @@ function web_invoice_process_cc_transaction($cc_data) {
 	// Charge Card
 	if(!$stop_transaction) {
 
-		require_once('gateways/authnet.class.php');
-		require_once('gateways/authnetARB.class.php');
-
-		$payment = new Web_Invoice_Authnet(true);
-		$payment->transaction($_POST['card_num']);
-
-		// Billing Info
-		$payment->setParameter("x_card_code", $_POST['card_code']);
-		$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
-		$payment->setParameter("x_amount", $invoice->display('amount'));
-		if($recurring) $payment->setParameter("x_web_invoice_recurring_billing", true);
-
-		// Order Info
-		$payment->setParameter("x_description", $invoice->display('subject'));
-		$payment->setParameter("x_invoice_num",  $invoice->display('display_id'));
-		$payment->setParameter("x_test_request", false);
-		$payment->setParameter("x_duplicate_window", 30);
-
-		//Customer Info
-		$payment->setParameter("x_first_name", $_POST['first_name']);
-		$payment->setParameter("x_last_name", $_POST['last_name']);
-		$payment->setParameter("x_address", $_POST['address']);
-		$payment->setParameter("x_city", $_POST['city']);
-		$payment->setParameter("x_state", $_POST['state']);
-		$payment->setParameter("x_country", $_POST['country']);
-		$payment->setParameter("x_zip", $_POST['zip']);
-		$payment->setParameter("x_phone", $_POST['phonenumber']);
-		$payment->setParameter("x_email", $_POST['email_address']);
-		$payment->setParameter("x_cust_id", "WP User - " . $invoice->recipient('user_id'));
-		$payment->setParameter("x_customer_ip ", $_SERVER['REMOTE_ADDR']);
-
-		$payment->process();
-
-		if($payment->isApproved()) {
-			echo "Transaction okay.";
-
-			update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
-			update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
-			update_usermeta($wp_users_id,'first_name',$_POST['first_name']);
-			update_usermeta($wp_users_id,'city',$_POST['city']);
-			update_usermeta($wp_users_id,'state',$_POST['state']);
-			update_usermeta($wp_users_id,'zip',$_POST['zip']);
-			update_usermeta($wp_users_id,'tax_id',$_POST['tax_id']);
-			update_usermeta($wp_users_id,'company_name',$_POST['company_name']);
-			update_usermeta($wp_users_id,'streetaddress',$_POST['address']);
-			update_usermeta($wp_users_id,'phonenumber',$_POST['phonenumber']);
-			update_usermeta($wp_users_id,'country',$_POST['country']);
-
-			//Mark invoice as paid
-			web_invoice_paid($invoice_id);
-			if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
-
+		if (isset($_POST['processor']) && $_POST['processor'] == 'pfp') {
+			require_once('gateways/payflowpro.class.php');
+			
 			if($recurring) {
-
-				$arb = new Web_Invoice_AuthnetARB();
-				// Customer Info
-				$arb->setParameter('customerId', "WP User - " . $invoice->recipient('user_id'));
-				$arb->setParameter('firstName', $_POST['first_name']);
-				$arb->setParameter('lastName', $_POST['last_name']);
-				$arb->setParameter('address', $_POST['address']);
-				$arb->setParameter('city', $_POST['city']);
-				$arb->setParameter('state', $_POST['state']);
-				$arb->setParameter('zip', $_POST['zip']);
-				$arb->setParameter('country', $_POST['country']);
-				$arb->setParameter('customerEmail', $_POST['email_address']);
-				$arb->setParameter('customerPhoneNumber', $_POST['phonenumber']);
+	
+				$arb = new Web_Invoice_PayflowProRecurring();
+					
+				$arb->transaction($_POST['card_num']);
+				$arb->setTransactionType('R');
 
 				// Billing Info
-				$arb->setParameter('amount', $invoice->display('amount'));
-				$arb->setParameter('cardNumber', $_POST['card_num']);
-				$arb->setParameter('expirationDate', $_POST['exp_month'].$_POST['exp_year']);
-
+				$arb->setParameter("CVV2", $_POST['card_code']);
+				$arb->setParameter("EXPDATE ", $_POST['exp_month'] . $_POST['exp_year']);
+				$arb->setParameter("AMT", $invoice->display('amount'));
+				$arb->setParameter("CURRENCYCODE", $invoice->display('currency'));
+				if($recurring) {
+					$arb->setParameter("RECURRING", 'Y');	
+				}
+					
 				//Subscription Info
-				$arb->setParameter('refID',  $invoice->display('display_id'));
-				$arb->setParameter('subscrName', $invoice->display('subscription_name'));
-				$arb->setParameter('interval_length', $invoice->display('interval_length'));
-				$arb->setParameter('interval_unit', $invoice->display('interval_unit'));
-				$arb->setParameter('startDate', $invoice->display('startDate'));
-				$arb->setParameter('totalOccurrences', $invoice->display('totalOccurrences'));
-
-				// First billing cycle is taken care off with initial payment
-				$arb->setParameter('trialOccurrences', '1');
-				$arb->setParameter('trialAmount', '0.00');
-
-				$arb->setParameter('orderInvoiceNumber',  $invoice->display('display_id'));
-				$arb->setParameter('orderDescription', $invoice->display('subject'));
-
+				$arb->setParameter('DESC', $invoice->display('subscription_name'));
+				$arb->setParameter('BILLINGFREQUENCY', $invoice->display('interval_length'));
+				$arb->setParameter('BILLINGPERIOD', web_invoice_pfp_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit')));
+				$arb->setParameter('PROFILESTARTDATE', date('c', strtotime($invoice->display('startDate'))));
+				$arb->setParameter('TOTALBILLINGCYCLES', $invoice->display('totalOccurrences'));
+				$arb->setParameter('AMT', $invoice->display('amount'));
+				$arb->setParameter('ACTION', 'A');
+					
+				$arb->setParameter("CUSTBROWSER", $_SERVER['HTTP_USER_AGENT']);
+				$arb->setParameter("CUSTHOSTNAME", $_SERVER['HTTP_HOST']);
+				$arb->setParameter("CUSTIP ", $_SERVER['REMOTE_ADDR']);
+				
+				//Customer Info
+				$arb->setParameter("FIRSTNAME", $_POST['first_name']);
+				$arb->setParameter("LASTNAME", $_POST['last_name']);
+				$arb->setParameter("STREET", $_POST['address']);
+				$arb->setParameter("CITY", $_POST['city']);
+				$arb->setParameter("STATE", $_POST['state']);
+				$arb->setParameter("COUNTRYCODE", $_POST['country']);
+				$arb->setParameter("ZIP", $_POST['zip']);
+				$arb->setParameter("PHONENUM", $_POST['phonenumber']);
+				$arb->setParameter("EMAIL", $_POST['email_address']);
+				$arb->setParameter("COMMENT1", "WP User - " . $invoice->recipient('user_id'));
+				
+				// Order Info
+				$arb->setParameter("COMMENT2", $invoice->display('subject'));
+				$arb->setParameter("CUSTREF",  $invoice->display('display_id'));
+	
 				$arb->createAccount();
 
 				if ($arb->isSuccessful()) {
-					web_invoice_update_invoice_meta($invoice_id, 'subscription_id',$arb->getSubscriberID());
+					echo "Transaction okay.";
+					
+					web_invoice_update_invoice_meta($invoice_id, 'subscription_id', $arb->getSubscriberID());
+					web_invoice_update_invoice_meta($invoice_id, 'recurring_transaction_id', $arb->getTransactionID());
+						
 					web_invoice_update_log($invoice_id, 'subscription', ' Subscription initiated, Subcription ID - ' . $arb->getSubscriberID());
 				}
-
+	
 				if($arb->isError()) {
-					$errors [ 'processing_problem' ] [] .=  "One-time credit card payment is processed successfully.  However, recurring billing setup failed." . $arb->getResponse(); $stop_transaction = true;;
-					web_invoice_update_log($invoice_id, 'subscription_error', 'Response Code: ' . $arb->getResponseCode() . ' | Subscription error - ' . $arb->getResponse());
-
+					$errors [ 'processing_problem' ] [] .=  "One-time credit card payment is processed successfully.  However, recurring billing setup failed."; $stop_transaction = true;
+					web_invoice_update_log($invoice_id, 'subscription_error', 'Response Code: ' . $arb->getResponseCode() . ' | Subscription error - ' . $arb->getResponseText());
+					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".serialize($payment));
 				}
-
+			} else {
+				$payment = new Web_Invoice_PayflowPro(true);
+				
+				$payment->transaction($_POST['card_num']);
+	
+				// Billing Info
+				$payment->setParameter("CVV2", $_POST['card_code']);
+				$payment->setParameter("EXPDATE ", $_POST['exp_month'] . $_POST['exp_year']);
+				$payment->setParameter("AMT", $invoice->display('amount'));
+				$payment->setParameter("CURRENCYCODE", $invoice->display('currency'));
+				if($recurring) {
+					$payment->setParameter("RECURRING", 'Y');	
+				}
+				
+				$payment->setParameter("CUSTBROWSER", $_SERVER['HTTP_USER_AGENT']);
+				$payment->setParameter("CUSTHOSTNAME", $_SERVER['HTTP_HOST']);
+				$payment->setParameter("CUSTIP ", $_SERVER['REMOTE_ADDR']);
+				
+				//Customer Info
+				$payment->setParameter("FIRSTNAME", $_POST['first_name']);
+				$payment->setParameter("LASTNAME", $_POST['last_name']);
+				$payment->setParameter("STREET", $_POST['address']);
+				$payment->setParameter("CITY", $_POST['city']);
+				$payment->setParameter("STATE", $_POST['state']);
+				$payment->setParameter("COUNTRYCODE", $_POST['country']);
+				$payment->setParameter("ZIP", $_POST['zip']);
+				$payment->setParameter("PHONENUM", $_POST['phonenumber']);
+				$payment->setParameter("EMAIL", $_POST['email_address']);
+				$payment->setParameter("COMMENT1", "WP User - " . $invoice->recipient('user_id'));
+				
+				// Order Info
+				$payment->setParameter("COMMENT2", $invoice->display('subject'));
+				$payment->setParameter("CUSTREF",  $invoice->display('display_id'));
+		
+				$payment->process();
+				
+				if($payment->isApproved()) {
+					echo "Transaction okay.";
+		
+					update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
+					update_usermeta($wp_users_id,'first_name',$_POST['first_name']);
+					update_usermeta($wp_users_id,'city',$_POST['city']);
+					update_usermeta($wp_users_id,'state',$_POST['state']);
+					update_usermeta($wp_users_id,'zip',$_POST['zip']);
+					update_usermeta($wp_users_id,'tax_id',$_POST['tax_id']);
+					update_usermeta($wp_users_id,'company_name',$_POST['company_name']);
+					update_usermeta($wp_users_id,'streetaddress',$_POST['address']);
+					update_usermeta($wp_users_id,'phonenumber',$_POST['phonenumber']);
+					update_usermeta($wp_users_id,'country',$_POST['country']);
+		
+					//Mark invoice as paid
+					web_invoice_paid($invoice_id);
+					web_invoice_update_log($invoice_id, 'pfp_success', "Successful payment. REF: {$payment->getTransactionID()}.");
+					web_invoice_update_invoice_meta($invoice_id, 'transaction_id', $payment->getTransactionID());
+					
+					if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
+		
+				} else {
+					$errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transaction = true;
+					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".serialize($payment, true));
+				}
 			}
-
-
 		} else {
-			$errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transaction = true;
+			require_once('gateways/authnet.class.php');
+			require_once('gateways/authnetARB.class.php');
+			
+			$payment = new Web_Invoice_Authnet(true);
+			
+			$payment->transaction($_POST['card_num']);
 
+			// Billing Info
+			$payment->setParameter("x_card_code", $_POST['card_code']);
+			$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
+			$payment->setParameter("x_amount", $invoice->display('amount'));
+			if($recurring) $payment->setParameter("x_web_invoice_recurring_billing", true);
+	
+			// Order Info
+			$payment->setParameter("x_description", $invoice->display('subject'));
+			$payment->setParameter("x_invoice_num",  $invoice->display('display_id'));
+			$payment->setParameter("x_test_request", false);
+			$payment->setParameter("x_duplicate_window", 30);
+	
+			//Customer Info
+			$payment->setParameter("x_first_name", $_POST['first_name']);
+			$payment->setParameter("x_last_name", $_POST['last_name']);
+			$payment->setParameter("x_address", $_POST['address']);
+			$payment->setParameter("x_city", $_POST['city']);
+			$payment->setParameter("x_state", $_POST['state']);
+			$payment->setParameter("x_country", $_POST['country']);
+			$payment->setParameter("x_zip", $_POST['zip']);
+			$payment->setParameter("x_phone", $_POST['phonenumber']);
+			$payment->setParameter("x_email", $_POST['email_address']);
+			$payment->setParameter("x_cust_id", "WP User - " . $invoice->recipient('user_id'));
+			$payment->setParameter("x_customer_ip ", $_SERVER['REMOTE_ADDR']);
+	
+			$payment->process();
+			
+			if($payment->isApproved()) {
+				echo "Transaction okay.";
+	
+				update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
+				update_usermeta($wp_users_id,'first_name',$_POST['first_name']);
+				update_usermeta($wp_users_id,'city',$_POST['city']);
+				update_usermeta($wp_users_id,'state',$_POST['state']);
+				update_usermeta($wp_users_id,'zip',$_POST['zip']);
+				update_usermeta($wp_users_id,'tax_id',$_POST['tax_id']);
+				update_usermeta($wp_users_id,'company_name',$_POST['company_name']);
+				update_usermeta($wp_users_id,'streetaddress',$_POST['address']);
+				update_usermeta($wp_users_id,'phonenumber',$_POST['phonenumber']);
+				update_usermeta($wp_users_id,'country',$_POST['country']);
+	
+				//Mark invoice as paid
+				web_invoice_paid($invoice_id);
+				if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
+	
+				if($recurring) {
+	
+					$arb = new Web_Invoice_AuthnetARB();
+					// Customer Info
+					$arb->setParameter('customerId', "WP User - " . $invoice->recipient('user_id'));
+					$arb->setParameter('firstName', $_POST['first_name']);
+					$arb->setParameter('lastName', $_POST['last_name']);
+					$arb->setParameter('address', $_POST['address']);
+					$arb->setParameter('city', $_POST['city']);
+					$arb->setParameter('state', $_POST['state']);
+					$arb->setParameter('zip', $_POST['zip']);
+					$arb->setParameter('country', $_POST['country']);
+					$arb->setParameter('customerEmail', $_POST['email_address']);
+					$arb->setParameter('customerPhoneNumber', $_POST['phonenumber']);
+	
+					// Billing Info
+					$arb->setParameter('amount', $invoice->display('amount'));
+					$arb->setParameter('cardNumber', $_POST['card_num']);
+					$arb->setParameter('expirationDate', $_POST['exp_month'].$_POST['exp_year']);
+	
+					//Subscription Info
+					$arb->setParameter('refID',  $invoice->display('display_id'));
+					$arb->setParameter('subscrName', $invoice->display('subscription_name'));
+					$arb->setParameter('interval_length', $invoice->display('interval_length'));
+					$arb->setParameter('interval_unit', $invoice->display('interval_unit'));
+					$arb->setParameter('startDate', $invoice->display('startDate'));
+					$arb->setParameter('totalOccurrences', $invoice->display('totalOccurrences'));
+	
+					// First billing cycle is taken care off with initial payment
+					$arb->setParameter('trialOccurrences', '1');
+					$arb->setParameter('trialAmount', '0.00');
+	
+					$arb->setParameter('orderInvoiceNumber',  $invoice->display('display_id'));
+					$arb->setParameter('orderDescription', $invoice->display('subject'));
+	
+					$arb->createAccount();
+	
+					if ($arb->isSuccessful()) {
+						web_invoice_update_invoice_meta($invoice_id, 'subscription_id',$arb->getSubscriberID());
+						web_invoice_update_log($invoice_id, 'subscription', ' Subscription initiated, Subcription ID - ' . $arb->getSubscriberID());
+					}
+	
+					if($arb->isError()) {
+						$errors [ 'processing_problem' ] [] .=  "One-time credit card payment is processed successfully.  However, recurring billing setup failed." . $arb->getResponse(); $stop_transaction = true;;
+						web_invoice_update_log($invoice_id, 'subscription_error', 'Response Code: ' . $arb->getResponseCode() . ' | Subscription error - ' . $arb->getResponse());
+	
+					}
+				}
+			} else {
+				$errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transaction = true;
+	
+			}
 		}
+
+
 		// Uncomment these to troubleshoot.  You will need FireBug to view the response of the AJAX post.
 		//echo $arb->xml;
 		//echo $arb->response;
@@ -1480,6 +1816,15 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_payflow_partner'])) update_option('web_invoice_payflow_partner', $_POST['web_invoice_payflow_partner']);
 	if(isset($_POST['web_invoice_payflow_only_button'])) update_option('web_invoice_payflow_only_button', $_POST['web_invoice_payflow_only_button']);
 	if(isset($_POST['web_invoice_payflow_silent_post'])) update_option('web_invoice_payflow_silent_post', $_POST['web_invoice_payflow_silent_post']);
+	
+	// Payflow Pro
+	if(isset($_POST['web_invoice_pfp_partner'])) update_option('web_invoice_pfp_partner', $_POST['web_invoice_pfp_partner']);
+	if(isset($_POST['web_invoice_pfp_env'])) update_option('web_invoice_pfp_env', $_POST['web_invoice_pfp_env']);
+	if(isset($_POST['web_invoice_pfp_authentication'])) update_option('web_invoice_pfp_authentication', $_POST['web_invoice_pfp_authentication']);
+	if(isset($_POST['web_invoice_pfp_username'])) update_option('web_invoice_pfp_username', $_POST['web_invoice_pfp_username']);
+	if(isset($_POST['web_invoice_pfp_password'])) update_option('web_invoice_pfp_password', $_POST['web_invoice_pfp_password']);
+	if(isset($_POST['web_invoice_pfp_signature'])) update_option('web_invoice_pfp_signature', $_POST['web_invoice_pfp_signature']);
+	if(isset($_POST['web_invoice_pfp_3rdparty_email'])) update_option('web_invoice_pfp_3rdparty_email', $_POST['web_invoice_pfp_3rdparty_email']);
 	
 	// Other/Bank
 	if(isset($_POST['web_invoice_other_details'])) update_option('web_invoice_other_details', $_POST['web_invoice_other_details']);

@@ -241,6 +241,15 @@ jQuery(document)
 					if (payment_method_array.indexOf && payment_method_array.indexOf('payflow') != -1) {
 						jQuery('.payflow_info').show();
 					}
+					if (payment_method_array.indexOf && payment_method_array.indexOf('pfp') != -1) {
+						jQuery('.pfp_info').show();
+						
+						if (jQuery('#web_invoice_pfp_authentication').val() == '3token') {
+							jQuery('.pfp_info.unipay').hide();
+						} else {
+							jQuery('.pfp_info.3token').hide();
+						}
+					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('other') != -1) {
 						jQuery('.other_info').show();
 					}
@@ -286,6 +295,7 @@ jQuery(document)
 
 										jQuery('.paypal_info').hide();
 										jQuery('.payflow_info').hide();
+										jQuery('.pfp_info').hide();
 										jQuery('.other_info').hide();
 										jQuery('.moneybookers_info').hide();
 										jQuery('.alertpay_info').hide();
@@ -298,6 +308,16 @@ jQuery(document)
 										if (payment_method_array
 												.indexOf('payflow') != -1) {
 											jQuery('.payflow_info').show();
+										}
+										if (payment_method_array
+												.indexOf('pfp') != -1) {
+											jQuery('.pfp_info').show();
+											
+											if (jQuery('#web_invoice_pfp_authentication').val() == '3token') {
+												jQuery('.pfp_info.unipay').hide();
+											} else {
+												jQuery('.pfp_info.3token').hide();
+											}
 										}
 										if (payment_method_array
 												.indexOf('other') != -1) {
@@ -393,6 +413,22 @@ jQuery(document)
 								}
 								if (jQuery(this).val() == 'False') {
 									jQuery('.google_checkout_info_merchant').hide();
+								}
+							});
+					
+					jQuery('#web_invoice_pfp_authentication').change(
+							function() {
+								if (jQuery(this).val() == '3token') {
+									jQuery('.pfp_info.3token')
+											.show();
+									jQuery('.pfp_info.unipay')
+									.hide();
+								}
+								if (jQuery(this).val() == 'unipay') {
+									jQuery('.pfp_info.3token')
+									.hide();
+									jQuery('.pfp_info.unipay')
+											.show();
 								}
 							});
 

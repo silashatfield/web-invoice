@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay or PayPal account. Recurring billing is also available via Authorize.net's ARB. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.10.3
+ Version: 1.10.4
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -95,7 +95,7 @@ class Web_Invoice {
 		add_filter('favorite_actions', array(&$this, 'favorites'));
 		add_action('admin_menu', array($this, 'web_invoice_add_pages'));
 
-		if(get_option('web_invoice_payment_method') == 'cc') {
+		if (strcasecmp(get_option('web_invoice_payment_method'), 'cc') || strcasecmp(get_option('web_invoice_payment_method'), 'pfp')) {
 			add_action('wp_head', 'web_invoice_frontend_js');
 		}
 
@@ -257,7 +257,6 @@ class Web_Invoice {
 				if(!function_exists('wp_https_redirect')) {
 					if(web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true' && $_SERVER['HTTPS'] != "on") {  header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']); exit;}
 				}
-
 			}
 
 			if(isset($_POST['web_invoice_id_hash'])) {
@@ -450,6 +449,15 @@ class Web_Invoice {
 		add_option('web_invoice_payflow_partner','');
 		add_option('web_invoice_paypal_only_button', 'False');
 		add_option('web_invoice_payflow_silent_post', 'False');
+		
+		// Payflow Pro
+		add_option('web_invoice_pfp_partner','');
+		add_option('web_invoice_pfp_env', 'live');
+		add_option('web_invoice_pfp_authentication','');
+		add_option('web_invoice_pfp_username', '');
+		add_option('web_invoice_pfp_password', '');
+		add_option('web_invoice_pfp_signature', '');
+		add_option('web_invoice_pfp_3rdparty_email', '');
 		
 		// PayPal
 		add_option('web_invoice_other_details','');
