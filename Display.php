@@ -1993,7 +1993,7 @@ function web_invoice_show_business_address() {
 <p class="web_invoice_business_name"><?php echo stripcslashes(get_option('web_invoice_business_name')); ?></p>
 <p class="web_invoice_business_address"><?php echo stripcslashes(nl2br(get_option('web_invoice_business_address'))); ?></p>
 <p class="web_invoice_business_phone"><?php echo get_option('web_invoice_business_phone'); ?></p>
-<?php if (trim(get_option('web_invoice_business_tax_id')) != '') { ?>
+<?php if (trim(get_option('web_invoice_business_tax_id')) !== '') { ?>
 <p class="web_invoice_business_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo get_option('web_invoice_business_tax_id'); ?></p>
 <?php } ?>
 </div>
