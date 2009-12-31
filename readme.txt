@@ -76,6 +76,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.10.5**
+
+* Fixed Google Checkout tax state issue
+
 **Version 1.10.4**
 
 * PayPal Payflow Pro support

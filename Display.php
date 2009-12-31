@@ -1431,6 +1431,23 @@ function web_invoice_show_settings()
 			class="search-input input_field" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_google_checkout_merchant_key')); ?>" /></td>
 	</tr>
+	<tr class="google_checkout_info google_checkout_info_merchant">
+		<th><?php _e("Google Checkout tax country/state:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_google_checkout_tax_state' 
+			name="web_invoice_google_checkout_tax_state" class="search-input input_field" >
+				<option value="" ></option>
+				<option value="UK">United Kingdom</option>
+				<optgroup label="United States">
+				<?php 
+				foreach(web_invoice_state_array() as $_state_code => $_state_name) {
+						print  "<option value='$_state_code'";
+						if($_state_code == get_option('web_invoice_google_checkout_tax_state')) print " selected";
+						print ">$_state_name</option>";
+				}
+				?>
+				</optgroup>
+			</select></td>
+	</tr>
 	
 	<tr class="paypal_info">
 		<th width="200"><?php _e("PayPal Username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
@@ -2140,7 +2157,7 @@ function web_invoice_show_google_checkout_form($invoice_id, $invoice) {
 <div id="google_checkout_payment_form" class="payment_form">
 <form action="https://<?php echo $env_base_url; ?>/api/checkout/v2/checkoutForm/Merchant/<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>" method="post"
 	class="clearfix" accept-charset="utf-8"><input type="hidden" name="_charset_"/><?php
-if ($invoice->display('tax')) {
+if ($invoice->display('tax_total')) {
 	if (get_option('web_invoice_google_checkout_tax_state') == 'UK') {
 	?><input type="hidden" name="tax_uk_country" value="<?php echo get_option('web_invoice_google_checkout_tax_state'); ?>"/><?php 
 	} else {
@@ -2871,8 +2888,7 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array, $invo
 	
 	$desc = join(', ', $desc);
 	
-	if ((get_option('web_invoice_google_checkout_level2') == 'True')) {
-		if (!$recurring) {
+	if ((get_option('web_invoice_google_checkout_level2') == 'True') && !$recurring) {
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='Invoice #{$display_id} ' />\n";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-description' value='{$invoice->display('subject')}' />\n";
 					
@@ -2882,7 +2898,6 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array, $invo
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='0' />\n";
 
 			$counter++;
-		}
 	} else {
 		if ($recurring) {
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.item-name' value='Recurring invoice #{$display_id}: ".$invoice->display('subscription_name')."' />\n";
@@ -2929,7 +2944,7 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array, $invo
 	}
 	
 	if(!empty($tax)) {
-		$output .= "
+		$output .= " 
 		<input type='hidden' name='tax_rate' value='".($tax/100)."' />\n";
 	}
 
