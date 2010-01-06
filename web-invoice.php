@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.10.5
+ Version: 1.10.6
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -223,9 +223,9 @@ class Web_Invoice {
 		global $wpdb, $wp_version;
 
 		if (version_compare($wp_version, '2.6', '<')) // Using old WordPress
-		load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages');
+			load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages');
 		else
-		load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages', dirname(plugin_basename(__FILE__)).'/languages');
+			load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages', dirname(plugin_basename(__FILE__)).'/languages');
 
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery.maskedinput',$this->uri."/js/jquery.maskedinput.js", array('jquery'));
@@ -277,7 +277,6 @@ class Web_Invoice {
 
 	function uninstall() {
 		global $wpdb;
-
 	}
 
 	function install() {
@@ -390,7 +389,7 @@ class Web_Invoice {
 			}
 		}
 
-		add_option('web_invoice_version', WP_INVOICE_VERSION_NUM);
+		add_option('web_invoice_version', WEB_INVOICE_SCHEDULER_VERSION_NUM);
 		add_option('web_invoice_email_address',get_bloginfo('admin_email'));
 		add_option('web_invoice_business_name', get_bloginfo('blogname'));
 		add_option('web_invoice_business_address', '');
@@ -682,6 +681,11 @@ class Web_Invoice_GetInfo {
 			case 'paid_date':
 				$paid_date = $wpdb->get_var("SELECT time_stamp FROM  ".Web_Invoice::tablename('log')." WHERE action_type = 'paid' AND invoice_id = '".$this->id."' ORDER BY time_stamp DESC LIMIT 0, 1");
 				if($paid_date) return web_invoice_Date::convert($paid_date, 'Y-m-d H', __('M d Y'));
+				break;
+				
+			case 'paid_date_raw':
+				$paid_date = $wpdb->get_var("SELECT time_stamp FROM  ".Web_Invoice::tablename('log')." WHERE action_type = 'paid' AND invoice_id = '".$this->id."' ORDER BY time_stamp DESC LIMIT 0, 1");
+				if($paid_date) return $paid_date;
 				break;
 
 			case 'subscription_name':

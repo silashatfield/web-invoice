@@ -1849,6 +1849,8 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_google_checkout_level2'])) update_option('web_invoice_google_checkout_level2', $_POST['web_invoice_google_checkout_level2']);
 	if(isset($_POST['web_invoice_google_checkout_merchant_key'])) update_option('web_invoice_google_checkout_merchant_key', $_POST['web_invoice_google_checkout_merchant_key']);
 	if(isset($_POST['web_invoice_google_checkout_tax_state'])) update_option('web_invoice_google_checkout_tax_state', $_POST['web_invoice_google_checkout_tax_state']);
+	
+	do_action('web_invoice_process_settings');
 }
 
 function web_invoice_process_email_templates() {

@@ -45,6 +45,7 @@ class Web_Invoice_Decider {
 				else {
 					web_invoice_show_message(web_invoice_process_invoice_update($invoice_id),'updated fade');
 					web_invoice_saved_preview($invoice_id);
+					do_action('web_invoice_invoice_save', $invoice_id);
 				}
 				break;
 

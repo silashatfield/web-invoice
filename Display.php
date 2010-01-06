@@ -1701,7 +1701,7 @@ function web_invoice_show_settings()
 			<?php if(get_option('web_invoice_gateway_delim_data') == 'FALSE') echo 'selected="yes"';?>><?php _e('False', WEB_INVOICE_TRANS_DOMAIN); ?></option>
 		</select></td>
 	</tr>
-
+	<?php do_action('web_invoice_display_settings'); ?>
 	<tr>
 		<td></td>
 		<td><input type="submit"

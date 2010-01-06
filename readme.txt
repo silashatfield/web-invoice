@@ -76,6 +76,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.10.6**
+
+* Added new hooks (web_invoice_invoice_save, web_invoice_process_settings, and web_invoice_display_settings)
+
 **Version 1.10.5**
 
 * Fixed Google Checkout tax state issue
