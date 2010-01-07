@@ -76,6 +76,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.10.7**
+
+* PayPal payflow pro mark invoice as paid bug fix.
+
 **Version 1.10.6**
 
 * Added new hooks (web_invoice_invoice_save, web_invoice_process_settings, and web_invoice_display_settings)
