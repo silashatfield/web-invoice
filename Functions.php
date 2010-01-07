@@ -1335,6 +1335,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 					web_invoice_update_invoice_meta($invoice_id, 'recurring_transaction_id', $arb->getTransactionID());
 						
 					web_invoice_update_log($invoice_id, 'subscription', ' Subscription initiated, Subcription ID - ' . $arb->getSubscriberID());
+					web_invoice_mark_as_paid($invoice_id);
 				}
 	
 				if($arb->isError()) {
