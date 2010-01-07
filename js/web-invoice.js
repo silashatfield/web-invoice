@@ -286,6 +286,12 @@ jQuery(document)
 									.hide();
 						}
 					}
+					
+					if (jQuery("#web_invoice_payflow_only_button").val() == 'False') {
+						jQuery('.payflow_shipping').show();
+					} else {
+						jQuery('.payflow_shipping').hide();
+					}
 
 					jQuery('#web_invoice_payment_method')
 							.change(
@@ -394,6 +400,15 @@ jQuery(document)
 								if (jQuery(this).val() == 'False') {
 									jQuery('.moneybookers_info_merchant')
 											.hide();
+								}
+							});
+					
+					jQuery("#web_invoice_payflow_only_button").change(
+							function() {
+								if (jQuery(this).val() == 'False') {
+									jQuery('.payflow_shipping').show();
+								} else {
+									jQuery('.payflow_shipping').hide();
 								}
 							});
 

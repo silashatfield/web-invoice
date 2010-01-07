@@ -50,7 +50,7 @@
 	padding-left: 4px;
 }
 
-#invoice_page #country {
+#invoice_page #country, #invoice_page #COUNTRY, #invoice_page #COUNTRYTOSHIP, #invoice_page #shipto_country {
 	width: 235px;
 	border: 0;
 	background: #EFEFEF;

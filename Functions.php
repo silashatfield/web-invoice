@@ -627,6 +627,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_payflow_login');
 	delete_option('web_invoice_payflow_partner');
 	delete_option('web_invoice_payflow_only_button');
+	delete_option('web_invoice_payflow_shipping_details');
 	delete_option('web_invoice_payflow_silent_post');
 	
 	// Payflow Pro
@@ -637,6 +638,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_pfp_password');
 	delete_option('web_invoice_pfp_signature');
 	delete_option('web_invoice_pfp_3rdparty_email');
+	delete_option('web_invoice_pfp_shipping_details');
 	
 	// PayPal
 	delete_option('web_invoice_other_details');
@@ -1261,20 +1263,32 @@ function web_invoice_process_cc_transaction($cc_data) {
 
 	$wp_users_id = get_web_invoice_user_id($invoice_id);
 
-	if(empty($_POST['first_name'])){$errors [ 'first_name' ] [] = "Please enter your first name.";$stop_transaction = true;}
-	if(empty($_POST['last_name'])){$errors [ 'last_name' ] [] = "Please enter your last name. ";$stop_transaction = true;}
-	if(empty($_POST['email_address'])){$errors [ 'email_address' ] [] = "Please provide an email address.";$stop_transaction = true;}
-	if(empty($_POST['phonenumber'])){$errors [ 'phonenumber' ] [] = "Please enter your phone number.";$stop_transaction = true;}
-	if(empty($_POST['address'])){$errors [ 'address' ] [] = "Please enter your address.";$stop_transaction = true;}
-	if(empty($_POST['city'])){$errors [ 'city' ] [] = "Please enter your city.";$stop_transaction = true;}
-	if(empty($_POST['state'])){$errors [ 'state' ] [] = "Please select your state.";$stop_transaction = true;}
-	if(empty($_POST['zip'])){$errors [ 'zip' ] [] = "Please enter your ZIP code.";$stop_transaction = true;}
-	if(empty($_POST['country'])){$errors [ 'country' ] [] = "Please enter your country.";$stop_transaction = true;}
-	if(empty($_POST['card_num'])) {	$errors [ 'card_num' ] []  = "Please enter your credit card number.";	$stop_transaction = true;} else { if (!web_invoice_validate_cc_number($_POST['card_num'])){$errors [ 'card_num' ] [] = "Please enter a valid credit card number."; $stop_transaction = true; } }
-	if(empty($_POST['exp_month'])){$errors [ 'exp_month' ] [] = "Please enter your credit card's expiration month.";$stop_transaction = true;}
-	if(empty($_POST['exp_year'])){$errors [ 'exp_year' ] [] = "Please enter your credit card's expiration year.";$stop_transaction = true;}
-	if(empty($_POST['card_code'])){$errors [ 'card_code' ] [] = "The <b>Security Code</b> is the code on the back of your card.";$stop_transaction = true;}
-
+	if(empty($_POST['first_name'])){$errors [ 'first_name' ] [] = "Please enter your first name under billing details.";$stop_transaction = true;}
+	if(empty($_POST['last_name'])){$errors [ 'last_name' ] [] = "Please enter your last name under billing details.";$stop_transaction = true;}
+	if(empty($_POST['email_address'])){$errors [ 'email_address' ] [] = "Please provide an email address under billing details.";$stop_transaction = true;}
+	if(empty($_POST['phonenumber'])){$errors [ 'phonenumber' ] [] = "Please enter your phone number under billing details.";$stop_transaction = true;}
+	if(empty($_POST['address'])){$errors [ 'address' ] [] = "Please enter your address under billing details.";$stop_transaction = true;}
+	if(empty($_POST['city'])){$errors [ 'city' ] [] = "Please enter your city under billing details.";$stop_transaction = true;}
+	if(empty($_POST['state'])){$errors [ 'state' ] [] = "Please select your state under billing details.";$stop_transaction = true;}
+	if(empty($_POST['zip'])){$errors [ 'zip' ] [] = "Please enter your ZIP code under billing details.";$stop_transaction = true;}
+	if(empty($_POST['country'])){$errors [ 'country' ] [] = "Please enter your country under billing details.";$stop_transaction = true;}
+	if(empty($_POST['card_num'])) {	$errors [ 'card_num' ] []  = "Please enter your credit card number under billing details.";	$stop_transaction = true;} else { if (!web_invoice_validate_cc_number($_POST['card_num'])){$errors [ 'card_num' ] [] = "Please enter a valid credit card number."; $stop_transaction = true; } }
+	if(empty($_POST['exp_month'])){$errors [ 'exp_month' ] [] = "Please enter your credit card's expiration month under billing details.";$stop_transaction = true;}
+	if(empty($_POST['exp_year'])){$errors [ 'exp_year' ] [] = "Please enter your credit card's expiration year under billing details.";$stop_transaction = true;}
+	if(empty($_POST['card_code'])){$errors [ 'card_code' ] [] = "The <b>Security Code</b> is the code on the back of your card under billing details.";$stop_transaction = true;}
+	
+	if (get_option('web_invoice_pfp_shipping_details') == 'True') {
+		if(empty($_POST['shipto_first_name'])){$errors [ 'shipto_first_name' ] [] = "Please enter your first name under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_last_name'])){$errors [ 'shipto_last_name' ] [] = "Please enter your last name under shipping details. ";$stop_transaction = true;}
+		if(empty($_POST['shipto_email_address'])){$errors [ 'shipto_email_address' ] [] = "Please provide an email address under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_phonenumber'])){$errors [ 'shipto_phonenumber' ] [] = "Please enter your phone number under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_address'])){$errors [ 'shipto_address' ] [] = "Please enter your address under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_city'])){$errors [ 'shipto_city' ] [] = "Please enter your city under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_state'])){$errors [ 'shipto_state' ] [] = "Please select your state under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_zip'])){$errors [ 'shipto_zip' ] [] = "Please enter your ZIP code under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_country'])){$errors [ 'shipto_country' ] [] = "Please enter your country under shipping details.";$stop_transaction = true;}
+	}
+	
 	// Charge Card
 	if(!$stop_transaction) {
 
@@ -1321,6 +1335,17 @@ function web_invoice_process_cc_transaction($cc_data) {
 				$arb->setParameter("PHONENUM", $_POST['phonenumber']);
 				$arb->setParameter("EMAIL", $_POST['email_address']);
 				$arb->setParameter("COMMENT1", "WP User - " . $invoice->recipient('user_id'));
+				
+				if (get_option('web_invoice_pfp_shipping_details') == 'True') {
+					//Shipping Info
+					$arb->setParameter("SHIPTONAME", "{$_POST['shipto_first_name']} {$_POST['shipto_last_name']}");
+					$arb->setParameter("SHIPTOSTREET", $_POST['shipto_address']);
+					$arb->setParameter("SHIPTOCITY", $_POST['shipto_city']);
+					$arb->setParameter("SHIPTOSTATE", $_POST['shipto_state']);
+					$arb->setParameter("SHIPTOCOUNTRY", $_POST['shipto_country']);
+					$arb->setParameter("SHIPTOZIP", $_POST['shipto_zip']);
+					$arb->setParameter("SHIPTOPHONENUM", $_POST['shipto_phonenumber']);
+				}
 				
 				// Order Info
 				$arb->setParameter("COMMENT2", $invoice->display('subject'));
@@ -1373,6 +1398,17 @@ function web_invoice_process_cc_transaction($cc_data) {
 				$payment->setParameter("EMAIL", $_POST['email_address']);
 				$payment->setParameter("COMMENT1", "WP User - " . $invoice->recipient('user_id'));
 				
+				if (get_option('web_invoice_pfp_shipping_details') == 'True') {
+					//Shipping Info
+					$payment->setParameter("SHIPTONAME", "{$_POST['shipto_first_name']} {$_POST['shipto_last_name']}");
+					$payment->setParameter("SHIPTOSTREET", $_POST['shipto_address']);
+					$payment->setParameter("SHIPTOCITY", $_POST['shipto_city']);
+					$payment->setParameter("SHIPTOSTATE", $_POST['shipto_state']);
+					$payment->setParameter("SHIPTOCOUNTRY", $_POST['shipto_country']);
+					$payment->setParameter("SHIPTOZIP", $_POST['shipto_zip']);
+					$payment->setParameter("SHIPTOPHONENUM", $_POST['shipto_phonenumber']);
+				}
+				
 				// Order Info
 				$payment->setParameter("COMMENT2", $invoice->display('subject'));
 				$payment->setParameter("CUSTREF",  $invoice->display('display_id'));
@@ -1403,7 +1439,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		
 				} else {
 					$errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transaction = true;
-					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".serialize($payment, true));
+					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".serialize($payment));
 				}
 			}
 		} else {
@@ -1519,10 +1555,10 @@ function web_invoice_process_cc_transaction($cc_data) {
 		//echo $arb->response;
 		//echo $arb->getResponse();
 
-		//echo $payment->getResponseText();
-		//echo $payment->getTransactionID();
-		//echo $payment->getAVSResponse();
-		//echo $payment->getAuthCode();
+		// echo $payment->getResponseText();
+		// echo $payment->getTransactionID();
+		// echo $payment->getAVSResponse();
+		// echo $payment->getAuthCode();
 	}
 
 
@@ -1817,6 +1853,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_payflow_login'])) update_option('web_invoice_payflow_login', $_POST['web_invoice_payflow_login']);
 	if(isset($_POST['web_invoice_payflow_partner'])) update_option('web_invoice_payflow_partner', $_POST['web_invoice_payflow_partner']);
 	if(isset($_POST['web_invoice_payflow_only_button'])) update_option('web_invoice_payflow_only_button', $_POST['web_invoice_payflow_only_button']);
+	if(isset($_POST['web_invoice_payflow_shipping_details'])) update_option('web_invoice_payflow_shipping_details', $_POST['web_invoice_payflow_shipping_details']);
 	if(isset($_POST['web_invoice_payflow_silent_post'])) update_option('web_invoice_payflow_silent_post', $_POST['web_invoice_payflow_silent_post']);
 	
 	// Payflow Pro
@@ -1827,6 +1864,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_pfp_password'])) update_option('web_invoice_pfp_password', $_POST['web_invoice_pfp_password']);
 	if(isset($_POST['web_invoice_pfp_signature'])) update_option('web_invoice_pfp_signature', $_POST['web_invoice_pfp_signature']);
 	if(isset($_POST['web_invoice_pfp_3rdparty_email'])) update_option('web_invoice_pfp_3rdparty_email', $_POST['web_invoice_pfp_3rdparty_email']);
+	if(isset($_POST['web_invoice_pfp_shipping_details'])) update_option('web_invoice_pfp_shipping_details', $_POST['web_invoice_pfp_shipping_details']);
 	
 	// Other/Bank
 	if(isset($_POST['web_invoice_other_details'])) update_option('web_invoice_other_details', $_POST['web_invoice_other_details']);

@@ -76,6 +76,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.10.8**
+
+* PayPal payflow pro shipping details
+
 **Version 1.10.7**
 
 * PayPal payflow pro mark invoice as paid bug fix.

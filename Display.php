@@ -1490,6 +1490,16 @@ function web_invoice_show_settings()
 			<?php echo (get_option('web_invoice_payflow_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
 	</tr>
+	<tr class="payflow_info payflow_shipping">
+		<th width="200"><?php _e("Display shipping details form:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_payflow_shipping_details'
+			name="web_invoice_payflow_shipping_details">
+			<option value="True"
+			<?php echo (get_option('web_invoice_payflow_shipping_details')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_payflow_shipping_details')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
 	<tr class="payflow_info">
 		<th width="200"><?php _e("Enable PayPal Payflow silent post integration:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><select id='web_invoice_payflow_silent_post'
@@ -1559,6 +1569,16 @@ function web_invoice_show_settings()
 			name="web_invoice_pfp_3rdparty_email" class="input_field" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_pfp_3rdparty_email')); ?>" />
 		</td>
+	</tr>
+	<tr class="pfp_info">
+		<th width="200"><?php _e("Display shipping details form:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id="web_invoice_pfp_shipping_details"
+			name="web_invoice_pfp_shipping_details">
+			<option value="True"
+			<?php echo (get_option('web_invoice_pfp_shipping_details')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_pfp_shipping_details')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
 	</tr>
 	
 	<tr class="other_info">
@@ -2409,9 +2429,9 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 	value="<?php echo $invoice->display('display_id'); ?>" /> <?php
 	?>
 
+<fieldset id="credit_card_information">
 <?php if (get_option('web_invoice_payflow_only_button') == 'False') { ?>
 <h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
-<fieldset id="credit_card_information">
 <ol>
 	<li><label for="NAME"><?php _e('Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 	<?php echo web_invoice_draw_inputfield("NAME","{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"); ?>
@@ -2445,10 +2465,9 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 	<?php echo web_invoice_draw_select('COUNTRY',web_invoice_country_array(),$invoice->recipient('country')); ?>
 	</li>
 </ol>
-
+<?php if (get_option('web_invoice_payflow_shipping_details') == 'True') { ?>
 <span class="invoice_action" style="float: right"><a href="javascript:payflow_copy_billing('TOSHIP');"><?php _e('Same as Shipping', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
 <h2 class="invoice_page_subheading"><?php _e('Shipping Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
-<fieldset id="credit_card_information">
 <ol>
 	<li><label for="NAMETOSHIP"><?php _e('Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 	<?php echo web_invoice_draw_inputfield("NAMETOSHIP","{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"); ?>
@@ -2482,6 +2501,7 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 	<?php echo web_invoice_draw_select('COUNTRYTOSHIP',web_invoice_country_array(),$invoice->recipient('country')); ?>
 	</li>
 </ol>
+<?php } ?>
 <?php }	?>
 <ol>
 	<li><label for="submit">&nbsp;</label> <input type="submit"
@@ -2492,6 +2512,7 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 
 	<br class="cb" />
 </ol>
+</fieldset>
 
 </form>
 </div>
@@ -2501,7 +2522,6 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 function web_invoice_show_pfp_form($invoice_id, $invoice) {
 	?>
 <div id="pfp_payment_form" class="payment_form">
-<h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <form method="post" name="checkout_form" id="pfp_checkout_form"
 	class="online_payment_form"
 	onsubmit="process_cc_checkout('pfp'); return false;" class="clearfix"><input
@@ -2518,6 +2538,7 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 	value="<?php echo $invoice->display('currency'); ?>" /> <input
 	type="hidden" name="web_invoice_id_hash"
 	value="<?php echo $invoice->display('hash'); ?>" />
+<h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <fieldset id="credit_card_information">
 <ol>
 	<li><label for="first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
@@ -2528,7 +2549,7 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 	<?php echo web_invoice_draw_inputfield("last_name",$invoice->recipient('last_name')); ?>
 	</li>
 
-	<li><label for="email"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<li><label for="email_address"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 	<?php echo web_invoice_draw_inputfield("email_address",$invoice->recipient('email_address')); ?>
 	</li>
 
@@ -2556,7 +2577,7 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 	<li><label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 	<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
 	</li>
-
+	
 	<li class="hide_after_success"><label class="inputLabel" for="pf_card_num"><?php _e('Credit Card Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 	<input name="card_num" autocomplete="off" onkeyup="cc_card_pick('#pfp_cardimage', '#pf_card_num');"
 		id="pf_card_num" class="credit_card_number input_field" type="text"
@@ -2580,12 +2601,56 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 	<input id="card_code" autocomplete="off" name="card_code"
 		class="input_field" style="width: 70px;" type="text" size="4"
 		maxlength="4" /></li>
+</ol>
+<?php if (get_option('web_invoice_pfp_shipping_details') == 'True') { ?>
+<span class="invoice_action" style="float: right"><a href="javascript:pfp_copy_billing('shipto');"><?php _e('Same as Shipping', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
+<h2 class="invoice_page_subheading"><?php _e('Shipping Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+<ol>
+	<li><label for="shipto_first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_first_name",$invoice->recipient('first_name')); ?>
+	</li>
 
+	<li><label for="shipto_last_name"><?php _e('Last Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_last_name",$invoice->recipient('last_name')); ?>
+	</li>
+
+	<li><label for="shipto_email_address"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_email_address",$invoice->recipient('email_address')); ?>
+	</li>
+
+	<li><label class="inputLabel" for="shipto_phonenumber"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<input name="shipto_phonenumber" class="input_field" type="text"
+		id="shipto_phonenumber" size="40" maxlength="50"
+		value="<?php print $invoice->recipient('phonenumber'); ?>" /></li>
+
+	<li><label for="shipto_address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_address",$invoice->recipient('streetaddress')); ?>
+	</li>
+
+	<li><label for="shipto_city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_city",$invoice->recipient('city')); ?>
+	</li>
+
+	<li><label for="shipto_state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php print web_invoice_draw_inputfield('shipto_state',$invoice->recipient('state'));  ?>
+	</li>
+
+	<li><label for="shipto_zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_zip",$invoice->recipient('zip')); ?>
+	</li>
+
+	<li><label for="shipto_country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_select('shipto_country',web_invoice_country_array(),$invoice->recipient('country')); ?>
+	</li>
+</ol>
+<?php } ?>
+<ol>
 	<li id="web_invoice_process_wait"><label for="submit"><span></span>&nbsp;</label>
 	<button type="submit" id="cc_pay_button" class="pay_button pfp"
 		class="hide_after_success submit_button"><?php printf(__('Pay %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_amount')); ?></button>
 	</li>
 </ol>
+</fieldset>
 <br class="cb" />
 &nbsp;
 <div id="wp_pfp_response"></div>

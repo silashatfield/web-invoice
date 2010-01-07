@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.10.7
+ Version: 1.10.8
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -238,10 +238,10 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery'), '1.8.0');
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.10.4');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.10.8');
 		} else {
 
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.10.4');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.10.8');
 			// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
 			if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);
 			$_GET['invoice_id'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['invoice_id']);
@@ -446,7 +446,8 @@ class Web_Invoice {
 		// Payflow
 		add_option('web_invoice_payflow_login','');
 		add_option('web_invoice_payflow_partner','');
-		add_option('web_invoice_paypal_only_button', 'False');
+		add_option('web_invoice_payflow_only_button', 'False');
+		add_option('web_invoice_payflow_shipping_details', 'True');
 		add_option('web_invoice_payflow_silent_post', 'False');
 		
 		// Payflow Pro
@@ -457,6 +458,7 @@ class Web_Invoice {
 		add_option('web_invoice_pfp_password', '');
 		add_option('web_invoice_pfp_signature', '');
 		add_option('web_invoice_pfp_3rdparty_email', '');
+		add_option('web_invoice_pfp_shipping_details', 'True');
 		
 		// PayPal
 		add_option('web_invoice_other_details','');
