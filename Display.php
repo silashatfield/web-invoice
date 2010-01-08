@@ -345,7 +345,12 @@ function web_invoice_recurring_overview($message='')
 
 	<?php if(web_invoice_is_not_merchant() && (get_option('web_invoice_moneybookers_merchant') == 'False')) { ?>
 <div class="web_invoice_rounded_box">
-<p><?php printf(__('You need a %4$s account with Merchant status or a credit card processing account to use recurring billing. You may get an ARB (Automated Recurring Billing) account from %1$s (800-546-1997), %2$s (888-845-9457) or %3$s (866-400-9706).', WEB_INVOICE_TRANS_DOMAIN), '<a href="http://keti.ws/37281">MerchantPlus</a>', '<a href="http://keti.ws/37282">MerchantExpress.com</a>', '<a href="http://keti.ws/36282">MerchantWarehouse</a>', '<a href="http://keti.ws/27481" alt="moneybookers.com">Moneybookers</a>'); ?></p>
+<p><?php printf(__('You need a %4$s account with Merchant status, %5$s account, %6$s account or a credit card processing account to use recurring billing. You may get an ARB (Automated Recurring Billing) account from %1$s (800-546-1997), %2$s (888-845-9457) or %3$s (866-400-9706).', WEB_INVOICE_TRANS_DOMAIN), 
+		'<a href="http://keti.ws/37281">MerchantPlus</a>', '<a href="http://keti.ws/37282">MerchantExpress.com</a>', 
+		'<a href="http://keti.ws/36282">MerchantWarehouse</a>', 
+		'<a href="http://keti.ws/27481" alt="moneybookers.com">Moneybookers</a>', 
+		'<a href="https://www.paypal.com/lk/mrb/pal=TW8P6LGF47FM4">PayPal Business</a>',
+		'<a href="https://www.paypal.com/lk/mrb/pal=TW8P6LGF47FM4">PayPal Payflow Pro</a>'); ?></p>
 <p><?php _e('Once you have an account, enter in your username and transaction key into the ', WEB_INVOICE_TRANS_DOMAIN); ?><a
 	href="admin.php?page=web_invoice_settings"><?php _e('settings page', WEB_INVOICE_TRANS_DOMAIN); ?></a>.</p>
 </div>
@@ -2466,7 +2471,7 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 	</li>
 </ol>
 <?php if (get_option('web_invoice_payflow_shipping_details') == 'True') { ?>
-<span class="invoice_action" style="float: right"><a href="javascript:payflow_copy_billing('TOSHIP');"><?php _e('Same as Shipping', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
+<span class="invoice_action" style="float: right"><a href="javascript:payflow_copy_billing('TOSHIP');"><?php _e('Same as Billing', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
 <h2 class="invoice_page_subheading"><?php _e('Shipping Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <ol>
 	<li><label for="NAMETOSHIP"><?php _e('Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
@@ -2603,7 +2608,7 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 		maxlength="4" /></li>
 </ol>
 <?php if (get_option('web_invoice_pfp_shipping_details') == 'True') { ?>
-<span class="invoice_action" style="float: right"><a href="javascript:pfp_copy_billing('shipto');"><?php _e('Same as Shipping', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
+<span class="invoice_action" style="float: right"><a href="javascript:pfp_copy_billing('shipto');"><?php _e('Same as Billing', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
 <h2 class="invoice_page_subheading"><?php _e('Shipping Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <ol>
 	<li><label for="shipto_first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
