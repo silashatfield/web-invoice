@@ -785,7 +785,14 @@ function web_invoice_profile_update() {
 	if(isset($_POST['city'])) update_usermeta($user_id, 'city', $_POST['city']);
 	if(isset($_POST['phonenumber'])) update_usermeta($user_id, 'phonenumber', $_POST['phonenumber']);
 	if(isset($_POST['country'])) update_usermeta($user_id, 'country', $_POST['country']);
-
+	
+	if(isset($_POST['shipto_company_name'])) update_usermeta($user_id, 'shipto_company_name', $_POST['shipto_company_name']);
+	if(isset($_POST['shipto_streetaddress'])) update_usermeta($user_id, 'shipto_streetaddress', $_POST['shipto_streetaddress']);
+	if(isset($_POST['shipto_zip']))  update_usermeta($user_id, 'shipto_zip', $_POST['shipto_zip']);
+	if(isset($_POST['shipto_state'])) update_usermeta($user_id, 'shipto_state', $_POST['shipto_state']);
+	if(isset($_POST['shipto_city'])) update_usermeta($user_id, 'shipto_city', $_POST['shipto_city']);
+	if(isset($_POST['shipto_phonenumber'])) update_usermeta($user_id, 'shipto_phonenumber', $_POST['shipto_phonenumber']);
+	if(isset($_POST['shipto_country'])) update_usermeta($user_id, 'shipto_country', $_POST['shipto_country']);
 }
 
 class web_invoice_Date
@@ -1356,6 +1363,28 @@ function web_invoice_process_cc_transaction($cc_data) {
 				if ($arb->isSuccessful()) {
 					echo "Transaction okay.";
 					
+					update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
+					update_usermeta($wp_users_id,'first_name',$_POST['first_name']);
+					update_usermeta($wp_users_id,'city',$_POST['city']);
+					update_usermeta($wp_users_id,'state',$_POST['state']);
+					update_usermeta($wp_users_id,'zip',$_POST['zip']);
+					update_usermeta($wp_users_id,'tax_id',$_POST['tax_id']);
+					update_usermeta($wp_users_id,'company_name',$_POST['company_name']);
+					update_usermeta($wp_users_id,'streetaddress',$_POST['address']);
+					update_usermeta($wp_users_id,'phonenumber',$_POST['phonenumber']);
+					update_usermeta($wp_users_id,'country',$_POST['country']);
+					
+					if (get_option('web_invoice_pfp_shipping_details') == 'True') {
+						update_usermeta($wp_users_id,'shipto_last_name',$_POST['shipto_last_name']);
+						update_usermeta($wp_users_id,'shipto_first_name',$_POST['shipto_first_name']);
+						update_usermeta($wp_users_id,'shipto_streetaddress',$_POST['shipto_address']);
+						update_usermeta($wp_users_id,'shipto_city',$_POST['shipto_city']);
+						update_usermeta($wp_users_id,'shipto_state',$_POST['shipto_state']);
+						update_usermeta($wp_users_id,'shipto_zip',$_POST['shipto_zip']);
+						update_usermeta($wp_users_id,'shipto_phonenumber',$_POST['shipto_phonenumber']);
+						update_usermeta($wp_users_id,'shipto_country',$_POST['shipto_country']);
+					}
+					
 					web_invoice_update_invoice_meta($invoice_id, 'subscription_id', $arb->getSubscriberID());
 					web_invoice_update_invoice_meta($invoice_id, 'recurring_transaction_id', $arb->getTransactionID());
 						
@@ -1428,6 +1457,17 @@ function web_invoice_process_cc_transaction($cc_data) {
 					update_usermeta($wp_users_id,'streetaddress',$_POST['address']);
 					update_usermeta($wp_users_id,'phonenumber',$_POST['phonenumber']);
 					update_usermeta($wp_users_id,'country',$_POST['country']);
+					
+					if (get_option('web_invoice_pfp_shipping_details') == 'True') {
+						update_usermeta($wp_users_id,'shipto_last_name',$_POST['shipto_last_name']);
+						update_usermeta($wp_users_id,'shipto_first_name',$_POST['shipto_first_name']);
+						update_usermeta($wp_users_id,'shipto_streetaddress',$_POST['shipto_address']);
+						update_usermeta($wp_users_id,'shipto_city',$_POST['shipto_city']);
+						update_usermeta($wp_users_id,'shipto_state',$_POST['shipto_state']);
+						update_usermeta($wp_users_id,'shipto_zip',$_POST['shipto_zip']);
+						update_usermeta($wp_users_id,'shipto_phonenumber',$_POST['shipto_phonenumber']);
+						update_usermeta($wp_users_id,'shipto_country',$_POST['shipto_country']);
+					}
 		
 					//Mark invoice as paid
 					web_invoice_paid($invoice_id);
@@ -1548,7 +1588,6 @@ function web_invoice_process_cc_transaction($cc_data) {
 	
 			}
 		}
-
 
 		// Uncomment these to troubleshoot.  You will need FireBug to view the response of the AJAX post.
 		//echo $arb->xml;

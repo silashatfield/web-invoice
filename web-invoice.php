@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.10.9
+ Version: 1.10.10
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -659,6 +659,80 @@ class Web_Invoice_GetInfo {
 			
 			case 'tax_id':
 				if(get_usermeta($uid,'tax_id')) return get_usermeta($uid,'tax_id');  else  return "";
+				break;
+		}
+
+	}
+	
+	function shipping($what) {
+		global $_web_invoice_clear_cache, $wpdb;
+
+		if (!$this->_row_cache || $_web_invoice_clear_cache) {
+			$this->_setRowCache($wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '{$this->id}'"));
+			$_web_invoice_clear_cache = false;
+		}
+
+		if ($this->_row_cache) {
+			$uid = $this->_row_cache->user_id;
+			$user_email = $wpdb->get_var("SELECT user_email FROM ". $wpdb->prefix . "users WHERE id=".$uid);
+		} else {
+			$uid = false;
+			$user_email = false;
+		}
+
+		$invoice_info = $this->_row_cache;
+
+		switch ($what) {
+			case 'first_name':
+				return (get_usermeta($uid,'shipto_first_name')!="")?get_usermeta($uid,'shipto_first_name'):get_usermeta($uid,'first_name');
+				break;
+
+			case 'last_name':
+				return (get_usermeta($uid,'shipto_last_name')!="")?get_usermeta($uid,'shipto_last_name'):get_usermeta($uid,'last_name');
+				break;
+
+			case 'phonenumber':
+				$phone_number = (get_usermeta($uid,'shipto_phonenumber')!="")?get_usermeta($uid,'shipto_phonenumber'):get_usermeta($uid,'phonenumber');
+				return web_invoice_format_phone($phone_number);
+				break;
+
+			case 'paypal_phonenumber':
+				return (get_usermeta($uid,'shipto_phonenumber')!="")?get_usermeta($uid,'shipto_phonenumber'):get_usermeta($uid,'phonenumber');
+				break;
+
+			case 'streetaddress':
+				return (get_usermeta($uid,'shipto_streetaddress')!="")?get_usermeta($uid,'shipto_streetaddress'):get_usermeta($uid,'streetaddress');
+				break;
+
+			case 'state':
+				$state = (get_usermeta($uid,'shipto_state')!="")?get_usermeta($uid,'shipto_state'):get_usermeta($uid,'state');
+				return strtoupper($state);
+				break;
+
+			case 'city':
+				return (get_usermeta($uid,'shipto_city')!="")?get_usermeta($uid,'shipto_city'):get_usermeta($uid,'city');
+				break;
+
+			case 'zip':
+				return (get_usermeta($uid,'shipto_zip')!="")?get_usermeta($uid,'shipto_zip'):get_usermeta($uid,'zip');
+				break;
+
+			case 'country':
+				if(get_usermeta($uid,'shipto_country')) 
+					return get_usermeta($uid,'shipto_country');  
+				else if(get_usermeta($uid,'country')) 
+					return get_usermeta($uid,'country');  
+				else
+					return "US";
+				break;
+				
+			case 'company_name':
+				if(get_usermeta($uid,'shipto_company_name'))
+					return get_usermeta($uid,'shipto_company_name');
+				else if(get_usermeta($uid,'company_name'))
+					return get_usermeta($uid,'company_name');
+				else
+					return "";
 				break;
 		}
 

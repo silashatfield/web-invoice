@@ -1976,6 +1976,49 @@ function web_invoice_user_profile_fields()
 	</tr>
 	<?php } ?>
 </table>
+<h3><?php _e('Shipping Info', WEB_INVOICE_TRANS_DOMAIN); ?></h3>
+<a name="shipping_info"></a>
+<span class="invoice_action" ><a href="javascript:web_invoice_copy_billing('shipto');"><?php _e('Same as Billing', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
+<table class="form-table">
+	<tr>
+		<th><label for="shipto_company_name"><?php _e('Company', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<td><input type="text" name="shipto_company_name" id="shipto_company_name"
+			value="<?php echo get_usermeta($user_id,'shipto_company_name'); ?>" /></td>
+	</tr>
+
+	<tr>
+		<th><label for="shipto_city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<td><input type="text" name="shipto_city" id="shipto_city"
+			value="<?php echo get_usermeta($user_id,'shipto_city'); ?>" /></td>
+	</tr>
+
+	<tr>
+		<th><label for="shipto_state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<td><input type="text" name="shipto_state" id="shipto_state"
+			value="<?php echo get_usermeta($user_id,'shipto_state'); ?>" /><br />
+		<p class="note"><?php _e('Use two-letter state codes for safe credit card processing.', WEB_INVOICE_TRANS_DOMAIN); ?></p>
+		</td>
+	</tr>
+
+	<tr>
+		<th><label for="shipto_streetaddress"><?php _e('ZIP Code', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<td><input type="text" name="shipto_zip" id="shipto_zip"
+			value="<?php echo get_usermeta($user_id,'shipto_zip'); ?>" /></td>
+	</tr>
+
+	<tr>
+		<th><label for="shipto_phonenumber"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<td><input type="text" name="shipto_phonenumber" id="shipto_phonenumber"
+			value="<?php echo get_usermeta($user_id,'shipto_phonenumber'); ?>" />
+		<p class="note"><?php _e('Enforce 555-555-5555 format if you are using PayPal.', WEB_INVOICE_TRANS_DOMAIN); ?></p>
+		</td>
+	</tr>
+
+	<tr>
+		<th><label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label></th>
+		<td><?php echo web_invoice_draw_select('country',web_invoice_country_array(),get_usermeta($user_id,'country')); ?></td>
+	</tr>
+</table>
 	<?php
 }
 
@@ -2475,35 +2518,35 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 <h2 class="invoice_page_subheading"><?php _e('Shipping Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <ol>
 	<li><label for="NAMETOSHIP"><?php _e('Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("NAMETOSHIP","{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"); ?>
+	<?php echo web_invoice_draw_inputfield("NAMETOSHIP","{$invoice->shipping('first_name')} {$invoice->shipping('last_name')}"); ?>
 	</li>
 	
 	<li><label for="EMAILTOSHIP"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("EMAILTOSHIP",$invoice->recipient('email_address')); ?>
+	<?php echo web_invoice_draw_inputfield("EMAILTOSHIP",$invoice->shipping('email_address')); ?>
 	</li>
 	
 	<li><label for="PHONETOSHIP"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("PHONETOSHIP", $invoice->recipient('paypal_phonenumber'),' style="width:85px;" size="10" maxlength="15" '); ?>
+	<?php echo web_invoice_draw_inputfield("PHONETOSHIP", $invoice->shipping('paypal_phonenumber'),' style="width:85px;" size="10" maxlength="15" '); ?>
 	</li>
 
 	<li><label for="ADDRESSTOSHIP"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("ADDRESSTOSHIP",$invoice->recipient('streetaddress')); ?>
+	<?php echo web_invoice_draw_inputfield("ADDRESSTOSHIP",$invoice->shipping('streetaddress')); ?>
 	</li>
 
 	<li><label for="CITYTOSHIP"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("CITYTOSHIP",$invoice->recipient('city')); ?>
+	<?php echo web_invoice_draw_inputfield("CITYTOSHIP",$invoice->shipping('city')); ?>
 	</li>
 
 	<li><label for="STATETOSHIP"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php print web_invoice_draw_inputfield('STATETOSHIP',$invoice->recipient('state'));  ?>
+	<?php print web_invoice_draw_inputfield('STATETOSHIP',$invoice->shipping('state'));  ?>
 	</li>
 
 	<li><label for="ZIPTOSHIP"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("ZIPTOSHIP",$invoice->recipient('zip')); ?>
+	<?php echo web_invoice_draw_inputfield("ZIPTOSHIP",$invoice->shipping('zip')); ?>
 	</li>
 
 	<li><label for="COUNTRYTOSHIP"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_select('COUNTRYTOSHIP',web_invoice_country_array(),$invoice->recipient('country')); ?>
+	<?php echo web_invoice_draw_select('COUNTRYTOSHIP',web_invoice_country_array(),$invoice->shipping('country')); ?>
 	</li>
 </ol>
 <?php } ?>
@@ -2612,40 +2655,40 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 <h2 class="invoice_page_subheading"><?php _e('Shipping Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <ol>
 	<li><label for="shipto_first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("shipto_first_name",$invoice->recipient('first_name')); ?>
+	<?php echo web_invoice_draw_inputfield("shipto_first_name",$invoice->shipping('first_name')); ?>
 	</li>
 
 	<li><label for="shipto_last_name"><?php _e('Last Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("shipto_last_name",$invoice->recipient('last_name')); ?>
+	<?php echo web_invoice_draw_inputfield("shipto_last_name",$invoice->shipping('last_name')); ?>
 	</li>
 
 	<li><label for="shipto_email_address"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("shipto_email_address",$invoice->recipient('email_address')); ?>
+	<?php echo web_invoice_draw_inputfield("shipto_email_address",$invoice->shipping('email_address')); ?>
 	</li>
 
 	<li><label class="inputLabel" for="shipto_phonenumber"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
 	<input name="shipto_phonenumber" class="input_field" type="text"
 		id="shipto_phonenumber" size="40" maxlength="50"
-		value="<?php print $invoice->recipient('phonenumber'); ?>" /></li>
+		value="<?php print $invoice->shipping('phonenumber'); ?>" /></li>
 
 	<li><label for="shipto_address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("shipto_address",$invoice->recipient('streetaddress')); ?>
+	<?php echo web_invoice_draw_inputfield("shipto_address",$invoice->shipping('streetaddress')); ?>
 	</li>
 
 	<li><label for="shipto_city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("shipto_city",$invoice->recipient('city')); ?>
+	<?php echo web_invoice_draw_inputfield("shipto_city",$invoice->shipping('city')); ?>
 	</li>
 
 	<li><label for="shipto_state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php print web_invoice_draw_inputfield('shipto_state',$invoice->recipient('state'));  ?>
+	<?php print web_invoice_draw_inputfield('shipto_state',$invoice->shipping('state'));  ?>
 	</li>
 
 	<li><label for="shipto_zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_inputfield("shipto_zip",$invoice->recipient('zip')); ?>
+	<?php echo web_invoice_draw_inputfield("shipto_zip",$invoice->shipping('zip')); ?>
 	</li>
 
 	<li><label for="shipto_country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<?php echo web_invoice_draw_select('shipto_country',web_invoice_country_array(),$invoice->recipient('country')); ?>
+	<?php echo web_invoice_draw_select('shipto_country',web_invoice_country_array(),$invoice->shipping('country')); ?>
 	</li>
 </ol>
 <?php } ?>

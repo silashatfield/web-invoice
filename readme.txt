@@ -76,6 +76,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.10.10**
+
+* Shipping details added to user profile
+
 **Version 1.10.9**
 
 * Fixed typo
