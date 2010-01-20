@@ -148,7 +148,7 @@ class Web_Invoice_Decider {
 				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
 				break;
 
-			case "unrachive_invoice":
+			case "unarchive_invoice":
 				if(empty($_REQUEST['multiple_invoices'])) { web_invoice_show_message("No invoices selected, nothing un-archived."); }
 				else { web_invoice_show_message(web_invoice_unarchive($_REQUEST['multiple_invoices']), 'updated fade'); }
 				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}

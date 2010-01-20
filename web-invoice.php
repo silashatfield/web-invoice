@@ -134,7 +134,7 @@ class Web_Invoice {
 	function web_invoice_add_pages() {
 		$file = "web-invoice/" . basename(__FILE__);
 
-		add_menu_page('Web Invoice System', 'Web Invoice',  $this->web_invoice_user_level, $file, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
+		add_menu_page(__('Web Invoice System'), __('Web Invoice'),  $this->web_invoice_user_level, $file, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
 		add_submenu_page($file, __("Manage Invoice"), __("New Invoice"), $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
 		add_submenu_page($file, __("Recurring Billing"), __("Recurring Billing"), $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
 		add_submenu_page($file, __("E-mail templates"), __("E-mail templates"), $this->web_invoice_user_level, 'web_invoice_email_templates', array(&$this,'email_template_page'));
