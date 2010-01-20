@@ -77,6 +77,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.0**
+
+* Sage Pay support
+* Fixed missing HTML end tags and moved autocomplete="off" to js (Better standard compliance)
+
 **Version 1.10.10**
 
 * Shipping details added to user profile

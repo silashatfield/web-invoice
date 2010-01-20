@@ -839,19 +839,17 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 				<td valign="top" class="description"><textarea style="height: 25px;"
 					name="itemized_list[<?php echo $counter; ?>][description]"
 					class="item_description autogrow"><?php echo stripslashes($itemized_item[description]); ?></textarea></td>
-				<td valign="top" class="quantity"><input autocomplete="off"
+				<td valign="top" class="quantity"><input
 					value="<?php echo stripslashes($itemized_item[quantity]); ?>"
 					name="itemized_list[<?php echo $counter; ?>][quantity]"
-					id="qty_item_<?php echo $counter; ?>" class="item_quantity" /></td>
-				<td valign="top" class="price"><input autocomplete="off"
+					id="qty_item_<?php echo $counter; ?>" class="item_quantity noautocomplete" /></td>
+				<td valign="top" class="price"><input
 					value="<?php echo stripslashes($itemized_item[price]); ?>"
 					name="itemized_list[<?php echo $counter; ?>][price]"
-					id="price_item_<?php echo $counter; ?>" class="item_price" /></td>
+					id="price_item_<?php echo $counter; ?>" class="item_price noautocomplete" /></td>
 				<td valign="top" class="item_total"
 					id="total_item_<?php echo $counter; ?>"></td>
 			</tr>
-
-
 			<?php $counter++; } ?>
 		</table>
 		</td>
@@ -907,7 +905,7 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 		<th><?php _e("Tax ", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td style="font-size: 1.1em; padding-top: 7px;"><input
 			style="width: 35px;" name="web_invoice_tax" id="web_invoice_tax"
-			autocomplete="off" value="<?php echo $web_invoice_tax ?>" />%</td>
+			value="<?php echo $web_invoice_tax ?>" class="noautocomplete" />%</td>
 	</tr>
 
 	<tr class="">
@@ -926,10 +924,10 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 		<div id="timestampdiv" style="display: block;"><?php echo web_invoice_draw_select('web_invoice_due_date_month', web_invoice_month_array(), $web_invoice_due_date_month, 'mm'); ?>
 		<input type="text" id="jj" name="web_invoice_due_date_day"
 			value="<?php echo $web_invoice_due_date_day; ?>" size="2"
-			maxlength="2" autocomplete="off" />, <input type="text" id="aa"
+			maxlength="2" class="noautocomplete" />, <input type="text" id="aa"
 			name="web_invoice_due_date_year"
 			value="<?php echo $web_invoice_due_date_year; ?>" size="4"
-			maxlength="5" autocomplete="off" /> <span
+			maxlength="5" class="noautocomplete" /> <span
 			onclick="web_invoice_add_time(7);" class="web_invoice_click_me"><?php _e("In One Week", WEB_INVOICE_TRANS_DOMAIN) ?></span>
 		| <span onclick="web_invoice_add_time(30);"
 			class="web_invoice_click_me"><?php _e("In 30 Days", WEB_INVOICE_TRANS_DOMAIN) ?></span>
@@ -1082,7 +1080,7 @@ function web_invoice_show_settings()
 				if(isset($web_invoice_web_invoice_page) && $web_invoice_web_invoice_page == $page->ID) echo " SELECTED ";
 				echo " value=\"".$page->ID."\">". $page->post_title . "</option>\n";
 			}
-			echo "</select>";?></td>
+			?></select></td>
 	</tr>
 
 	<tr>
@@ -1106,7 +1104,7 @@ function web_invoice_show_settings()
 			<option value="false" style="padding-right: 10px;"
 			<?php if(get_option('web_invoice_force_https') == 'false') echo 'selected="yes"';?>><?php _e("No", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select> <a href="http://mohanjith.com/ssl-certificates.html"
-			alt="mohanjith.com" class="web_invoice_click_me"><?php _e("Do you need an SSL Certificate?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+			class="web_invoice_click_me"><?php _e("Do you need an SSL Certificate?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
 
@@ -1304,7 +1302,7 @@ function web_invoice_show_settings()
 			type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_moneybookers_address')); ?>" />
 		<a id="web_invoice_moneybookers_register_link"
-			href="http://keti.ws/27481" alt="moneybookers.com"
+			href="http://keti.ws/27481"
 			class="web_invoice_click_me"><?php _e("Do you need a Moneybookers account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
@@ -1350,7 +1348,7 @@ function web_invoice_show_settings()
 			type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
 		<a id="web_invoice_alertpay_register_link" href="http://keti.ws/36283"
-			alt="alertpay.com" class="web_invoice_click_me"><?php _e("Do you need an AlertPay account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+			class="web_invoice_click_me"><?php _e("Do you need an AlertPay account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
 	
@@ -1368,7 +1366,7 @@ function web_invoice_show_settings()
 			href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br />
 			<?php _e("Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).", WEB_INVOICE_TRANS_DOMAIN) ?>
 		</span></td>
-	
+	</tr>
 	
 	<tr class="alertpay_info alertpay_info_merchant">
 		<th><?php _e("AlertPay IPN security code:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
@@ -1402,7 +1400,7 @@ function web_invoice_show_settings()
 			type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_google_checkout_merchant_id')); ?>" />
 		<a id="web_invoice_google_checkout_register_link" href="http://keti.ws/60282"
-			alt="checkout.google.com/sell/" class="web_invoice_click_me"><?php _e("Do you need a Google Checkout account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+			class="web_invoice_click_me"><?php _e("Do you need a Google Checkout account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
 	<tr class="google_checkout_info">
@@ -1599,8 +1597,8 @@ function web_invoice_show_settings()
 	<tr class="gateway_info">
 		<th width="200"><a class="web_invoice_tooltip"
 			title="<?php _e('Your credit card processor will provide you with a gateway username.', WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Gateway Username', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
-		<td><input autocomplete="off" name="web_invoice_gateway_username"
-			class="input_field" type="text"
+		<td><input name="web_invoice_gateway_username"
+			class="input_field noautocomplete" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_gateway_username')); ?>" />
 		</td>
 	</tr>
@@ -1608,8 +1606,8 @@ function web_invoice_show_settings()
 	<tr class="gateway_info">
 		<th width="200"><a class="web_invoice_tooltip"
 			title="<?php _e("You will be able to generate this in your credit card processor's control panel.", WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Gateway Transaction Key', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
-		<td><input autocomplete="off" name="web_invoice_gateway_tran_key"
-			class="input_field" type="text"
+		<td><input name="web_invoice_gateway_tran_key"
+			class="input_field noautocomplete" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_gateway_tran_key')); ?>" />
 		</td>
 	</tr>
@@ -2061,7 +2059,7 @@ function web_invoice_show_invoice_overview($invoice_id) {
 <p class="web_invoice_main_description"><?php printf(__('We have sent you invoice <b>%1$s</b> with a total amount of %2$s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id'), $invoice->display('display_amount')); ?>.</p>
 	<?php if($invoice->display('due_date')) { ?>
 <p class="web_invoice_due_date"><?php printf(__('Due Date: %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?>
-	<?php if($invoice->display('description')) { ?>
+	<?php if($invoice->display('description')) { ?></p>
 
 
 <p><?php echo stripcslashes($invoice->display('description'));  ?></p>
@@ -2341,8 +2339,8 @@ function web_invoice_show_moneybookers_form($invoice_id, $invoice) {
 		src="https://www.moneybookers.com/images/logos/checkout_logos/checkoutlogo_CCs_240x80.gif"
 		style="border: 0; width: 240px; height: 80px; padding: 0;" class="pay_button moneybookers"
 		name="submit" alt="Moneybookers.com and money moves" /></li>
-	<br class="cb" />
 </ol>
+<br class="cb" />
 </fieldset>
 </form>
 </div>
@@ -2452,9 +2450,9 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 		alt="Make payments with PayPal - it's fast, free and secure!" /></li>
 	<?php 
 	} ?>
-	<br class="cb" />
 </ol>
-
+<br class="cb" />
+</fieldset>
 </form>
 </div>
 	<?php
@@ -2558,10 +2556,9 @@ function web_invoice_show_payflow_form($invoice_id, $invoice) {
 		value="Pay now!" class="pay_button payflow"
 		alt="Make payments with PayPal Payflow" /></li>
 
-	<br class="cb" />
 </ol>
 </fieldset>
-
+<br class="cb" />
 </form>
 </div>
 	<?php
@@ -2627,8 +2624,8 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 	</li>
 	
 	<li class="hide_after_success"><label class="inputLabel" for="pf_card_num"><?php _e('Credit Card Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<input name="card_num" autocomplete="off" onkeyup="cc_card_pick('#pfp_cardimage', '#pf_card_num');"
-		id="pf_card_num" class="credit_card_number input_field" type="text"
+	<input name="card_num" onkeyup="cc_card_pick('#pfp_cardimage', '#pf_card_num');"
+		id="pf_card_num" class="credit_card_number input_field noautocomplete" type="text"
 		size="22" maxlength="22" /></li>
 
 	<li class="hide_after_success nocard cardimage"  id="pfp_cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/images/card_array.png) no-repeat;">
@@ -2646,8 +2643,8 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 
 	<li class="hide_after_success"><label class="inputLabel"
 		for="card_code"><?php _e('Security Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<input id="card_code" autocomplete="off" name="card_code"
-		class="input_field" style="width: 70px;" type="text" size="4"
+	<input id="card_code" name="card_code"
+		class="input_field noautocomplete" style="width: 70px;" type="text" size="4"
 		maxlength="4" /></li>
 </ol>
 <?php if (get_option('web_invoice_pfp_shipping_details') == 'True') { ?>
@@ -2770,8 +2767,8 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 	</li>
 
 	<li class="hide_after_success"><label class="inputLabel" for="card_num"><?php _e('Credit Card Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<input name="card_num" autocomplete="off" onkeyup="cc_card_pick();"
-		id="card_num" class="credit_card_number input_field" type="text"
+	<input name="card_num" onkeyup="cc_card_pick();"
+		id="card_num" class="credit_card_number input_field noautocomplete" type="text"
 		size="22" maxlength="22" /></li>
 
 	<li class="hide_after_success nocard cardimage"  id="cardimage" style=" background: url(<?php echo Web_Invoice::frontend_path(); ?>/images/card_array.png) no-repeat;">
@@ -2789,8 +2786,8 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 
 	<li class="hide_after_success"><label class="inputLabel"
 		for="card_code"><?php _e('Security Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
-	<input id="card_code" autocomplete="off" name="card_code"
-		class="input_field" style="width: 70px;" type="text" size="4"
+	<input id="card_code" name="card_code"
+		class="input_field noautocomplete" style="width: 70px;" type="text" size="4"
 		maxlength="4" /></li>
 
 	<li id="web_invoice_process_wait"><label for="submit"><span></span>&nbsp;</label>
@@ -2801,7 +2798,7 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 <br class="cb" />
 &nbsp;
 <div id="wp_cc_response"></div>
-
+</fieldset>
 </form>
 </div>
 		<?php
@@ -2811,13 +2808,12 @@ function web_invoice_show_recurring_info($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	?>
 <div id="recurring_info" class="clearfix"><?php if($invoice->display('due_date')) { ?>
-<p class="web_invoice_due_date"><?php printf(__("Due Date: %s", WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?>
-
+<p class="web_invoice_due_date"><?php printf(__("Due Date: %s", WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?></p>
 
 <h2 id="web_invoice_welcome_message" class="invoice_page_subheading"><?php printf(__('Welcome, %s!', WEB_INVOICE_TRANS_DOMAIN), $invoice->recipient('callsign')); ?></h2>
-	<?php if($invoice->display('description')) { ?>
+<?php if($invoice->display('description')) { ?>
 <p><?php echo $invoice->display('description');  ?></p>
-	<?php  } ?>
+<?php  } ?>
 
 <p class="recurring_info_breakdown"><?php printf(__('This is a recurring bill, id: <b>%s</b>.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id')); ?></p>
 <p><?php printf(__('You will be billed %1$s in the amount of %2$s ', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_billing_rate'), $invoice->display('display_amount'));

@@ -2012,3 +2012,28 @@ function web_invoice_clear_cache() {
 	
 	$_web_invoice_clear_cache = true;
 }
+
+function web_invoice_xor_encryption($input_string, $key_phrase){
+ 
+    $key_phrase_length = strlen($key_phrase);
+ 
+    for ($i = 0; $i < strlen($input_string); $i++){
+        $rPos = $i % $key_phrase_length;
+        $r = ord($input_string[$i]) ^ ord($key_phrase[$rPos]);
+        $input_string[$i] = chr($r);
+    }
+ 
+    return $input_string;
+}
+ 
+function web_invoice_xor_encrypt($input_string, $key_phrase){
+    $input_string = XOREncryption($input_string, $key_phrase);
+    $input_string = base64_encode($input_string);
+    return $input_string;
+}
+ 
+function web_invoice_xor_decrypt($input_string, $key_phrase){
+    $input_string = base64_decode($input_string);
+    $input_string = XOREncryption($input_string, $key_phrase);
+    return $input_string;
+}

@@ -105,6 +105,8 @@ jQuery(document)
 				function() {
 
 					tooltip();
+					
+					jQuery(".noautocomplete").attr("autocomplete", "off");
 
 					jQuery("#submit_bulk_action")
 							.click(
