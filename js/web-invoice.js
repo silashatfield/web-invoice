@@ -263,6 +263,9 @@ jQuery(document)
 					if (payment_method_array.indexOf && payment_method_array.indexOf('other') != -1) {
 						jQuery('.other_info').show();
 					}
+					if (payment_method_array.indexOf && payment_method_array.indexOf('sagepay') != -1) {
+						jQuery('.sagepay_info').show();
+					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('moneybookers') != -1) {
 						jQuery('.moneybookers_info').show();
 
@@ -313,6 +316,7 @@ jQuery(document)
 										jQuery('.payflow_info').hide();
 										jQuery('.pfp_info').hide();
 										jQuery('.other_info').hide();
+										jQuery('.sagepay_info').hide();
 										jQuery('.moneybookers_info').hide();
 										jQuery('.alertpay_info').hide();
 										jQuery('.google_checkout_info').hide();
@@ -338,6 +342,10 @@ jQuery(document)
 										if (payment_method_array
 												.indexOf('other') != -1) {
 											jQuery('.other_info').show();
+										}
+										if (payment_method_array
+												.indexOf('sagepay') != -1) {
+											jQuery('.sagepay_info').show();
 										}
 										if (payment_method_array
 												.indexOf('moneybookers') != -1) {

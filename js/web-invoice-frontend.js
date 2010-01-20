@@ -26,3 +26,11 @@ function pfp_copy_billing(prefix) {
 		jQuery('form#pfp_checkout_form #'+prefix+'_'+_pfp_billing_fields[_i]).val(jQuery('form#pfp_checkout_form #'+_pfp_billing_fields[_i]).val());
 	}
 }
+
+function sagepay_copy_billing(prefix) {
+	_sagepay_billing_fields = ['first_name', 'last_name', 'phonenumber', 'email_address', 'address', 'city', 'state', 'zip', 'country'];
+	
+	for (_i=0; _i<_sagepay_billing_fields.length; _i++) {
+		jQuery('form#sagepay_checkout_form #'+prefix+'_'+_sagepay_billing_fields[_i]).val(jQuery('form#sagepay_checkout_form #'+_sagepay_billing_fields[_i]).val());
+	}
+}

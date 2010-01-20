@@ -663,6 +663,12 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_google_checkout_level2');
 	delete_option('web_invoice_google_checkout_merchant_key');
 	delete_option('web_invoice_google_checkout_tax_state');
+	
+	// Sage Pay
+	delete_option('web_invoice_sagepay_env');
+	delete_option('web_invoice_sagepay_vendor_name');
+	delete_option('web_invoice_sagepay_vendor_key');
+	delete_option('web_invoice_sagepay_shipping_details');
 
 	// Send invoice
 	delete_option('web_invoice_email_send_invoice_subject');
@@ -1256,7 +1262,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 	$errors = array ();
 	$errors_msg = null;
 	$_POST['processing_problem'] = '';
-	unset($stop_transaction);
+	$stop_transaction = false;
 	$invoice_id = preg_replace("/[^0-9]/","", $_POST['invoice_num']); /* this is the real invoice id */
 
 	if(web_invoice_recurring($invoice_id)) $recurring = true;
@@ -1279,12 +1285,15 @@ function web_invoice_process_cc_transaction($cc_data) {
 	if(empty($_POST['state'])){$errors [ 'state' ] [] = "Please select your state under billing details.";$stop_transaction = true;}
 	if(empty($_POST['zip'])){$errors [ 'zip' ] [] = "Please enter your ZIP code under billing details.";$stop_transaction = true;}
 	if(empty($_POST['country'])){$errors [ 'country' ] [] = "Please enter your country under billing details.";$stop_transaction = true;}
-	if(empty($_POST['card_num'])) {	$errors [ 'card_num' ] []  = "Please enter your credit card number under billing details.";	$stop_transaction = true;} else { if (!web_invoice_validate_cc_number($_POST['card_num'])){$errors [ 'card_num' ] [] = "Please enter a valid credit card number."; $stop_transaction = true; } }
-	if(empty($_POST['exp_month'])){$errors [ 'exp_month' ] [] = "Please enter your credit card's expiration month under billing details.";$stop_transaction = true;}
-	if(empty($_POST['exp_year'])){$errors [ 'exp_year' ] [] = "Please enter your credit card's expiration year under billing details.";$stop_transaction = true;}
-	if(empty($_POST['card_code'])){$errors [ 'card_code' ] [] = "The <b>Security Code</b> is the code on the back of your card under billing details.";$stop_transaction = true;}
 	
-	if (get_option('web_invoice_pfp_shipping_details') == 'True') {
+	if (!isset($_POST['processor']) || $_POST['processor'] != 'sagepay') {
+		if(empty($_POST['card_num'])) {	$errors [ 'card_num' ] []  = "Please enter your credit card number under billing details.";	$stop_transaction = true;} else { if (!web_invoice_validate_cc_number($_POST['card_num'])){$errors [ 'card_num' ] [] = "Please enter a valid credit card number."; $stop_transaction = true; } }
+		if(empty($_POST['exp_month'])){$errors [ 'exp_month' ] [] = "Please enter your credit card's expiration month under billing details.";$stop_transaction = true;}
+		if(empty($_POST['exp_year'])){$errors [ 'exp_year' ] [] = "Please enter your credit card's expiration year under billing details.";$stop_transaction = true;}
+		if(empty($_POST['card_code'])){$errors [ 'card_code' ] [] = "The <b>Security Code</b> is the code on the back of your card under billing details.";$stop_transaction = true;}
+	}
+	
+	if (get_option('web_invoice_pfp_shipping_details') == 'True' || get_option('web_invoice_sagepay_shipping_details') == 'True') {
 		if(empty($_POST['shipto_first_name'])){$errors [ 'shipto_first_name' ] [] = "Please enter your first name under shipping details.";$stop_transaction = true;}
 		if(empty($_POST['shipto_last_name'])){$errors [ 'shipto_last_name' ] [] = "Please enter your last name under shipping details. ";$stop_transaction = true;}
 		if(empty($_POST['shipto_email_address'])){$errors [ 'shipto_email_address' ] [] = "Please provide an email address under shipping details.";$stop_transaction = true;}
@@ -1299,7 +1308,59 @@ function web_invoice_process_cc_transaction($cc_data) {
 	// Charge Card
 	if(!$stop_transaction) {
 
-		if (isset($_POST['processor']) && $_POST['processor'] == 'pfp') {
+		if (isset($_POST['processor']) && $_POST['processor'] == 'sagepay') {
+			$data_arr = array();
+			$data_arr['VendorTxCode'] = $invoice->display('display_id');
+			$data_arr['Amount'] = $invoice->display('amount');
+			$data_arr['Currency'] = $invoice->display('currency');
+			$data_arr['Description'] = $invoice->display('subject');
+			$data_arr['SuccessURL'] = web_invoice_build_invoice_link($invoice_id);
+			$data_arr['FailureURL'] = web_invoice_build_invoice_link($invoice_id);
+			$data_arr['CustomerName'] = "{$_POST['first_name']} {$_POST['last_name']}";
+			$data_arr['CustomerEMail'] = $_POST['email_address'];
+		
+			$data_arr['BillingFirstnames'] = $_POST['first_name'];
+			$data_arr['BillingSurname'] = $_POST['last_name'];
+			$data_arr['BillingAddress1'] = $_POST['address'];
+			$data_arr['BillingCity'] = $_POST['address'];
+			$data_arr['BillingPostCode'] = $_POST['zip'];
+			$data_arr['BillingCountry'] = $_POST['country'];
+			$data_arr['BillingState'] = $_POST['state'];
+			$data_arr['BillingPhone'] = $_POST['phonenumber'];
+			 
+			if (get_option('web_invoice_sagepay_shipping_details') == 'True') {
+				$data_arr['DeliveryFirstnames'] = $_POST['shipto_first_name'];
+				$data_arr['DeliverySurname'] = $_POST['shipto_last_name'];
+				$data_arr['DeliveryAddress1'] = $_POST['shipto_address'];
+				$data_arr['DeliveryCity'] = $_POST['shipto_address'];
+				$data_arr['DeliveryPostCode'] = $_POST['shipto_zip'];
+				$data_arr['DeliveryCountry'] = $_POST['shipto_country'];
+				$data_arr['DeliveryState'] = $_POST['shipto_state'];
+				$data_arr['DeliveryPhone'] = $_POST['shipto_phonenumber'];
+			}
+			
+			$itemized_array = $invoice->display('itemized');
+			$basket = count($itemized_array);
+			
+			foreach($itemized_array as $itemized_item) {
+				$basket .= 	":".$itemized_item[name].":".$itemized_item[quantity].":".number_format($itemized_item[price],2).":".
+							number_format(($itemized_item[price]*($tax / 100)),2).":".number_format((($itemized_item[price]*($tax / 100))+$itemized_item[price]),2).
+							":".number_format(((($itemized_item[price]*($tax / 100))+$itemized_item[price])*$itemized_item[quantity]),2);
+			}
+			
+			$data_arr['Basket'] = $basket;
+			
+			$datas_arr = array();
+			foreach ($data_arr as $key=>$_val) {
+				$datas_arr[] = "{$key}={$_val}";
+			}
+			
+			$datas = join('&', $datas_arr);
+			$enc_data = web_invoice_xor_encrypt($datas, get_option('web_invoice_sagepay_vendor_key'));
+			
+			print $enc_data;
+			
+		} else if (isset($_POST['processor']) && $_POST['processor'] == 'pfp') {
 			require_once('gateways/payflowpro.class.php');
 			
 			if($recurring) {
@@ -1929,6 +1990,12 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_google_checkout_merchant_key'])) update_option('web_invoice_google_checkout_merchant_key', $_POST['web_invoice_google_checkout_merchant_key']);
 	if(isset($_POST['web_invoice_google_checkout_tax_state'])) update_option('web_invoice_google_checkout_tax_state', $_POST['web_invoice_google_checkout_tax_state']);
 	
+	// Sage Pay
+	if(isset($_POST['web_invoice_sagepay_env'])) update_option('web_invoice_sagepay_env', $_POST['web_invoice_sagepay_env']);
+	if(isset($_POST['web_invoice_sagepay_vendor_name'])) update_option('web_invoice_sagepay_vendor_name', $_POST['web_invoice_sagepay_vendor_name']);
+	if(isset($_POST['web_invoice_sagepay_vendor_key'])) update_option('web_invoice_sagepay_vendor_key', $_POST['web_invoice_sagepay_vendor_key']);
+	if(isset($_POST['web_invoice_sagepay_shipping_details'])) update_option('web_invoice_sagepay_shipping_details', $_POST['web_invoice_sagepay_shipping_details']);
+	
 	do_action('web_invoice_process_settings');
 }
 
@@ -2027,13 +2094,13 @@ function web_invoice_xor_encryption($input_string, $key_phrase){
 }
  
 function web_invoice_xor_encrypt($input_string, $key_phrase){
-    $input_string = XOREncryption($input_string, $key_phrase);
+    $input_string = web_invoice_xor_encryption($input_string, $key_phrase);
     $input_string = base64_encode($input_string);
     return $input_string;
 }
  
 function web_invoice_xor_decrypt($input_string, $key_phrase){
     $input_string = base64_decode($input_string);
-    $input_string = XOREncryption($input_string, $key_phrase);
+    $input_string = web_invoice_xor_encryption($input_string, $key_phrase);
     return $input_string;
 }

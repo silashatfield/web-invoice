@@ -119,6 +119,10 @@
 	display: none;
 }
 
+#web_invoice_first_time_setup .sagepay_info {
+	display: none;
+}
+
 #web_invoice_first_time_setup .moneybookers_info {
 	display: none;
 }
@@ -373,6 +377,10 @@
 }
 
 #settings_page_table  .other_info {
+	display: none;
+}
+
+#settings_page_table  .sagepay_info {
 	display: none;
 }
 

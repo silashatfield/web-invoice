@@ -120,6 +120,9 @@ function process_cc_checkout(type) {
 	if (type == 'pfp') {
 		link_id = 'wp_pfp_response';
 		checkout_form = 'pfp_checkout_form';
+	} else if (type == 'sagepay') {
+		link_id = 'wp_sagepay_response';
+		checkout_form = 'sagepay_checkout_form';
 	} else {
 		link_id = 'wp_cc_response';
 		checkout_form = 'checkout_form';
@@ -162,8 +165,61 @@ function process_cc_checkout(type) {
 				jQuery('#' + link_id).show();
 				window.location = '';
 				}
+			} else {
+				add_remove_class('success','error',link_id);
+				jQuery('#' + link_id).html(msg + "</ol>");
 			}
-			else {
+			jQuery('#web_invoice_process_wait span').html('');
+			req = null;
+		}
+	);
+}
+
+function process_sagepay_process(type) {
+	if (type == null) {
+		type = 'form';
+	}
+
+	jQuery('#web_invoice_process_wait span').html('<img src="<?php echo Web_Invoice::frontend_path(); ?>/images/processing-ajax.gif">');
+
+	site_url = '<?php echo web_invoice_curPageURL(); ?>';
+	
+	if (type == 'form') {
+		link_id = 'wp_sagepay_response';
+		checkout_form = 'sagepay_checkout_form';
+	}
+
+	var req = jQuery.post ( site_url, jQuery('#' + checkout_form).serialize(), function(html) {
+
+			var explode = html.toString().split('\n');
+			var shown = false;
+			var msg = '<?php _e('<b>There are problems with your transaction:</b>', WEB_INVOICE_TRANS_DOMAIN); ?><ol>';
+
+
+			for ( var i in explode )
+			{
+				var explode_again = explode[i].toString().split('|');
+				if (explode_again[0]=='error')
+				{
+					if ( ! shown ) {
+						jQuery('#' + link_id).fadeIn("slow");
+					}
+					shown = true;
+					add_remove_class('ok','error',explode_again[1]);
+					/*jQuery('#err_' + explode_again[1]).html(explode_again[2]); */
+					msg += "<li>" + explode_again[2] + "</li>";
+				}
+				else if (explode_again[0]=='ok') {
+					add_remove_class('error','ok',explode_again[1]);
+					/*jQuery('#err_' + explode_again[1]).hide(); */
+				}
+			}
+
+			if ( ! shown )
+			{
+				jQuery('#sagepay_crypt').val(html);
+				jQuery('#sagepay_submit_form').submit();
+			} else {
 				add_remove_class('success','error',link_id);
 				jQuery('#' + link_id).html(msg + "</ol>");
 			}

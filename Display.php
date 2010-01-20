@@ -1275,11 +1275,13 @@ function web_invoice_show_settings()
 		<th><a class="web_invoice_tooltip"
 			title="<?php _e("Some payment processors may not be available unless protocol is https and enforce https is selected.", WEB_INVOICE_TRANS_DOMAIN) ?>"><?php _e("Payment Method:", WEB_INVOICE_TRANS_DOMAIN) ?></a></th>
 		<td><select id="web_invoice_payment_method"
-			name="web_invoice_payment_method[]" multiple="multiple" size="3">
-			<option value="moneybookers" style="padding-right: 10px;"
-			<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>><?php _e("Moneybookers", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			name="web_invoice_payment_method[]" multiple="multiple" size="4">
 			<option value="alertpay" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) echo 'selected="yes"';?>><?php _e("AlertPay", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="cc" <?php print (!stristr(get_option('web_invoice_protocol'), 'https') || !stristr(get_option('web_invoice_force_https'), 'true'))?'disabled="disabled"':''; ?> style="padding-right: 10px;"
+			<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="moneybookers" style="padding-right: 10px;"
+			<?php if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) echo 'selected="yes"';?>><?php _e("Moneybookers", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="google_checkout" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) echo 'selected="yes"';?>><?php _e("Google Checkout", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="paypal" style="padding-right: 10px;"
@@ -1290,9 +1292,57 @@ function web_invoice_show_settings()
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'pfp')) echo 'selected="yes"';?>><?php _e("PayPal Payflow Pro", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="other" style="padding-right: 10px;"
 			<?php if(stristr(get_option('web_invoice_payment_method'), 'other')) echo 'selected="yes"';?>><?php _e("Other/Bank details", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-			<option value="cc" <?php print (!stristr(get_option('web_invoice_protocol'), 'https') || !stristr(get_option('web_invoice_force_https'), 'true'))?'disabled="disabled"':''; ?> style="padding-right: 10px;"
-			<?php if(stristr(get_option('web_invoice_payment_method'), 'cc')) echo 'selected="yes"';?>><?php _e("Credit Card", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="sagepay" style="padding-right: 10px;"
+			<?php if(stristr(get_option('web_invoice_payment_method'), 'sagepay')) echo 'selected="yes"';?>><?php _e("Sage Pay", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
+	</tr>
+	
+	<tr class="alertpay_info">
+		<th><?php _e("Your AlertPay username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_alertpay_address'
+			name="web_invoice_alertpay_address" class="search-input input_field"
+			type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
+		<a id="web_invoice_alertpay_register_link" href="http://keti.ws/36283"
+			class="web_invoice_click_me"><?php _e("Do you need an AlertPay account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+		</td>
+	</tr>
+	<tr class="alertpay_info">
+		<th><?php _e("Enable AlertPay IPN:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_alertpay_merchant'
+			name="web_invoice_alertpay_merchant">
+			<option value="True"
+			<?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select> <span class="web_invoice_alertpay_url web_invoice_info"><?php _e("Your alert URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
+		<a
+			title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
+			href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br />
+			<?php _e("Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).", WEB_INVOICE_TRANS_DOMAIN) ?>
+		</span></td>
+	</tr>
+	<tr class="alertpay_info alertpay_info_merchant">
+		<th><?php _e("AlertPay IPN security code:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_alertpay_secret'
+			name="web_invoice_alertpay_secret" class="search-input input_field"
+			type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" /></td>
+	</tr>
+	<tr class="alertpay_info alertpay_info_merchant">
+		<th><?php _e("Test / Live Mode:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select name="web_invoice_alertpay_test_mode">
+			<option value="TRUE" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_alertpay_test_mode') == 'TRUE') echo 'selected="yes"';?>><?php _e("Test - Do Not Process Transactions", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="FALSE" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_alertpay_test_mode') == 'FALSE') echo 'selected="yes"';?>><?php _e("Live - Process Transactions", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
+	<tr class="alertpay_info alertpay_info_merchant">
+		<th><?php _e("AlertPay IPN IP:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_alertpay_ip' name="web_invoice_alertpay_ip"
+			class="search-input input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_alertpay_ip')); ?>" /></td>
 	</tr>
 
 	<tr class="moneybookers_info">
@@ -1341,58 +1391,6 @@ function web_invoice_show_settings()
 			value="<?php echo stripslashes(get_option('web_invoice_moneybookers_ip')); ?>" /></td>
 	</tr>
 
-	<tr class="alertpay_info">
-		<th><?php _e("Your AlertPay username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
-		<td><input id='web_invoice_alertpay_address'
-			name="web_invoice_alertpay_address" class="search-input input_field"
-			type="text"
-			value="<?php echo stripslashes(get_option('web_invoice_alertpay_address')); ?>" />
-		<a id="web_invoice_alertpay_register_link" href="http://keti.ws/36283"
-			class="web_invoice_click_me"><?php _e("Do you need an AlertPay account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
-		</td>
-	</tr>
-	
-	<tr class="alertpay_info">
-		<th><?php _e("Enable AlertPay IPN:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
-		<td><select id='web_invoice_alertpay_merchant'
-			name="web_invoice_alertpay_merchant">
-			<option value="True"
-			<?php echo (get_option('web_invoice_alertpay_merchant')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-			<option value="False"
-			<?php echo (get_option('web_invoice_alertpay_merchant')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		</select> <span class="web_invoice_alertpay_url web_invoice_info"><?php _e("Your alert URL is", WEB_INVOICE_TRANS_DOMAIN) ?>
-		<a
-			title="<?php _e("Copy this link", WEB_INVOICE_TRANS_DOMAIN) ?>"
-			href="<?php echo web_invoice_get_alertpay_api_url(); ?>"><?php echo web_invoice_get_alertpay_api_url(); ?></a>.<br />
-			<?php _e("Please note that AlertPay has issues with some SSL certificates. (Your milage may vary).", WEB_INVOICE_TRANS_DOMAIN) ?>
-		</span></td>
-	</tr>
-	
-	<tr class="alertpay_info alertpay_info_merchant">
-		<th><?php _e("AlertPay IPN security code:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
-		<td><input id='web_invoice_alertpay_secret'
-			name="web_invoice_alertpay_secret" class="search-input input_field"
-			type="text"
-			value="<?php echo stripslashes(get_option('web_invoice_alertpay_secret')); ?>" /></td>
-	</tr>
-	
-	<tr class="alertpay_info alertpay_info_merchant">
-		<th><?php _e("Test / Live Mode:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
-		<td><select name="web_invoice_alertpay_test_mode">
-			<option value="TRUE" style="padding-right: 10px;"
-			<?php if(get_option('web_invoice_alertpay_test_mode') == 'TRUE') echo 'selected="yes"';?>><?php _e("Test - Do Not Process Transactions", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-			<option value="FALSE" style="padding-right: 10px;"
-			<?php if(get_option('web_invoice_alertpay_test_mode') == 'FALSE') echo 'selected="yes"';?>><?php _e("Live - Process Transactions", WEB_INVOICE_TRANS_DOMAIN) ?></option>
-		</select></td>
-	</tr>
-	
-	<tr class="alertpay_info alertpay_info_merchant">
-		<th><?php _e("AlertPay IPN IP:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
-		<td><input id='web_invoice_alertpay_ip' name="web_invoice_alertpay_ip"
-			class="search-input input_field" type="text"
-			value="<?php echo stripslashes(get_option('web_invoice_alertpay_ip')); ?>" /></td>
-	</tr>
-	
 	<tr class="google_checkout_info">
 		<th width="200"><?php _e("Google Checkout Merchant Id:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><input id='web_invoice_google_checkout_merchant_id'
@@ -1584,6 +1582,47 @@ function web_invoice_show_settings()
 		</select></td>
 	</tr>
 	
+	<tr class="sagepay_info">
+		<th width="200"><?php _e("Sage Pay vendor login name:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_sagepay_vendor_name'
+			name="web_invoice_sagepay_vendor_name" class="input_field"
+			type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_sagepay_vendor_name')); ?>" />
+		<a id="web_invoice_sagepay_register_link" href="http://keti.ws/85282"
+			class="web_invoice_click_me"><?php _e("Do you need a Sage Pay account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
+		</td>
+	</tr>
+	<tr class="sagepay_info">
+		<th><a class="web_invoice_tooltip"
+			title="<?php _e("Sage Pay encryption password is different from your Sage Pay vendor password", WEB_INVOICE_TRANS_DOMAIN) ?>"
+			><?php _e("Sage Pay encryption password:", WEB_INVOICE_TRANS_DOMAIN) ?></a></th>
+		<td><input id='web_invoice_sagepay_vendor_key'
+			name="web_invoice_sagepay_vendor_key"
+			class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_sagepay_vendor_key')); ?>" /></td>
+	</tr>
+	<tr class="sagepay_info">
+		<th><?php _e('Sandbox / Live Mode:', WEB_INVOICE_TRANS_DOMAIN); ?></th>
+		<td><select name="web_invoice_sagepay_env">
+			<option value="simulator" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_sagepay_env') == 'simulator') echo 'selected="yes"';?>><?php _e('Simulator - Do Not Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+			<option value="test" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_sagepay_env') == 'test') echo 'selected="yes"';?>><?php _e('Sandbox - Do Not Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+			<option value="live" style="padding-right: 10px;"
+			<?php if(get_option('web_invoice_sagepay_env') == 'live') echo 'selected="yes"';?>><?php _e('Live - Process Transactions', WEB_INVOICE_TRANS_DOMAIN); ?></option>
+		</select></td>
+	</tr>
+	<tr class="sagepay_info">
+		<th width="200"><?php _e("Display shipping details form:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id="web_invoice_sagepay_shipping_details"
+			name="web_invoice_sagepay_shipping_details">
+			<option value="True"
+			<?php echo (get_option('web_invoice_sagepay_shipping_details')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_sagepay_shipping_details')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
+	
 	<tr class="other_info">
 		<th width="200"><?php _e("Other/Bank details:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><textarea id='web_invoice_other_details'
@@ -1593,7 +1632,7 @@ function web_invoice_show_settings()
 	<tr>
 		<th colspan="2"><?php web_invoice_cc_setup(false); ?></th>
 	</tr>
-
+	
 	<tr class="gateway_info">
 		<th width="200"><a class="web_invoice_tooltip"
 			title="<?php _e('Your credit card processor will provide you with a gateway username.', WEB_INVOICE_TRANS_DOMAIN); ?>"><?php _e('Gateway Username', WEB_INVOICE_TRANS_DOMAIN); ?></a></th>
@@ -1685,8 +1724,6 @@ function web_invoice_show_settings()
 			value="<?php echo stripslashes(get_option('web_invoice_gateway_merchant_email')); ?>" />
 		</td>
 	</tr>
-
-
 
 	<tr class="gateway_info">
 		<th><?php _e('Email Customer (on success):', WEB_INVOICE_TRANS_DOMAIN); ?></th>
@@ -2110,13 +2147,14 @@ payment!</p></div>
 function web_invoice_show_billing_information($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	$Web_Invoice = new Web_Invoice();
-	$pp = false; $pf = false; $pfp = false; $cc = false; $mb = false; $alertpay = false; $gc = false;
+	$pp = false; $pf = false; $pfp = false; $cc = false; $sp = false; $mb = false; $alertpay = false; $gc = false;
 	
 	$method_count = 0;
 	
-	if(stristr(get_option('web_invoice_payment_method'),'paypal')) { $pp = true; $method_count++; }
-	if(stristr(get_option('web_invoice_payment_method'),'payflow')) { $pf = true; $method_count++; }
-	if(stristr(get_option('web_invoice_payment_method'),'pfp')) { $pfp = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'paypal')) { $pp = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'payflow')) { $pf = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'pfp')) { $pfp = true; $method_count++; }
+	if(stristr(get_option('web_invoice_payment_method'), 'sagepay') && !web_invoice_recurring($invoice_id)) { $sp = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'moneybookers')) { $mb = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'alertpay')) { $alertpay = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'cc')) { $cc = true; $method_count++; }
@@ -2137,7 +2175,11 @@ function web_invoice_show_billing_information($invoice_id) {
 	<?php if ($alertpay) { ?> <a href="#alertpay_payment_form"
 	title="<?php _e('AlertPay', WEB_INVOICE_TRANS_DOMAIN); ?>" class="payment_select moneybookers"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/alertpay_logo.png"
-	alt="AlertPay" width="81" height="45" /></a> <?php } ?> <?php if ($mb) { ?>
+	alt="AlertPay" width="81" height="45" /></a> <?php } ?> <?php if ($sp) { ?>
+<a href="#sagepay_payment_form"
+	title="<?php _e('Sage Pay', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
+	src="<?php echo Web_Invoice::frontend_path(); ?>/images/sage_pay_logo.gif"
+	alt="Sage Pay" width="145" height="33" /></a> <?php } ?> <?php if ($mb) { ?>
 <a href="#moneybookers_payment_form"
 	title="<?php _e('Moneybookers', WEB_INVOICE_TRANS_DOMAIN); ?>"><img
 	src="<?php echo Web_Invoice::frontend_path(); ?>/images/moneybookers_logo.png"
@@ -2168,6 +2210,7 @@ function web_invoice_show_billing_information($invoice_id) {
 
 	if ($alertpay) web_invoice_show_alertpay_form($invoice_id, $invoice);
 	if ($cc) web_invoice_show_cc_form($invoice_id, $invoice);
+	if ($sp) web_invoice_show_sagepay_form($invoice_id, $invoice);
 	if ($mb) web_invoice_show_moneybookers_form($invoice_id, $invoice);
 	if ($gc) web_invoice_show_google_checkout_form($invoice_id, $invoice);
 	if ($pp) web_invoice_show_paypal_form($invoice_id, $invoice);
@@ -2701,6 +2744,143 @@ function web_invoice_show_pfp_form($invoice_id, $invoice) {
 <div id="wp_pfp_response"></div>
 
 </form>
+</div>
+		<?php
+}
+
+function web_invoice_show_sagepay_form($invoice_id, $invoice) {
+	?>
+<div id="sagepay_payment_form" class="payment_form">
+<form method="post" name="checkout_form" id="sagepay_checkout_form"
+	class="online_payment_form"
+	onsubmit="process_sagepay_process(); return false;" class="clearfix"><input
+	type="hidden" name="amount"
+	value="<?php echo $invoice->display('amount'); ?>" /> <input
+	type="hidden" name="processor"
+	value="sagepay" /> <input
+	type="hidden" name="user_id"
+	value="<?php echo $invoice->recipient('user_id'); ?>" /> <input
+	type="hidden" name="email_address"
+	value="<?php echo $invoice->recipient('email_address'); ?>" /> <input
+	type="hidden" name="invoice_num" value="<?php echo  $invoice_id; ?>" />
+<input type="hidden" name="currency_code" id="currency_code"
+	value="<?php echo $invoice->display('currency'); ?>" /> <input
+	type="hidden" name="web_invoice_id_hash"
+	value="<?php echo $invoice->display('hash'); ?>" />
+<h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+<fieldset id="credit_card_information">
+<ol>
+	<li><label for="first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("first_name",$invoice->recipient('first_name')); ?>
+	</li>
+
+	<li><label for="last_name"><?php _e('Last Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("last_name",$invoice->recipient('last_name')); ?>
+	</li>
+
+	<li><label for="email_address"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("email_address",$invoice->recipient('email_address')); ?>
+	</li>
+
+	<li><label class="inputLabel" for="phonenumber"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<input name="phonenumber" class="input_field" type="text"
+		id="phonenumber" size="40" maxlength="50"
+		value="<?php print $invoice->recipient('phonenumber'); ?>" /></li>
+
+	<li><label for="address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("address",$invoice->recipient('streetaddress')); ?>
+	</li>
+
+	<li><label for="city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("city",$invoice->recipient('city')); ?>
+	</li>
+
+	<li><label for="state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php print web_invoice_draw_inputfield('state',$invoice->recipient('state'));  ?>
+	</li>
+
+	<li><label for="zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("zip",$invoice->recipient('zip')); ?>
+	</li>
+
+	<li><label for="country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_select('country',web_invoice_country_array(),$invoice->recipient('country')); ?>
+	</li>
+
+</ol>
+<?php if (get_option('web_invoice_sagepay_shipping_details') == 'True') { ?>
+<span class="invoice_action" style="float: right"><a href="javascript:sagepay_copy_billing('shipto');"><?php _e('Same as Billing', WEB_INVOICE_TRANS_DOMAIN); ?></a></span>
+<h2 class="invoice_page_subheading"><?php _e('Shipping Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+<ol>
+	<li><label for="shipto_first_name"><?php _e('First Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_first_name",$invoice->shipping('first_name')); ?>
+	</li>
+
+	<li><label for="shipto_last_name"><?php _e('Last Name', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_last_name",$invoice->shipping('last_name')); ?>
+	</li>
+
+	<li><label for="shipto_email_address"><?php _e('Email Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_email_address",$invoice->shipping('email_address')); ?>
+	</li>
+
+	<li><label class="inputLabel" for="shipto_phonenumber"><?php _e('Phone Number', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<input name="shipto_phonenumber" class="input_field" type="text"
+		id="shipto_phonenumber" size="40" maxlength="50"
+		value="<?php print $invoice->shipping('phonenumber'); ?>" /></li>
+
+	<li><label for="shipto_address"><?php _e('Address', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_address",$invoice->shipping('streetaddress')); ?>
+	</li>
+
+	<li><label for="shipto_city"><?php _e('City', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_city",$invoice->shipping('city')); ?>
+	</li>
+
+	<li><label for="shipto_state"><?php _e('State (e.g. CA)', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php print web_invoice_draw_inputfield('shipto_state',$invoice->shipping('state'));  ?>
+	</li>
+
+	<li><label for="shipto_zip"><?php _e('Zip Code', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_inputfield("shipto_zip",$invoice->shipping('zip')); ?>
+	</li>
+
+	<li><label for="shipto_country"><?php _e('Country', WEB_INVOICE_TRANS_DOMAIN); ?></label>
+	<?php echo web_invoice_draw_select('shipto_country',web_invoice_country_array(),$invoice->shipping('country')); ?>
+	</li>
+</ol>
+<?php } ?>
+<ol>
+	<li id="web_invoice_process_wait"><label for="submit">&nbsp;</label> <input type="image"
+		src="<?php echo Web_Invoice::frontend_path(); ?>/images/sage_pay_logo.gif"
+		style="border: 0; width: 145px; height: 33px; padding: 0; background-color: white;" class="pay_button sagepay"
+		name="submit" alt="Sage Pay" /> <span></span></li>
+</ol>
+</fieldset>
+<br class="cb" />
+&nbsp;
+<div id="wp_sagepay_response"></div>
+
+</form>
+
+<?php 
+
+if (get_option('web_invoice_sagepay_env') == 'live') {
+	$form_action = "https://live.sagepay.com/gateway/service/vspform-register.vsp";
+} else if (get_option('web_invoice_sagepay_env') == 'test') {
+	$form_action = "https://test.sagepay.com/gateway/service/vspform-register.vsp";
+} else {
+	$form_action = "https://test.sagepay.com/Simulator/VSPFormGateway.asp";
+}
+
+?>
+<form method="post" name="submit_form" id="sagepay_submit_form" class="clearfix" action="<?php print $form_action; ?>">
+	<input type="hidden" name="VPSProtocol" value="2.23" />
+	<input type="hidden" name="TxType" value="PAYMENT" />
+	<input type="hidden" name="Vendor" value="<?php print get_option('web_invoice_sagepay_vendor_name'); ?>" />
+	<input type="hidden" name="Crypt" id="sagepay_crypt" value="" />
+</form>
+
 </div>
 		<?php
 }

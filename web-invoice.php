@@ -484,6 +484,12 @@ class Web_Invoice {
 		add_option('web_invoice_google_checkout_merchant_key','');
 		add_option('web_invoice_google_checkout_tax_state','NY');
 		
+		// Sage Pay
+		add_option('web_invoice_sagepay_env','live');
+		add_option('web_invoice_sagepay_vendor_name','');
+		add_option('web_invoice_sagepay_vendor_key','');
+		add_option('web_invoice_sagepay_shipping_details', 'True');
+		
 		// Send invoice
 		add_option('web_invoice_email_send_invoice_subject','%subject');
 		add_option('web_invoice_email_send_invoice_content',

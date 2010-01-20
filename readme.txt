@@ -22,7 +22,7 @@ Some features:
 * Prefill customer information using the WordPress user list
 * Send invoice notifications to customers with a secured link back to the web invoice
 * Send invoice reminders to customers with a secured link back to the web invoice
-* Accept credit card payment via PayPal Payflow, Authorize.net or MerchantPlus NaviGate
+* Accept credit card payment via PayPal Payflow, Authorize.net, Sage Pay or MerchantPlus NaviGate
 * Moneybookers, AlertPay, Google Checkout or PayPal available if you don't have a credit card processing account
 * Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature, Google Checkout Subscriptions, PayPal or Moneybookers
 * Force web invoice pages to be viewed in SSL mode
@@ -80,6 +80,7 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 **Version 1.11.0**
 
 * Fixed missing HTML end tags and moved autocomplete="off" to js (Better standard compliance)
+* Experiemental Sage Pay Form support
 
 **Version 1.10.10**
 
