@@ -119,16 +119,16 @@ function process_cc_checkout(type) {
 	
 	if (type == 'pfp') {
 		link_id = 'wp_pfp_response';
-		checkout_form = 'pfp_checkout_form';
+		_checkout_form = 'pfp_checkout_form';
 	} else if (type == 'sagepay') {
 		link_id = 'wp_sagepay_response';
-		checkout_form = 'sagepay_checkout_form';
+		_checkout_form = 'sagepay_checkout_form';
 	} else {
 		link_id = 'wp_cc_response';
-		checkout_form = 'checkout_form';
+		_checkout_form = 'checkout_form';
 	}
 
-	var req = jQuery.post ( site_url, jQuery('#' + checkout_form).serialize(), function(html) {
+	var req = jQuery.post ( site_url, jQuery('#' + _checkout_form).serialize(), function(html) {
 
 			var explode = html.toString().split('\n');
 			var shown = false;
@@ -186,10 +186,10 @@ function process_sagepay_process(type) {
 	
 	if (type == 'form') {
 		link_id = 'wp_sagepay_response';
-		checkout_form = 'sagepay_checkout_form';
+		_checkout_form = 'sagepay_checkout_form';
 	}
 
-	var req = jQuery.post ( site_url, jQuery('#' + checkout_form).serialize(), function(html) {
+	var req = jQuery.post ( site_url, jQuery('#' + _checkout_form).serialize(), function(html) {
 
 			var explode = html.toString().split('\n');
 			var shown = false;

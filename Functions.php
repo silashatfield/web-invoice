@@ -1314,7 +1314,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		if(empty($_POST['card_code'])){$errors [ 'card_code' ] [] = "The <b>Security Code</b> is the code on the back of your card under billing details.";$stop_transaction = true;}
 	}
 	
-	if (get_option('web_invoice_pfp_shipping_details') == 'True' || get_option('web_invoice_sagepay_shipping_details') == 'True') {
+	if ($_POST['processor'] == 'pfp' && get_option('web_invoice_pfp_shipping_details') == 'True' || $_POST['processor'] == 'sagepay' && get_option('web_invoice_sagepay_shipping_details') == 'True') {
 		if(empty($_POST['shipto_first_name'])){$errors [ 'shipto_first_name' ] [] = "Please enter your first name under shipping details.";$stop_transaction = true;}
 		if(empty($_POST['shipto_last_name'])){$errors [ 'shipto_last_name' ] [] = "Please enter your last name under shipping details. ";$stop_transaction = true;}
 		if(empty($_POST['shipto_email_address'])){$errors [ 'shipto_email_address' ] [] = "Please provide an email address under shipping details.";$stop_transaction = true;}
@@ -1358,6 +1358,13 @@ function web_invoice_process_cc_transaction($cc_data) {
 				$data_arr['DeliveryCountry'] = $_POST['shipto_country'];
 				$data_arr['DeliveryState'] = $_POST['shipto_state'];
 				$data_arr['DeliveryPhone'] = $_POST['shipto_phonenumber'];
+			} else {
+				$data_arr['DeliveryFirstnames'] = $_POST['first_name'];
+				$data_arr['DeliverySurname'] = $_POST['last_name'];
+				$data_arr['DeliveryAddress1'] = $_POST['address'];
+				$data_arr['DeliveryCity'] = $_POST['address'];
+				$data_arr['DeliveryPostCode'] = $_POST['zip'];
+				$data_arr['DeliveryCountry'] = $_POST['country'];
 			}
 			
 			$itemized_array = $invoice->display('itemized');
