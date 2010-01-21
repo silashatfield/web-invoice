@@ -242,10 +242,10 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery'), '1.8.0');
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.10.8');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.11.2');
 		} else {
 
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.10.8');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.11.2');
 			// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
 			if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);
 			$_GET['invoice_id'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['invoice_id']);
