@@ -115,6 +115,26 @@ function web_invoice_meta($invoice_id,$meta_key)
 	return $_web_invoice_meta_cache[$invoice_id][$meta_key];
 }
 
+function web_invoice_payment_register($invoice_id, $amount) {
+	global $wpdb;
+	global $_web_invoice_payment_cache;
+	
+	if (!isset($_web_invoice_payment_cache[$invoice_id]) || !$_web_invoice_payment_cache[$invoice_id]) {
+		$wpdb->query("INSERT INTO `".Web_Invoice::tablename('payment')."` (invoice_id, amount, status) VALUES ('$invoice_id', '$amount', 0)");
+		$_web_invoice_payment_cache[$invoice_id] = $wpdb->insert_id;
+	}
+
+	return $_web_invoice_payment_cache[$invoice_id];
+}
+
+function web_invoice_get_invoice_id_by_payment($payment_id, $amount) {
+	global $wpdb;
+	
+	$invoice_id = $wpdb->get_var("SELECT invoice_id FROM `".Web_Invoice::tablename('payment')."` WHERE payment_id = '$payment_id' AND amount = '$amount'");
+	
+	return $invoice_id;
+}
+
 function web_invoice_payment_meta($payment_id, $meta_key)
 {
 	global $wpdb;
@@ -1310,7 +1330,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 
 		if (isset($_POST['processor']) && $_POST['processor'] == 'sagepay') {
 			$data_arr = array();
-			$data_arr['VendorTxCode'] = $invoice->display('display_id');
+			$data_arr['VendorTxCode'] = $invoice->display('trx_id');
 			$data_arr['Amount'] = $invoice->display('amount');
 			$data_arr['Currency'] = $invoice->display('currency');
 			$data_arr['Description'] = $invoice->display('subject');
@@ -1836,10 +1856,7 @@ function web_invoice_process_invoice_update($invoice_id) {
 	if(empty($web_invoice_subscription_name) &&	empty($web_invoice_subscription_unit) && empty($web_invoice_subscription_total_occurances)) {
 		$web_invoice_recurring_status = false;
 		web_invoice_update_invoice_meta($invoice_id, "web_invoice_recurring_billing", false);
-
-
 	}
-
 
 	// Update Invoice Meta
 	web_invoice_update_invoice_meta($invoice_id, "web_invoice_custom_invoice_id", $web_invoice_custom_invoice_id);
@@ -2080,7 +2097,7 @@ function web_invoice_clear_cache() {
 	$_web_invoice_clear_cache = true;
 }
 
-function web_invoice_xor_encryption($input_string, $key_phrase){
+function web_invoice_xor_encryption($input_string, $key_phrase) {
  
     $key_phrase_length = strlen($key_phrase);
  
@@ -2093,13 +2110,13 @@ function web_invoice_xor_encryption($input_string, $key_phrase){
     return $input_string;
 }
  
-function web_invoice_xor_encrypt($input_string, $key_phrase){
+function web_invoice_xor_encrypt($input_string, $key_phrase) {
     $input_string = web_invoice_xor_encryption($input_string, $key_phrase);
     $input_string = base64_encode($input_string);
     return $input_string;
 }
  
-function web_invoice_xor_decrypt($input_string, $key_phrase){
+function web_invoice_xor_decrypt($input_string, $key_phrase) {
     $input_string = base64_decode($input_string);
     $input_string = web_invoice_xor_encryption($input_string, $key_phrase);
     return $input_string;

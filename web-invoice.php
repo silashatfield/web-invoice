@@ -184,6 +184,10 @@ class Web_Invoice {
 				require_once("gateways/payflow.class.php");
 				$pf_obj = new Web_Invoice_Payflow($_POST['CUSTID'], $_POST);
 				$pf_obj->processRequest($_SERVER['REMOTE_ADDR'], $_POST);
+			} else if (isset($_GET['crypt'])) {
+				require_once("gateways/sagepay.class.php");
+				$pf_obj = new Web_Invoice_SagePay($_GET['crypt']);
+				$pf_obj->processRequest($_SERVER['REMOTE_ADDR']);
 			}
 		}
 	}
@@ -347,9 +351,10 @@ class Web_Invoice {
 
 		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('payment') ."'") != Web_Invoice::tablename('payment')) {
 		$sql_payment = "CREATE TABLE IF NOT EXISTS ". Web_Invoice::tablename('payment') ." (
-				  payment_id int(11) NOT NULL auto_increment,
+				  payment_id int(20) NOT NULL auto_increment,
 				  amount double default '0',
-				  user_id varchar(20) NOT NULL default '',
+				  invoice_id int(20) NOT NULL,
+				  user_id int(20) NOT NULL,
 				  status int(11) NOT NULL,
 				  PRIMARY KEY  (payment_id)
 				);";
@@ -358,8 +363,8 @@ class Web_Invoice {
 
 		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('payment_meta') ."'") != Web_Invoice::tablename('payment_meta')) {
 		$sql_payment_meta = "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('payment_meta') . "` (
-				`payment_meta_id` bigint(20) NOT NULL auto_increment,
-				`payment_id` bigint(20) NOT NULL default '0',
+				`payment_meta_id` int(20) NOT NULL auto_increment,
+				`payment_id` int(20) NOT NULL default '0',
 				`meta_key` varchar(255) default NULL,
 				`meta_value` longtext,
 				PRIMARY KEY  (`payment_meta_id`),
@@ -893,6 +898,9 @@ class Web_Invoice_GetInfo {
 
 			case 'status':
 				return $invoice_info->status;
+				break;
+			case 'trx_id':
+				return web_invoice_payment_register($this->id, $this->display('amount'));
 				break;
 		}
 	}

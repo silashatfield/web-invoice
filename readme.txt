@@ -77,10 +77,15 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.1**
+
+* Mark invoices paid via Sage Pay as paid
+* Sage Pay Form support upgraded to production 
+
 **Version 1.11.0**
 
 * Fixed missing HTML end tags and moved autocomplete="off" to js (Better standard compliance)
-* Experiemental Sage Pay Form support
+* Experimental Sage Pay Form support
 
 **Version 1.10.10**
 
