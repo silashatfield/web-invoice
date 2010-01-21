@@ -9,6 +9,50 @@ jQuery(document).ready( function() {
 		jQuery(".payment_form").hide();
 		jQuery(jQuery(this).attr("href")).show();
 	});
+	
+	jQuery(".country").change(function () {
+		_state_field = jQuery(this).parent().parent().find('.state');
+		if (jQuery(this).val() == "GB") {
+			_state_field.val('');
+			_state_field.parent().hide();
+		} else {
+			_state_field.show();
+		}
+	});
+	jQuery(".country").change();
+	
+	jQuery(".shipto_country").change(function () {
+		_state_field = jQuery(this).parent().parent().find('.shipto_state');
+		if (jQuery(this).val() == "GB") {
+			_state_field.val('');
+			_state_field.parent().hide();
+		} else {
+			_state_field.show();
+		}
+	});
+	jQuery(".shipto_country").change();
+	
+	jQuery(".COUNTRY").change(function () {
+		_state_field = jQuery(this).parent().parent().find('.STATE');
+		if (jQuery(this).val() == "GB") {
+			_state_field.val('');
+			_state_field.parent().hide();
+		} else {
+			_state_field.show();
+		}
+	});
+	jQuery(".COUNTRY").change();
+	
+	jQuery(".COUNTRYTOSHIP").change(function () {
+		_state_field = jQuery(this).parent().parent().find('.STATETOSHIP');
+		if (jQuery(this).val() == "GB") {
+			_state_field.val('');
+			_state_field.parent().hide();
+		} else {
+			_state_field.show();
+		}
+	});
+	jQuery(".COUNTRYTOSHIP").change();
 });
 
 function payflow_copy_billing(suffix) {

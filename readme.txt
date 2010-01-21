@@ -77,6 +77,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.4**
+
+* Hide State when not required
+
 **Version 1.11.3**
 
 * Fixed IE js issues

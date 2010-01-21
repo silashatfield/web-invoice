@@ -1303,9 +1303,10 @@ function web_invoice_process_cc_transaction($cc_data) {
 	if(empty($_POST['phonenumber'])){$errors [ 'phonenumber' ] [] = "Please enter your phone number under billing details.";$stop_transaction = true;}
 	if(empty($_POST['address'])){$errors [ 'address' ] [] = "Please enter your address under billing details.";$stop_transaction = true;}
 	if(empty($_POST['city'])){$errors [ 'city' ] [] = "Please enter your city under billing details.";$stop_transaction = true;}
-	if(empty($_POST['state'])){$errors [ 'state' ] [] = "Please select your state under billing details.";$stop_transaction = true;}
 	if(empty($_POST['zip'])){$errors [ 'zip' ] [] = "Please enter your ZIP code under billing details.";$stop_transaction = true;}
 	if(empty($_POST['country'])){$errors [ 'country' ] [] = "Please enter your country under billing details.";$stop_transaction = true;}
+	if(empty($_POST['state']) && $_POST['country'] != 'GB'){$errors [ 'state' ] [] = "Please select your state under billing details.";$stop_transaction = true;}
+	
 	
 	if (!isset($_POST['processor']) || $_POST['processor'] != 'sagepay') {
 		if(empty($_POST['card_num'])) {	$errors [ 'card_num' ] []  = "Please enter your credit card number under billing details.";	$stop_transaction = true;} else { if (!web_invoice_validate_cc_number($_POST['card_num'])){$errors [ 'card_num' ] [] = "Please enter a valid credit card number."; $stop_transaction = true; } }
@@ -1321,9 +1322,9 @@ function web_invoice_process_cc_transaction($cc_data) {
 		if(empty($_POST['shipto_phonenumber'])){$errors [ 'shipto_phonenumber' ] [] = "Please enter your phone number under shipping details.";$stop_transaction = true;}
 		if(empty($_POST['shipto_address'])){$errors [ 'shipto_address' ] [] = "Please enter your address under shipping details.";$stop_transaction = true;}
 		if(empty($_POST['shipto_city'])){$errors [ 'shipto_city' ] [] = "Please enter your city under shipping details.";$stop_transaction = true;}
-		if(empty($_POST['shipto_state'])){$errors [ 'shipto_state' ] [] = "Please select your state under shipping details.";$stop_transaction = true;}
 		if(empty($_POST['shipto_zip'])){$errors [ 'shipto_zip' ] [] = "Please enter your ZIP code under shipping details.";$stop_transaction = true;}
 		if(empty($_POST['shipto_country'])){$errors [ 'shipto_country' ] [] = "Please enter your country under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_state']) && $_POST['shipto_country'] != 'GB'){$errors [ 'shipto_state' ] [] = "Please select your state under shipping details.";$stop_transaction = true;}
 	}
 	
 	// Charge Card
@@ -1343,28 +1344,36 @@ function web_invoice_process_cc_transaction($cc_data) {
 			$data_arr['BillingFirstnames'] = $_POST['first_name'];
 			$data_arr['BillingSurname'] = $_POST['last_name'];
 			$data_arr['BillingAddress1'] = $_POST['address'];
-			$data_arr['BillingCity'] = $_POST['address'];
+			$data_arr['BillingCity'] = $_POST['city'];
 			$data_arr['BillingPostCode'] = $_POST['zip'];
 			$data_arr['BillingCountry'] = $_POST['country'];
-			$data_arr['BillingState'] = $_POST['state'];
+			if (!empty($_POST['state'])) {
+				$data_arr['BillingState'] = substr($_POST['state'], 0, 2);
+			}
 			$data_arr['BillingPhone'] = $_POST['phonenumber'];
 			 
 			if (get_option('web_invoice_sagepay_shipping_details') == 'True') {
 				$data_arr['DeliveryFirstnames'] = $_POST['shipto_first_name'];
 				$data_arr['DeliverySurname'] = $_POST['shipto_last_name'];
 				$data_arr['DeliveryAddress1'] = $_POST['shipto_address'];
-				$data_arr['DeliveryCity'] = $_POST['shipto_address'];
+				$data_arr['DeliveryCity'] = $_POST['shipto_city'];
 				$data_arr['DeliveryPostCode'] = $_POST['shipto_zip'];
 				$data_arr['DeliveryCountry'] = $_POST['shipto_country'];
-				$data_arr['DeliveryState'] = $_POST['shipto_state'];
+				if (!empty($_POST['shipto_state'])) {
+					$data_arr['DeliveryState'] = substr($_POST['shipto_state'], 0, 2);
+				}
 				$data_arr['DeliveryPhone'] = $_POST['shipto_phonenumber'];
 			} else {
 				$data_arr['DeliveryFirstnames'] = $_POST['first_name'];
 				$data_arr['DeliverySurname'] = $_POST['last_name'];
 				$data_arr['DeliveryAddress1'] = $_POST['address'];
-				$data_arr['DeliveryCity'] = $_POST['address'];
+				$data_arr['DeliveryCity'] = $_POST['city'];
 				$data_arr['DeliveryPostCode'] = $_POST['zip'];
+				if (!empty($_POST['state'])) {
+					$data_arr['DeliveryState'] = substr($_POST['state'], 0, 2);
+				}
 				$data_arr['DeliveryCountry'] = $_POST['country'];
+				$data_arr['DeliveryPhone'] = $_POST['phonenumber'];
 			}
 			
 			$itemized_array = $invoice->display('itemized');
