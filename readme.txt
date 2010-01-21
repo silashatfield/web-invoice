@@ -77,6 +77,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.2**
+
+* Redirect to correct invoice when the Sage Pay transaction fails
+
 **Version 1.11.1**
 
 * Upgrading leaves payment table schema out of sync

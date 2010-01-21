@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.11.1
+ Version: 1.11.2
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -128,7 +128,7 @@ class Web_Invoice {
 	}
 
 	function admin_head() {
-		echo "<link rel='stylesheet' href='".$this->uri."/css/wp_admin.css?v=1.9.20' type='text/css'type='text/css' media='all' />";
+		echo "<link rel='stylesheet' href='".$this->uri."/css/wp_admin.css?v=1.11.2' type='text/css'type='text/css' media='all' />";
 	}
 
 	function web_invoice_add_pages() {
@@ -363,6 +363,11 @@ class Web_Invoice {
 				$wpdb->query("ALTER TABLE ". Web_Invoice::tablename('payment') ." ADD `invoice_id` INT( 20 ) NOT NULL AFTER `amount`;");
 				$wpdb->query("ALTER TABLE ". Web_Invoice::tablename('payment') ." CHANGE `user_id` `user_id` INT( 20 ) NOT NULL;");
 				$wpdb->query("ALTER TABLE ". Web_Invoice::tablename('payment') ." CHANGE `payment_id` `payment_id` INT( 20 ) NOT NULL;");
+			}
+			if ($wpdb->get_var("SHOW COLUMNS FROM ". Web_Invoice::tablename('payment') ." LIKE 'trx_id'") != 'trx_id') {
+				$wpdb->query("TRUNCATE TABLE ". Web_Invoice::tablename('payment') .";");
+				$wpdb->query("ALTER TABLE ". Web_Invoice::tablename('payment') ." CHANGE `payment_id` `payment_id` INT( 20 ) NOT NULL AUTO_INCREMENT;"); 
+				$wpdb->query("ALTER TABLE ". Web_Invoice::tablename('payment') ." ADD `trx_id` VARCHAR( 25 ) NOT NULL AFTER `invoice_id`, ADD UNIQUE ( `trx_id` );");
 			}
 		}
 

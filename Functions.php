@@ -120,17 +120,18 @@ function web_invoice_payment_register($invoice_id, $amount) {
 	global $_web_invoice_payment_cache;
 	
 	if (!isset($_web_invoice_payment_cache[$invoice_id]) || !$_web_invoice_payment_cache[$invoice_id]) {
-		$wpdb->query("INSERT INTO `".Web_Invoice::tablename('payment')."` (invoice_id, amount, status) VALUES ('$invoice_id', '$amount', 0)");
-		$_web_invoice_payment_cache[$invoice_id] = $wpdb->insert_id;
+		$trx_id = uniqid('web_invoice_');
+		$wpdb->query("INSERT INTO `".Web_Invoice::tablename('payment')."` (invoice_id, trx_id, amount, status) VALUES ('$invoice_id', '$trx_id', '$amount', 0)");
+		$_web_invoice_payment_cache[$invoice_id] = $trx_id;
 	}
 
 	return $_web_invoice_payment_cache[$invoice_id];
 }
 
-function web_invoice_get_invoice_id_by_payment($payment_id, $amount) {
+function web_invoice_get_invoice_id_by_payment($trx_id) {
 	global $wpdb;
 	
-	$invoice_id = $wpdb->get_var("SELECT invoice_id FROM `".Web_Invoice::tablename('payment')."` WHERE payment_id = '$payment_id' AND amount = '$amount'");
+	$invoice_id = $wpdb->get_var("SELECT invoice_id FROM `".Web_Invoice::tablename('payment')."` WHERE trx_id = '$trx_id'");
 	
 	return $invoice_id;
 }

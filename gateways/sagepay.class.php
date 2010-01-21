@@ -47,7 +47,7 @@ class Web_Invoice_SagePay
 			$this->results[$p[0]] = $p[1];
 		}
 		
-		$this->invoice = new Web_Invoice_GetInfo(web_invoice_get_invoice_id_by_payment($this->results['VendorTxCode'], $this->results['Amount']));
+		$this->invoice = new Web_Invoice_GetInfo(web_invoice_get_invoice_id_by_payment($this->results['VendorTxCode']));
 		
 		if (!$this->invoice) {
 			return;
