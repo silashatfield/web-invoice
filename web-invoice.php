@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.11.0
+ Version: 1.11.1
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -284,7 +284,6 @@ class Web_Invoice {
 	}
 
 	function install() {
-
 		global $wpdb;
 
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -349,8 +348,8 @@ class Web_Invoice {
 		dbDelta($sql_meta);
 		//}
 
-		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('payment') ."'") != Web_Invoice::tablename('payment')) {
-		$sql_payment = "CREATE TABLE IF NOT EXISTS ". Web_Invoice::tablename('payment') ." (
+		if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('payment') ."'") != Web_Invoice::tablename('payment')) {
+			$sql_payment = "CREATE TABLE IF NOT EXISTS ". Web_Invoice::tablename('payment') ." (
 				  payment_id int(20) NOT NULL auto_increment,
 				  amount double default '0',
 				  invoice_id int(20) NOT NULL,
@@ -358,8 +357,14 @@ class Web_Invoice {
 				  status int(11) NOT NULL,
 				  PRIMARY KEY  (payment_id)
 				);";
-		dbDelta($sql_payment);
-		//}
+			dbDelta($sql_payment);
+		} else {
+			if ($wpdb->get_var("SHOW COLUMNS FROM ". Web_Invoice::tablename('payment') ." LIKE 'invoice_id'") != 'invoice_id') {
+				$wpdb->query("ALTER TABLE ". Web_Invoice::tablename('payment') ." ADD `invoice_id` INT( 20 ) NOT NULL AFTER `amount`;");
+				$wpdb->query("ALTER TABLE ". Web_Invoice::tablename('payment') ." CHANGE `user_id` `user_id` INT( 20 ) NOT NULL;");
+				$wpdb->query("ALTER TABLE ". Web_Invoice::tablename('payment') ." CHANGE `payment_id` `payment_id` INT( 20 ) NOT NULL;");
+			}
+		}
 
 		//if($wpdb->get_var("SHOW TABLES LIKE '". Web_Invoice::tablename('payment_meta') ."'") != Web_Invoice::tablename('payment_meta')) {
 		$sql_payment_meta = "CREATE TABLE IF NOT EXISTS `" . Web_Invoice::tablename('payment_meta') . "` (

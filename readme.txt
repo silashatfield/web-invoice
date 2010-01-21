@@ -77,6 +77,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.1**
+
+* Upgrading leaves payment table schema out of sync
+
 **Version 1.11.0**
 
 * Fixed missing HTML end tags and moved autocomplete="off" to js (Better standard compliance)
