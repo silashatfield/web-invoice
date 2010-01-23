@@ -41,6 +41,7 @@ Sponsored features:
 
 * Google Checkout support sponsored by Aaron Petz, http://aaronpetz.com
 * Google Checkout Subscriptions and PayPal Payflow support sponsored by Sean Ham, http://consulting.dynamisart.com
+* Sage Pay support sponsored by Euan Robertson, http://euan.co.uk/
 
 Would you like to see this plugin in other languages? Please show your interest in
 the [Web Invoice community forum](http://mohanjith.com/forum/). You could also help us
