@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.11.4
+ Version: 1.11.5
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -189,6 +189,28 @@ class Web_Invoice {
 				$pf_obj = new Web_Invoice_SagePay($_GET['crypt']);
 				$pf_obj->processRequest($_SERVER['REMOTE_ADDR']);
 			}
+			
+			if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page'))) {
+				wp_enqueue_script('jquery');
+				wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.11.2');
+				
+				// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
+				if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);
+				$_GET['invoice_id'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['invoice_id']);
+	
+				if (isset($_GET['invoice_id'])) {
+	
+					$md5_invoice_id = $_GET['invoice_id'];
+	
+					// Convert MD5 hash into Actual Invoice ID
+					$invoice_id = web_invoice_md5_to_invoice($md5_invoice_id);
+	
+					//Check if invoice exists, SSL enforcement is setp, and we are not currently browing HTTPS,  then reload page into HTTPS
+					if(!function_exists('wp_https_redirect')) {
+						if(web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true' && $_SERVER['HTTPS'] != "on") {  header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']); exit;}
+					}
+				}
+			}
 		}
 	}
 
@@ -231,11 +253,11 @@ class Web_Invoice {
 		else
 			load_plugin_textdomain(WEB_INVOICE_TRANS_DOMAIN, PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)).'/languages', dirname(plugin_basename(__FILE__)).'/languages');
 
-		wp_enqueue_script('jquery');
-		wp_enqueue_script('jquery.maskedinput',$this->uri."/js/jquery.maskedinput.js", array('jquery'));
-		wp_enqueue_script('jquery.form',$this->uri."/js/jquery.form.js", array('jquery') );
-
 		if(is_admin()) {
+			wp_enqueue_script('jquery');
+		
+			wp_enqueue_script('jquery.maskedinput',$this->uri."/js/jquery.maskedinput.js", array('jquery'));
+			wp_enqueue_script('jquery.form',$this->uri."/js/jquery.form.js", array('jquery') );
 			wp_enqueue_script('jquery.impromptu',$this->uri."/js/jquery-impromptu.1.7.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.field',$this->uri."/js/jquery.field.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.delegate',$this->uri."/js/jquery.delegate.js", array('jquery'), '1.8.0');
@@ -244,25 +266,6 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.11.2');
 		} else {
-
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.11.2');
-			// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
-			if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);
-			$_GET['invoice_id'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['invoice_id']);
-
-			if (isset($_GET['invoice_id'])) {
-
-				$md5_invoice_id = $_GET['invoice_id'];
-
-				// Convert MD5 hash into Actual Invoice ID
-				$invoice_id = web_invoice_md5_to_invoice($md5_invoice_id);
-
-				//Check if invoice exists, SSL enforcement is setp, and we are not currently browing HTTPS,  then reload page into HTTPS
-				if(!function_exists('wp_https_redirect')) {
-					if(web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true' && $_SERVER['HTTPS'] != "on") {  header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']); exit;}
-				}
-			}
-
 			if(isset($_POST['web_invoice_id_hash'])) {
 
 				$md5_invoice_id = $_POST['web_invoice_id_hash'];

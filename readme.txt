@@ -78,6 +78,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.5**
+
+* Work around notorious plugins that include their own version of jQuery
+
 **Version 1.11.4**
 
 * Hide State when not required
