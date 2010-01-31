@@ -9,7 +9,7 @@
  Text Domain: web-invoice
  License: GPL
 
- Copyright 2009  S H Mohanjith (email : moha@mohanjith.net)
+ Copyright 2010  S H Mohanjith (email : moha@mohanjith.net)
  */
 
 /*

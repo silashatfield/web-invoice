@@ -1722,24 +1722,25 @@ function web_invoice_process_cc_transaction($cc_data) {
 
 function web_invoice_currency_array() {
 	$currency_list = array(
-	"AUD"=> "Australian Dollars",
-	"CAD"=> "Canadian Dollars",
-	"EUR"=> "Euros",
-	"GBP"=> "Pounds Sterling",
-	"JPY"=> "Yen",
-	"USD"=> "U.S. Dollars",
-	"NZD"=> "New Zealand Dollar",
-	"CHF"=> "Swiss Franc",
-	"HKD"=> "Hong Kong Dollar",
-	"SGD"=> "Singapore Dollar",
-	"SEK"=> "Swedish Krona",
-	"DKK"=> "Danish Krone",
-	"PLN"=> "Polish Zloty",
-	"NOK"=> "Norwegian Krone",
-	"HUF"=> "Hungarian Forint",
-	"CZK"=> "Czech Koruna",
-	"ILS"=> "Israeli Shekel",
-	"MXN"=> "Mexican Peso");
+	"AUD"=> __("Australian Dollars"),
+	"CAD"=> __("Canadian Dollars"),
+	"EUR"=> __("Euros"),
+	"GBP"=> __("Pounds Sterling"),
+	"JPY"=> __("Yen"),
+	"USD"=> __("U.S. Dollars"),
+	"NZD"=> __("New Zealand Dollar"),
+	"CHF"=> __("Swiss Franc"),
+	"HKD"=> __("Hong Kong Dollar"),
+	"SGD"=> __("Singapore Dollar"),
+	"SEK"=> __("Swedish Krona"),
+	"DKK"=> __("Danish Krone"),
+	"PLN"=> __("Polish Zloty"),
+	"NOK"=> __("Norwegian Krone"),
+	"HUF"=> __("Hungarian Forint"),
+	"CZK"=> __("Czech Koruna"),
+	"ILS"=> __("Israeli Shekel"),
+	"MXN"=> __("Mexican Peso"),
+	"BRL"=> __("Brazilian real"));
 
 	return $currency_list;
 }
@@ -1751,7 +1752,8 @@ function web_invoice_currency_symbol($currency = "USD" )
 	'EUR'=> '&#8364;',
 	'GBP'=> '&pound;',
 	'JPY'=> '&yen;',
-	'USD'=> '$');
+	'USD'=> '$',
+	'BRL'=> 'R$');
 
 
 	foreach($currency_list as $value => $display)
