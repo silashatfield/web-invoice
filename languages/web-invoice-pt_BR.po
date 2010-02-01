@@ -1,7 +1,7 @@
 # Web Invoice.
 # Copyright (C) 2009 S H Mohanjith
 # This file is distributed under the same license as the Web Invoice package.
-# André Luiz <financeiro@andrewebmaster.com.br>, 2009.
+# André Luiz <wordpress@andrewebmaster.com.br>, 2009.
 #
 msgid ""
 msgstr ""

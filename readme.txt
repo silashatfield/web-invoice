@@ -51,6 +51,7 @@ Web Invoice is already translated to:
 
 * Italian (it_IT) by Dukessa
 * Belarusian (be_BY) by iam, http://www.antsar.info
+* Portugese (pt_BR) by André Luiz, http://andrewebmaster.com.br
 
 If you like this plugin please give it a good rating, and consider saying thanks, sponsoring a feature or making a donation.
 
@@ -77,6 +78,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.11.6**
+
+* Portugese (Brazil) localization
 
 **Version 1.11.5**
 
