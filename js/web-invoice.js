@@ -249,6 +249,12 @@ jQuery(document)
 					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('payflow') != -1) {
 						jQuery('.payflow_info').show();
+						
+						if (jQuery("#web_invoice_payflow_only_button").val() == 'False') {
+							jQuery('.payflow_shipping').show();
+						} else {
+							jQuery('.payflow_shipping').hide();
+						}
 					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('pfp') != -1) {
 						jQuery('.pfp_info').show();
@@ -297,12 +303,6 @@ jQuery(document)
 							jQuery('#web_invoice_google_checkout_register_link')
 									.hide();
 						}
-					}
-					
-					if (jQuery("#web_invoice_payflow_only_button").val() == 'False') {
-						jQuery('.payflow_shipping').show();
-					} else {
-						jQuery('.payflow_shipping').hide();
 					}
 
 					jQuery('#web_invoice_payment_method')

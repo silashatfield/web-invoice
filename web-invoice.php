@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.11.6
+ Version: 1.11.7
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -197,6 +197,10 @@ class Web_Invoice {
 				// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
 				if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);
 				$_GET['invoice_id'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['invoice_id']);
+				
+				// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
+				if (isset($_GET['generate_from']) && strlen($_GET['generate_from']) != 32) unset($_GET['generate_from']);
+				$_GET['generate_from'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['generate_from']);
 	
 				if (isset($_GET['invoice_id'])) {
 	
@@ -207,7 +211,27 @@ class Web_Invoice {
 	
 					//Check if invoice exists, SSL enforcement is setp, and we are not currently browing HTTPS,  then reload page into HTTPS
 					if(!function_exists('wp_https_redirect')) {
-						if(web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true' && $_SERVER['HTTPS'] != "on") {  header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']); exit;}
+						if(	web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true'
+							&& $_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0) {  
+							header("Location: ".preg_replace('/^http/', 'https', get_option('siteurl')) . $_SERVER['REQUEST_URI']); 
+							exit;
+						}
+					}
+				}
+				
+				if (isset($_GET['generate_from']) && !empty($_GET['generate_from']) && (get_option('web_invoice_self_generate_from_template') == "yes")) {
+					global $current_user;
+					get_currentuserinfo();
+					
+					if ($current_user->ID > 0) {
+						// Convert MD5 hash into Actual Invoice ID
+						$template_id = web_invoice_md5_to_invoice($_GET['generate_from']);
+						$invoice_id = web_invoice_self_generate_from_template($template_id, $current_user->ID);
+						
+						$web_invoice_getinfo = new Web_Invoice_GetInfo($invoice_id);
+						wp_redirect($web_invoice_getinfo->display('link'));
+						
+						exit(0);
 					}
 				}
 			}
@@ -433,6 +457,7 @@ class Web_Invoice {
 			
 		add_option('web_invoice_web_invoice_page','');
 		add_option('web_invoice_redirect_after_user_add', 'no');
+		add_option('web_invoice_self_generate_from_template', 'no');
 		add_option('web_invoice_default_currency_code','USD');
 
 		add_option('web_invoice_show_quantities','Hide');
@@ -843,6 +868,10 @@ class Web_Invoice_GetInfo {
 				if($unit == "months"){
 					if($length == '1') return "monthly for $occurances months";
 					if($length > '1') return "every $length months $occurances times";
+				}
+				if($unit == "years"){
+					if($length == '1') return "annually for $occurances years";
+					if($length > '1') return "every $length years $occurances times";
 				}
 				break;
 

@@ -24,7 +24,7 @@ Some features:
 * Send invoice reminders to customers with a secured link back to the web invoice
 * Accept credit card payment via PayPal Payflow, Authorize.net, Sage Pay or MerchantPlus NaviGate
 * Moneybookers, AlertPay, Google Checkout or PayPal available if you don't have a credit card processing account
-* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature, Google Checkout Subscriptions, PayPal or Moneybookers
+* Setup recurring billing using Authorize.net's ARB (Automatic Recurring Billing) feature, Google Checkout Subscriptions, PayPal, AlertPay or Moneybookers
 * Force web invoice pages to be viewed in SSL mode
 * Archive old invoices
 * Easily use old invoices as templates for new ones
@@ -78,6 +78,13 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.11.7**
+
+* AlertPay recurring payment
+* Allow non privileged users to create invoices for self
+* PayPal yearly invoice fix
+* Fix for some settings when localized
 
 **Version 1.11.6**
 

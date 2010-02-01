@@ -616,6 +616,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_default_currency_code');
 	delete_option('web_invoice_web_invoice_page');
 	delete_option('web_invoice_redirect_after_user_add');
+	delete_option('web_invoice_self_generate_from_template');
 	delete_option('web_invoice_billing_meta');
 	delete_option('web_invoice_show_billing_address');
 	delete_option('web_invoice_show_quantities');
@@ -1761,9 +1762,6 @@ function web_invoice_currency_symbol($currency = "USD" )
 		if($currency == $value) { return $display; $success = true; break;}
 	}
 	if(!$success) return $currency;
-
-
-
 }
 
 function web_invoice_contextual_help_list($content) {
@@ -1771,10 +1769,51 @@ function web_invoice_contextual_help_list($content) {
 	return $content;
 }
 
-function web_invoice_process_invoice_update($invoice_id) {
+function web_invoice_self_generate_from_template($template_invoice_id, $user_id) {
+	global $wpdb;
+	
+	$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$template_invoice_id."'");
+	
+	$_POST['user_id'] = $user_id;
+	$_REQUEST['user_id'] = $user_id;
+	$_REQUEST['amount'] = $invoice_info->amount;
+	$_REQUEST['subject'] = $invoice_info->subject;
+	$_REQUEST['description'] = $invoice_info->description;
+	
+	$itemized = $invoice_info->itemized;
+	$_REQUEST['itemized_list'] = unserialize(urldecode($itemized));
+	
+	$_REQUEST['web_invoice_tax'] = web_invoice_meta($template_invoice_id,'tax_value');
+	$_REQUEST['web_invoice_currency_code'] = web_invoice_meta($template_invoice_id,'web_invoice_currency_code');
+	$_REQUEST['web_invoice_due_date_day'] = web_invoice_meta($template_invoice_id,'web_invoice_due_date_day');
+	$_REQUEST['web_invoice_due_date_month'] = web_invoice_meta($template_invoice_id,'web_invoice_due_date_month');
+	$_REQUEST['web_invoice_due_date_year'] = web_invoice_meta($template_invoice_id,'web_invoice_due_date_year');
+
+	$_REQUEST['web_invoice_subscription_name'] = web_invoice_meta($template_invoice_id,'web_invoice_subscription_name');
+	$_REQUEST['web_invoice_subscription_unit'] = web_invoice_meta($template_invoice_id,'web_invoice_subscription_unit');
+	$_REQUEST['web_invoice_subscription_length'] = web_invoice_meta($template_invoice_id,'web_invoice_subscription_length');
+	$_REQUEST['web_invoice_subscription_start_month'] = web_invoice_meta($template_invoice_id,'web_invoice_subscription_start_month');
+	$_REQUEST['web_invoice_subscription_start_day'] = web_invoice_meta($template_invoice_id,'web_invoice_subscription_start_day');
+	$_REQUEST['web_invoice_subscription_start_year'] = web_invoice_meta($template_invoice_id,'web_invoice_subscription_start_year');
+	$_REQUEST['web_invoice_subscription_total_occurances'] = web_invoice_meta($template_invoice_id,'web_invoice_subscription_total_occurances');
+
+	// $web_invoice_recurring_billing = web_invoice_meta($template_invoice_id,'web_invoice_recurring_billing');
+	$invoice_id = rand(10000000, 90000000);
+
+	web_invoice_process_invoice_update($invoice_id, true);
+	
+	return $invoice_id;
+}
+
+function web_invoice_process_invoice_update($invoice_id, $unprivileged = false) {
 
 	global $wpdb;
-	$profileuser = get_user_to_edit($_POST['user_id']);
+	
+	if ($unprivileged) {
+		$profileuser = get_currentuserinfo();
+	} else {
+		$profileuser = get_user_to_edit($_POST['user_id']);
+	}
 	$description = $_REQUEST['description'];
 	$subject = $_REQUEST['subject'];
 	$amount = $_REQUEST['amount'];
@@ -1943,6 +1982,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_send_thank_you_email'])) update_option('web_invoice_send_thank_you_email', $_POST['web_invoice_send_thank_you_email']);
 	if(isset($_POST['web_invoice_cc_thank_you_email'])) update_option('web_invoice_cc_thank_you_email', $_POST['web_invoice_cc_thank_you_email']);
 	if(isset($_POST['web_invoice_redirect_after_user_add'])) update_option('web_invoice_redirect_after_user_add', $_POST['web_invoice_redirect_after_user_add']);
+	if(isset($_POST['web_invoice_self_generate_from_template'])) update_option('web_invoice_self_generate_from_template', $_POST['web_invoice_self_generate_from_template']);
 	if(isset($_POST['web_invoice_show_business_address'])) update_option('web_invoice_show_business_address', $_POST['web_invoice_show_business_address']);
 	if(isset($_POST['web_invoice_show_billing_address'])) update_option('web_invoice_show_billing_address', $_POST['web_invoice_show_billing_address']);
 	if(isset($_POST['web_invoice_show_quantities'])) update_option('web_invoice_show_quantities', $_POST['web_invoice_show_quantities']);
