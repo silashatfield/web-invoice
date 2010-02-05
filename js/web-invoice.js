@@ -246,6 +246,11 @@ jQuery(document)
 					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('paypal') != -1) {
 						jQuery('.paypal_info').show();
+						
+						if (jQuery('#web_invoice_paypal_address').val() != '') {
+							jQuery('#web_invoice_paypal_register_link')
+									.hide();
+						}
 					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('payflow') != -1) {
 						jQuery('.payflow_info').show();
@@ -254,6 +259,11 @@ jQuery(document)
 							jQuery('.payflow_shipping').show();
 						} else {
 							jQuery('.payflow_shipping').hide();
+						}
+						
+						if (jQuery('#web_invoice_payflow_login').val() != '') {
+							jQuery('#web_invoice_payflow_register_link')
+									.hide();
 						}
 					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('pfp') != -1) {
@@ -264,12 +274,22 @@ jQuery(document)
 						} else {
 							jQuery('.pfp_info.3token').hide();
 						}
+						
+						if (jQuery('#web_invoice_pfp_partner').val() != '') {
+							jQuery('#web_invoice_pfp_register_link')
+									.hide();
+						}
 					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('other') != -1) {
 						jQuery('.other_info').show();
 					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('sagepay') != -1) {
 						jQuery('.sagepay_info').show();
+						
+						if (jQuery('#web_invoice_sagepay_vendor_name').val() != '') {
+							jQuery('#web_invoice_sagepay_register_link')
+									.hide();
+						}
 					}
 					if (payment_method_array.indexOf && payment_method_array.indexOf('moneybookers') != -1) {
 						jQuery('.moneybookers_info').show();

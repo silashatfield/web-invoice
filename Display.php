@@ -1482,6 +1482,8 @@ function web_invoice_show_settings()
 		<td><input id='web_invoice_paypal_address'
 			name="web_invoice_paypal_address" class="input_field" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_paypal_address')); ?>" />
+			<a id="web_invoice_paypal_register_link" href="http://keti.ws/87281"
+				class="web_invoice_click_me"><?php _e("Do you need a PayPal account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
 	<tr class="paypal_info">
@@ -1499,6 +1501,8 @@ function web_invoice_show_settings()
 		<td><input id='web_invoice_payflow_login'
 			name="web_invoice_payflow_login" class="input_field" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_payflow_login')); ?>" />
+			<a id="web_invoice_payflow_register_link" href="http://keti.ws/87281"
+				class="web_invoice_click_me"><?php _e("Do you need a PayPal account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
 	<tr class="payflow_info">
@@ -1549,6 +1553,8 @@ function web_invoice_show_settings()
 		<td><input id='web_invoice_pfp_partner'
 			name="web_invoice_pfp_partner" class="input_field" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_pfp_partner')); ?>" />
+			<a id="web_invoice_pfp_register_link" href="http://keti.ws/87281"
+				class="web_invoice_click_me"><?php _e("Do you need a PayPal account?", WEB_INVOICE_TRANS_DOMAIN) ?></a>
 		</td>
 	</tr>
 	<tr class="pfp_info">
