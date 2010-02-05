@@ -756,7 +756,7 @@ function web_invoice_send_email($invoice_array, $reminder = false)
 		$invoice_id = $invoice_array;
 		$invoice_info = $wpdb->get_row("SELECT * FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '".$invoice_array."'");
 
-		$profileuser = get_user_to_edit($invoice_info->user_id);
+		$profileuser = get_userdata($invoice_info->user_id);
 
 		if ($reminder) {
 			$message = strip_tags(web_invoice_show_reminder_email($invoice_id));
@@ -1812,7 +1812,7 @@ function web_invoice_process_invoice_update($invoice_id, $unprivileged = false) 
 	if ($unprivileged) {
 		$profileuser = get_currentuserinfo();
 	} else {
-		$profileuser = get_user_to_edit($_POST['user_id']);
+		$profileuser = get_userdata($_POST['user_id']);
 	}
 	$description = $_REQUEST['description'];
 	$subject = $_REQUEST['subject'];

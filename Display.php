@@ -118,7 +118,7 @@ function web_invoice_default($message='')
 			$show_money = web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($invoice->amount);
 
 			// Determine What to Call Recipient
-			$profileuser = get_user_to_edit($user_id);
+			$profileuser = get_userdata($user_id);
 			$first_name = $profileuser->first_name;
 			$last_name = $profileuser->last_name;
 			$user_nicename = $profileuser->user_nicename;
@@ -263,7 +263,7 @@ function web_invoice_user_default($message='')
 			$show_money = web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($invoice->amount);
 
 			// Determine What to Call Recipient
-			$profileuser = get_user_to_edit($user_id);
+			$profileuser = get_userdata($user_id);
 			$first_name = $profileuser->first_name;
 			$last_name = $profileuser->last_name;
 			$user_nicename = $profileuser->user_nicename;
@@ -428,7 +428,7 @@ function web_invoice_recurring_overview($message='')
 			$show_money = web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($invoice->amount);
 
 			// Determine What to Call Recipient
-			$profileuser = get_user_to_edit($user_id);
+			$profileuser = get_userdata($user_id);
 			$first_name = $profileuser->first_name;
 			$last_name = $profileuser->last_name;
 			$user_nicename = $profileuser->user_nicename;
@@ -589,7 +589,7 @@ function web_invoice_options_manageInvoice($invoice_id = '',$message='')
 		$subject = $invoice_info->subject;
 		$description = $invoice_info->description;
 		$itemized = $invoice_info->itemized;
-		$profileuser = get_user_to_edit($invoice_info->user_id);
+		$profileuser = get_userdata($invoice_info->user_id);
 		$itemized_array = unserialize(urldecode($itemized));
 		$web_invoice_tax = web_invoice_meta($invoice_id,'tax_value');
 		$web_invoice_custom_invoice_id = web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id');
