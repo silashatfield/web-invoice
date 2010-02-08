@@ -80,6 +80,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.9**
+
+* SagePay issue, state
+
 **Version 1.11.8**
 
 * Do not show ugly PHP error when associated user is deleted

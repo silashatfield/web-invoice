@@ -12,22 +12,22 @@ jQuery(document).ready( function() {
 	
 	jQuery(".country").change(function () {
 		_state_field = jQuery(this).parent().parent().find('.state');
-		if (jQuery(this).val() == "GB") {
+		if (jQuery(this).val() != "US") {
 			_state_field.val('');
 			_state_field.parent().hide();
 		} else {
-			_state_field.show();
+			_state_field.parent().show();
 		}
 	});
 	jQuery(".country").change();
 	
 	jQuery(".shipto_country").change(function () {
 		_state_field = jQuery(this).parent().parent().find('.shipto_state');
-		if (jQuery(this).val() == "GB") {
+		if (jQuery(this).val() != "US") {
 			_state_field.val('');
 			_state_field.parent().hide();
 		} else {
-			_state_field.show();
+			_state_field.parent().show();
 		}
 	});
 	jQuery(".shipto_country").change();
@@ -38,7 +38,7 @@ jQuery(document).ready( function() {
 			_state_field.val('');
 			_state_field.parent().hide();
 		} else {
-			_state_field.show();
+			_state_field.parent().show();
 		}
 	});
 	jQuery(".COUNTRY").change();
@@ -49,7 +49,7 @@ jQuery(document).ready( function() {
 			_state_field.val('');
 			_state_field.parent().hide();
 		} else {
-			_state_field.show();
+			_state_field.parent().show();
 		}
 	});
 	jQuery(".COUNTRYTOSHIP").change();
