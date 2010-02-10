@@ -21,23 +21,41 @@ class Web_Invoice_PayflowPro
 	{
 		if (self::$instances == 0)
 		{
-			if (get_option("web_invoice_pfp_env") == 'live') {
-				$this->url = 'https://api-3t.paypal.com/nvp';
-			} else {
-				$this->url = 'https://api-3t.sandbox.paypal.com/nvp';
-			}
-			
 			$this->params['METHOD']         = "doDirectPayment";
 			$this->params['TRXTYPE']        = "S";
-			$this->params['PAYMENTACTION']  = "Sale";
-			$this->params['VERSION']        = self::$version;
-			if (get_option('web_invoice_pfp_authentication')=='3token') {
-				$this->params['PARTNER']        = stripslashes(get_option("web_invoice_pfp_partner"));
-				$this->params['USER']           = stripslashes(get_option("web_invoice_pfp_username"));
-				$this->params['PWD']            = stripslashes(get_option("web_invoice_pfp_password"));
-				$this->params['SIGNATURE']      = stripslashes(get_option("web_invoice_pfp_signature"));
+			if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+				$this->params['PAYMENTACTION']  = "Sale";
+				$this->params['VERSION']        = self::$version;
 			} else {
-				$this->params['SUBJECT']        = stripslashes(get_option("web_invoice_pfp_3rdparty_email"));
+				$this->params['CURRENCY'] = $this->params['CURRENCYCODE'];
+			}
+		
+			if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+				if (get_option("web_invoice_pfp_env") == 'live') {
+					$this->url = 'https://api-3t.paypal.com/nvp';
+				} else {
+					$this->url = 'https://api-3t.sandbox.paypal.com/nvp';
+				}
+				
+				if (get_option('web_invoice_pfp_authentication')=='3token') {
+					$this->params['PARTNER']        = stripslashes(get_option("web_invoice_pfp_partner"));
+					$this->params['USER']           = stripslashes(get_option("web_invoice_pfp_username"));
+					$this->params['PWD']            = stripslashes(get_option("web_invoice_pfp_password"));
+					$this->params['SIGNATURE']      = stripslashes(get_option("web_invoice_pfp_signature"));
+				} else {
+					$this->params['SUBJECT']        = stripslashes(get_option("web_invoice_pfp_3rdparty_email"));
+				}
+			} else {
+				if (get_option("web_invoice_pfp_env") == 'live') {
+					$this->url = 'https://payflowpro.paypal.com/';
+				} else {
+					$this->url = 'https://pilot-payflowpro.paypal.com/';
+				}
+				
+				$this->params['PARTNER']            = stripslashes(get_option("web_invoice_pfp_partner"));
+				$this->params['VENDOR']               = stripslashes(get_option("web_invoice_pfp_wpppe_vendor"));
+				$this->params['USER']               = stripslashes(get_option("web_invoice_pfp_wpppe_username"));
+				$this->params['PWD']                = stripslashes(get_option("web_invoice_pfp_wpppe_password"));
 			}
 			
 			$this->params['TENDER']         = "C";
@@ -53,7 +71,11 @@ class Web_Invoice_PayflowPro
 	public function transaction($cardnum)
 	{
 		$this->params['ACCT']  = trim($cardnum);
-		$this->params['CREDITCARDTYPE'] = $this->guessCcType();
+		if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+			$this->params['CREDITCARDTYPE'] = $this->guessCcType();
+		} else {
+			$this->params['ACCTTYPE'] = $this->guessCcType();
+		}
 	}
 	
 	public function guessCcType() {
@@ -87,14 +109,16 @@ class Web_Invoice_PayflowPro
 				curl_setopt ($ch, CURLOPT_TIMEOUT, 120);
 			}
 			//required for GoDaddy
-
+			
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim($this->fields, "& "));
+			
 			$this->response = curl_exec($ch);
+			
+			// print $this->response; exit(0);
 
 			$this->parseResults();
-
 
 			if ($this->getResultResponseFull() == "Approved")
 			{	
@@ -182,7 +206,7 @@ class Web_Invoice_PayflowPro
 
 	public function getResponseText()
 	{
-		return $this->results['ACK'];
+		return ($this->results['ACK'] == "")?"Failure":$this->results['ACK'];
 	}
 	
 	public function getResponseCode()
@@ -223,8 +247,12 @@ class Web_Invoice_PayflowProRecurring extends Web_Invoice_PayflowPro {
 
 			$this->params['METHOD']         = "CreateRecurringPaymentsProfile";
 			$this->params['TRXTYPE']        = "R";
-			$this->params['PAYMENTACTION']  = "Sale";
-			$this->params['VERSION']        = self::$version;
+			if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+				$this->params['PAYMENTACTION']  = "Sale";
+				$this->params['VERSION']        = self::$version;
+			} else {
+				$this->params['CURRENCY'] = $this->params['CURRENCYCODE'];
+			}
 			if (get_option('web_invoice_pfp_authentication')=='3token') {
 				$this->params['PARTNER']    = stripslashes(get_option("web_invoice_pfp_partner"));
 				$this->params['USER']       = stripslashes(get_option("web_invoice_pfp_username"));

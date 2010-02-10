@@ -74,13 +74,11 @@ if(web_invoice_paid_status($invoice_id)) {
 function web_invoice_frontend_js() {
 	if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page')))  {
 		function web_invoice_curPageURL() {
-			$pageURL = 'http';
-			if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-			$pageURL .= "://";
-			if ($_SERVER["SERVER_PORT"] != "80") {
-				$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-			} else {
-				$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+			$pageURL = get_option('siteurl').$_SERVER['REQUEST_URI'];
+			
+			if(	web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true'
+				&& $_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0) {  
+				$pageURL = preg_replace('/^http/', 'https', $pageURL); 
 			}
 			return $pageURL;
 		}
@@ -127,7 +125,7 @@ function process_cc_checkout(type) {
 		link_id = 'wp_cc_response';
 		_checkout_form = 'checkout_form';
 	}
-
+	
 	var req = jQuery.post ( site_url, jQuery('#' + _checkout_form).serialize(), function(html) {
 
 			var explode = html.toString().split('\n');

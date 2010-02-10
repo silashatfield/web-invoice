@@ -659,6 +659,9 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_pfp_username');
 	delete_option('web_invoice_pfp_password');
 	delete_option('web_invoice_pfp_signature');
+	delete_option('web_invoice_pfp_wpppe_vendor');
+	delete_option('web_invoice_pfp_wpppe_username');
+	delete_option('web_invoice_pfp_wpppe_password');
 	delete_option('web_invoice_pfp_3rdparty_email');
 	delete_option('web_invoice_pfp_shipping_details');
 	
@@ -1306,7 +1309,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 	if(empty($_POST['city'])){$errors [ 'city' ] [] = "Please enter your city under billing details.";$stop_transaction = true;}
 	if(empty($_POST['zip'])){$errors [ 'zip' ] [] = "Please enter your ZIP code under billing details.";$stop_transaction = true;}
 	if(empty($_POST['country'])){$errors [ 'country' ] [] = "Please enter your country under billing details.";$stop_transaction = true;}
-	if(empty($_POST['state']) && $_POST['country'] != 'GB'){$errors [ 'state' ] [] = "Please select your state under billing details.";$stop_transaction = true;}
+	if(empty($_POST['state']) && $_POST['country'] == 'US'){$errors [ 'state' ] [] = "Please select your state under billing details.";$stop_transaction = true;}
 	
 	
 	if (!isset($_POST['processor']) || $_POST['processor'] != 'sagepay') {
@@ -1325,7 +1328,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		if(empty($_POST['shipto_city'])){$errors [ 'shipto_city' ] [] = "Please enter your city under shipping details.";$stop_transaction = true;}
 		if(empty($_POST['shipto_zip'])){$errors [ 'shipto_zip' ] [] = "Please enter your ZIP code under shipping details.";$stop_transaction = true;}
 		if(empty($_POST['shipto_country'])){$errors [ 'shipto_country' ] [] = "Please enter your country under shipping details.";$stop_transaction = true;}
-		if(empty($_POST['shipto_state']) && $_POST['shipto_country'] != 'GB'){$errors [ 'shipto_state' ] [] = "Please select your state under shipping details.";$stop_transaction = true;}
+		if(empty($_POST['shipto_state']) && $_POST['shipto_country'] == 'US'){$errors [ 'shipto_state' ] [] = "Please select your state under shipping details.";$stop_transaction = true;}
 	}
 	
 	// Charge Card
@@ -2039,6 +2042,9 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_pfp_username'])) update_option('web_invoice_pfp_username', $_POST['web_invoice_pfp_username']);
 	if(isset($_POST['web_invoice_pfp_password'])) update_option('web_invoice_pfp_password', $_POST['web_invoice_pfp_password']);
 	if(isset($_POST['web_invoice_pfp_signature'])) update_option('web_invoice_pfp_signature', $_POST['web_invoice_pfp_signature']);
+	if(isset($_POST['web_invoice_pfp_wpppe_vendor'])) update_option('web_invoice_pfp_wpppe_vendor', $_POST['web_invoice_pfp_wpppe_vendor']);
+	if(isset($_POST['web_invoice_pfp_wpppe_username'])) update_option('web_invoice_pfp_wpppe_username', $_POST['web_invoice_pfp_wpppe_username']);
+	if(isset($_POST['web_invoice_pfp_wpppe_password'])) update_option('web_invoice_pfp_wpppe_password', $_POST['web_invoice_pfp_wpppe_password']);
 	if(isset($_POST['web_invoice_pfp_3rdparty_email'])) update_option('web_invoice_pfp_3rdparty_email', $_POST['web_invoice_pfp_3rdparty_email']);
 	if(isset($_POST['web_invoice_pfp_shipping_details'])) update_option('web_invoice_pfp_shipping_details', $_POST['web_invoice_pfp_shipping_details']);
 	

@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.11.9
+ Version: 1.11.10
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -39,10 +39,10 @@
 define("WEB_INVOICE_VERSION_NUM", "1.10.10");
 define("WEB_INVOICE_TRANS_DOMAIN", "web-invoice");
 
-require_once("Flow.php");
-require_once("Functions.php");
-require_once("Display.php");
-require_once("Frontend.php");
+require_once "Flow.php";
+require_once "Functions.php";
+require_once "Display.php";
+require_once "Frontend.php";
 
 global $web_invoice;
 
@@ -190,7 +190,7 @@ class Web_Invoice {
 				$pf_obj->processRequest($_SERVER['REMOTE_ADDR']);
 			}
 			
-			if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page'))) {
+			if (get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page'))) {
 				wp_enqueue_script('jquery');
 				wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.11.8');
 				
@@ -288,7 +288,7 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery'), '1.8.0');
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.11.2');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.11.10');
 		} else {
 			if(isset($_POST['web_invoice_id_hash'])) {
 
@@ -466,7 +466,7 @@ class Web_Invoice {
 		add_option('web_invoice_send_thank_you_email','no');
 		add_option('web_invoice_cc_thank_you_email','no');
 
-		//Authorize.net Gateway  Settings
+		//Authorize.net Gateway Settings
 		add_option('web_invoice_gateway_username','');
 		add_option('web_invoice_gateway_tran_key','');
 		add_option('web_invoice_gateway_delim_char',',');
@@ -500,6 +500,9 @@ class Web_Invoice {
 		add_option('web_invoice_pfp_username', '');
 		add_option('web_invoice_pfp_password', '');
 		add_option('web_invoice_pfp_signature', '');
+		add_option('web_invoice_pfp_wpppe_vendor', '');
+		add_option('web_invoice_pfp_wpppe_username', '');
+		add_option('web_invoice_pfp_wpppe_password', '');
 		add_option('web_invoice_pfp_3rdparty_email', '');
 		add_option('web_invoice_pfp_shipping_details', 'True');
 		

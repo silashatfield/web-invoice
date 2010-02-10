@@ -82,6 +82,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 **Version 1.11.9**
 
+* Added experimental PayPal Website Payments Pro Payflow Edition support
+
+**Version 1.11.9**
+
 * SagePay issue, state
 
 **Version 1.11.8**

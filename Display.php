@@ -1574,6 +1574,8 @@ function web_invoice_show_settings()
 			<?php echo (get_option('web_invoice_pfp_authentication')=='3token')?'selected="selected"':''; ?>><?php _e("3TOKEN", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 			<option value="unipay"
 			<?php echo (get_option('web_invoice_pfp_authentication')=='unipay')?'selected="selected"':''; ?>><?php _e("UNIPAY", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="wpppe"
+			<?php echo (get_option('web_invoice_pfp_authentication')=='wpppe')?'selected="selected"':''; ?>><?php _e("Website Payments Pro", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
 	</tr>
 	<tr class="pfp_info 3token">
@@ -1595,6 +1597,28 @@ function web_invoice_show_settings()
 		<td><input id='web_invoice_pfp_signature'
 			name="web_invoice_pfp_signature" class="input_field" type="text"
 			value="<?php echo stripslashes(get_option('web_invoice_pfp_signature')); ?>" />
+		</td>
+	</tr>
+	<!-- Website Payments Pro -->
+	<tr class="pfp_info wpppe">
+		<th width="200"><?php _e("Website Payments Pro Vendor:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_pfp_wpppe_vendor'
+			name="web_invoice_pfp_wpppe_vendor" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_pfp_wpppe_vendor')); ?>" />
+		</td>
+	</tr>
+	<tr class="pfp_info wpppe">
+		<th width="200"><?php _e("Website Payments Pro Username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_pfp_wpppe_username'
+			name="web_invoice_pfp_wpppe_username" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_pfp_wpppe_username')); ?>" />
+		</td>
+	</tr>
+	<tr class="pfp_info wpppe">
+		<th width="200"><?php _e("Website Payments Pro Password:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><input id='web_invoice_pfp_wpppe_password'
+			name="web_invoice_pfp_wpppe_password" class="input_field" type="text"
+			value="<?php echo stripslashes(get_option('web_invoice_pfp_wpppe_password')); ?>" />
 		</td>
 	</tr>
 	<tr class="pfp_info unipay">

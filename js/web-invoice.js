@@ -271,7 +271,12 @@ jQuery(document)
 						
 						if (jQuery('#web_invoice_pfp_authentication').val() == '3token') {
 							jQuery('.pfp_info.unipay').hide();
+							jQuery('.pfp_info.wpppe').hide();
+						} else if (jQuery('#web_invoice_pfp_authentication').val() == 'unipay') {
+							jQuery('.pfp_info.wpppe').hide();
+							jQuery('.pfp_info.3token').hide();
 						} else {
+							jQuery('.pfp_info.unipay').hide();
 							jQuery('.pfp_info.3token').hide();
 						}
 						
@@ -471,16 +476,19 @@ jQuery(document)
 					jQuery('#web_invoice_pfp_authentication').change(
 							function() {
 								if (jQuery(this).val() == '3token') {
-									jQuery('.pfp_info.3token')
-											.show();
-									jQuery('.pfp_info.unipay')
-									.hide();
+									jQuery('.pfp_info.unipay').hide();
+									jQuery('.pfp_info.wpppe').hide();
+									jQuery('.pfp_info.3token').show();
 								}
 								if (jQuery(this).val() == 'unipay') {
-									jQuery('.pfp_info.3token')
-									.hide();
-									jQuery('.pfp_info.unipay')
-											.show();
+									jQuery('.pfp_info.3token').hide();
+									jQuery('.pfp_info.wpppe').hide();
+									jQuery('.pfp_info.unipay').show();
+								}
+								if (jQuery(this).val() == 'wpppe') {
+									jQuery('.pfp_info.3token').hide();
+									jQuery('.pfp_info.unipay').hide();
+									jQuery('.pfp_info.wpppe').show();
 								}
 							});
 
