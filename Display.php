@@ -3198,6 +3198,32 @@ function web_invoice_pfp_convert_interval($length, $val) {
 	}
 }
 
+function web_invoice_pfp_wpppe_convert_interval($length, $val) {
+	switch ($val) {
+		case 'months':
+			if ($length == 3) {
+				return 'QTER';
+			}
+			if ($length == 6) {
+				return 'SMYR';
+			}
+			return 'MONT';
+		case 'years':
+			return 'YEAR';
+		case 'days':
+			if ($length == 7) {
+				return 'WEEK';
+			}
+			if ($length == 14) {
+				return 'BIWK';
+			}
+			if ($length == 28) {
+				return 'FRWK';
+			}
+		default: return 'DAY';
+	}
+}
+
 function web_invoice_google_checkout_convert_interval($length, $val) {
 	switch ($val) {
 		case 'months':

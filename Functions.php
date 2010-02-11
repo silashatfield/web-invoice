@@ -1421,11 +1421,20 @@ function web_invoice_process_cc_transaction($cc_data) {
 				}
 					
 				//Subscription Info
-				$arb->setParameter('DESC', $invoice->display('subscription_name'));
 				$arb->setParameter('BILLINGFREQUENCY', $invoice->display('interval_length'));
-				$arb->setParameter('BILLINGPERIOD', web_invoice_pfp_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit')));
-				$arb->setParameter('PROFILESTARTDATE', date('c', strtotime($invoice->display('startDate'))));
-				$arb->setParameter('TOTALBILLINGCYCLES', $invoice->display('totalOccurrences'));
+				
+				if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+					$arb->setParameter('DESC', $invoice->display('subscription_name'));
+					$arb->setParameter('BILLINGPERIOD', web_invoice_pfp_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit')));
+					$arb->setParameter('PROFILESTARTDATE', date('c', strtotime($invoice->display('startDate'))));
+					$arb->setParameter('TOTALBILLINGCYCLES', $invoice->display('totalOccurrences'));
+				} else {
+					$arb->setParameter('PROFILENAME', $invoice->display('subscription_name'));
+					$arb->setParameter('START', date('mdY', strtotime($invoice->display('startDate'))+3600*24));
+					$arb->setParameter('TERM', $invoice->display('totalOccurrences'));
+					$arb->setParameter('PAYPERIOD', web_invoice_pfp_wpppe_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit')));
+				}
+				
 				$arb->setParameter('AMT', $invoice->display('amount'));
 				$arb->setParameter('ACTION', 'A');
 					

@@ -256,12 +256,6 @@ class Web_Invoice_PayflowProRecurring extends Web_Invoice_PayflowPro {
 	{
 		if (self::$instances < 2)
 		{
-			if (get_option("web_invoice_pfp_env") == 'live') {
-				$this->url = 'https://api-3t.paypal.com/nvp';
-			} else {
-				$this->url = 'https://api-3t.sandbox.paypal.com/nvp';
-			}
-
 			$this->params['METHOD']         = "CreateRecurringPaymentsProfile";
 			$this->params['TRXTYPE']        = "R";
 			if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
@@ -270,13 +264,33 @@ class Web_Invoice_PayflowProRecurring extends Web_Invoice_PayflowPro {
 			} else {
 				$this->params['CURRENCY'] = $this->params['CURRENCYCODE'];
 			}
-			if (get_option('web_invoice_pfp_authentication')=='3token') {
-				$this->params['PARTNER']    = stripslashes(get_option("web_invoice_pfp_partner"));
-				$this->params['USER']       = stripslashes(get_option("web_invoice_pfp_username"));
-				$this->params['PWD']        = stripslashes(get_option("web_invoice_pfp_password"));
-				$this->params['SIGNATURE']  = stripslashes(get_option("web_invoice_pfp_signature"));
+			
+			if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+				if (get_option("web_invoice_pfp_env") == 'live') {
+					$this->url = 'https://api-3t.paypal.com/nvp';
+				} else {
+					$this->url = 'https://api-3t.sandbox.paypal.com/nvp';
+				}
+			
+				if (get_option('web_invoice_pfp_authentication')=='3token') {
+					$this->params['PARTNER']    = stripslashes(get_option("web_invoice_pfp_partner"));
+					$this->params['USER']       = stripslashes(get_option("web_invoice_pfp_username"));
+					$this->params['PWD']        = stripslashes(get_option("web_invoice_pfp_password"));
+					$this->params['SIGNATURE']  = stripslashes(get_option("web_invoice_pfp_signature"));
+				} else {
+					$this->params['SUBJECT']    = stripslashes(get_option("web_invoice_pfp_3rdparty_email"));
+				}
 			} else {
-				$this->params['SUBJECT']    = stripslashes(get_option("web_invoice_pfp_3rdparty_email"));
+				if (get_option("web_invoice_pfp_env") == 'live') {
+					$this->url = 'https://payflowpro.paypal.com/';
+				} else {
+					$this->url = 'https://pilot-payflowpro.paypal.com/';
+				}
+				
+				$this->params['PARTNER']            = stripslashes(get_option("web_invoice_pfp_partner"));
+				$this->params['VENDOR']               = stripslashes(get_option("web_invoice_pfp_wpppe_vendor"));
+				$this->params['USER']               = stripslashes(get_option("web_invoice_pfp_wpppe_username"));
+				$this->params['PWD']                = stripslashes(get_option("web_invoice_pfp_wpppe_password"));
 			}
 			$this->params['TENDER']         = "C";
 			
