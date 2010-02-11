@@ -61,7 +61,7 @@ function payflow_copy_billing(suffix) {
 	for (_i=0; _i<_payflow_billing_fields.length; _i++) {
 		jQuery('form#payflow_form #'+_payflow_billing_fields[_i]+suffix).val(jQuery('form#payflow_form #'+_payflow_billing_fields[_i]).val());
 	}
-	jQuery(".COUNTRY").change();
+	jQuery(".COUNTRYSHIP").change();
 }
 
 function pfp_copy_billing(prefix) {
@@ -70,7 +70,7 @@ function pfp_copy_billing(prefix) {
 	for (_i=0; _i<_pfp_billing_fields.length; _i++) {
 		jQuery('form#pfp_checkout_form #'+prefix+'_'+_pfp_billing_fields[_i]).val(jQuery('form#pfp_checkout_form #'+_pfp_billing_fields[_i]).val());
 	}
-	jQuery(".country").change();
+	jQuery(".shipto_country").change();
 }
 
 function sagepay_copy_billing(prefix) {
@@ -79,5 +79,5 @@ function sagepay_copy_billing(prefix) {
 	for (_i=0; _i<_sagepay_billing_fields.length; _i++) {
 		jQuery('form#sagepay_checkout_form #'+prefix+'_'+_sagepay_billing_fields[_i]).val(jQuery('form#sagepay_checkout_form #'+_sagepay_billing_fields[_i]).val());
 	}
-	jQuery(".country").change();
+	jQuery(".shipto_country").change();
 }
