@@ -1573,7 +1573,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		
 					//Mark invoice as paid
 					web_invoice_paid($invoice_id);
-					web_invoice_update_log($invoice_id, 'pfp_success', "Successful payment. REF: {$payment->getTransactionID()}.");
+					web_invoice_update_log($invoice_id, 'pfp_success', "Successful payment. REF: {$payment->getTransactionID()}");
 					web_invoice_update_invoice_meta($invoice_id, 'transaction_id', $payment->getTransactionID());
 					
 					web_invoice_mark_as_paid($invoice_id);

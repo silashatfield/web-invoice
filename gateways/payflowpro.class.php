@@ -177,15 +177,28 @@ class Web_Invoice_PayflowPro
 
 	public function getResultResponseFull()
 	{
-		switch ($this->results['ACK']) {
-			case "Success":
-				return "Approved";
-			case 12:
-				return "Declined";
-			case 13 || 126:
-				return "Deferred";
-			default: 
-				return "Error"; 
+		if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+			switch ($this->results['ACK']) {
+				case "Success":
+					return "Approved";
+				case 12:
+					return "Declined";
+				case 13 || 126:
+					return "Deferred";
+				default: 
+					return "Error"; 
+			}
+		} else {
+			switch ($this->results['RESULT']) {
+				case 0:
+					return $this->results['RESPMSG'];
+				case 12:
+					return $this->results['RESPMSG'];
+				case 13 || 126:
+					return $this->results['RESPMSG'];
+				default: 
+					return $this->results['RESPMSG'];
+			}
 		}
 	}
 
@@ -206,7 +219,7 @@ class Web_Invoice_PayflowPro
 
 	public function getResponseText()
 	{
-		return ($this->results['ACK'] == "")?"Failure":$this->results['ACK'];
+		return ($this->results['ACK'] == "")?$this->results['RESPMSG']:$this->results['ACK'];
 	}
 	
 	public function getResponseCode()
@@ -216,7 +229,7 @@ class Web_Invoice_PayflowPro
 
 	public function getAuthCode()
 	{
-		return $this->results['CORRELATIONID'];
+		return $this->results['AUTHCODE'];
 	}
 
 	public function getAVSResponse()
@@ -226,7 +239,11 @@ class Web_Invoice_PayflowPro
 	
 	public function getTransactionID()
 	{
-		return $this->results['TRANSACTIONID'];
+		if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+			return $this->results['CORRELATIONID'];
+		} else {
+			return $this->results['PNREF'];
+		}
 	}
 }
 
