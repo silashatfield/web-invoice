@@ -80,6 +80,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.12**
+
+* Bug fix
+
 **Version 1.11.11**
 
 * PayPal Website Payments Pro Payflow Edition bug fixes 

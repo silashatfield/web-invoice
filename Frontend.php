@@ -76,8 +76,8 @@ function web_invoice_frontend_js() {
 		function web_invoice_curPageURL() {
 			$pageURL = get_option('siteurl').$_SERVER['REQUEST_URI'];
 			
-			if(	web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true'
-				&& $_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0) {  
+			if(	get_option('web_invoice_protocol') == 'https'
+				&& preg_match('/^https/', get_option('siteurl')) == 0) {  
 				$pageURL = preg_replace('/^http/', 'https', $pageURL); 
 			}
 			return $pageURL;
