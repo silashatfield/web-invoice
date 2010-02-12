@@ -295,7 +295,7 @@ class Web_Invoice {
 				//Check if invoice exists, SSL enforcement is setp, and we are not currently browing HTTPS,  then reload page into HTTPS
 				if(!function_exists('wp_https_redirect')) {
 					if(	web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true'
-						&& $_SERVER['HTTPS'] != "on") {
+						&& $_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0) {
 						$host_x = preg_split('/\//', get_option('siteurl'));
 						$host = $host_x[2];  
 						header("Location: https://". $host . $_SERVER['REQUEST_URI']); 
