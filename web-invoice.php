@@ -201,23 +201,6 @@ class Web_Invoice {
 				// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
 				if (isset($_GET['generate_from']) && strlen($_GET['generate_from']) != 32) unset($_GET['generate_from']);
 				$_GET['generate_from'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['generate_from']);
-	
-				if (isset($_GET['invoice_id'])) {
-	
-					$md5_invoice_id = $_GET['invoice_id'];
-	
-					// Convert MD5 hash into Actual Invoice ID
-					$invoice_id = web_invoice_md5_to_invoice($md5_invoice_id);
-	
-					//Check if invoice exists, SSL enforcement is setp, and we are not currently browing HTTPS,  then reload page into HTTPS
-					if(!function_exists('wp_https_redirect')) {
-						if(	web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true'
-							&& $_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0) {  
-							header("Location: ".preg_replace('/^http/', 'https', get_option('siteurl')) . $_SERVER['REQUEST_URI']); 
-							exit;
-						}
-					}
-				}
 				
 				if (isset($_GET['generate_from']) && !empty($_GET['generate_from']) && (get_option('web_invoice_self_generate_from_template') == "yes")) {
 					global $current_user;
@@ -301,7 +284,25 @@ class Web_Invoice {
 				//Check to see if this is a credit card transaction, if so process
 				if(web_invoice_does_invoice_exist($invoice_id)) { web_invoice_process_cc_transaction($_POST); exit; }
 			}
-
+			
+			if (isset($_GET['invoice_id'])) {
+	
+				$md5_invoice_id = $_GET['invoice_id'];
+	
+				// Convert MD5 hash into Actual Invoice ID
+				$invoice_id = web_invoice_md5_to_invoice($md5_invoice_id);
+	
+				//Check if invoice exists, SSL enforcement is setp, and we are not currently browing HTTPS,  then reload page into HTTPS
+				if(!function_exists('wp_https_redirect')) {
+					if(	web_invoice_does_invoice_exist($invoice_id) && get_option('web_invoice_force_https') == 'true'
+						&& $_SERVER['HTTPS'] != "on") {
+						$host_x = preg_split('/\//', get_option('siteurl'));
+						$host = $host_x[2];  
+						header("Location: https://". $host . $_SERVER['REQUEST_URI']); 
+						exit(0);
+					}
+				}
+			}
 		}
 		if(empty($_GET['invoice_id'])) unset($_GET['invoice_id']);
 	}

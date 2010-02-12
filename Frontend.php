@@ -74,10 +74,13 @@ if(web_invoice_paid_status($invoice_id)) {
 function web_invoice_frontend_js() {
 	if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page')))  {
 		function web_invoice_curPageURL() {
-			$pageURL = get_option('siteurl').$_SERVER['REQUEST_URI'];
+			$host_x = preg_split('/\//', get_option('siteurl'));
+			$host = $host_x[2];  
+						
+			$pageURL = "http://".$host.$_SERVER['REQUEST_URI'];
 			
-			if(	get_option('web_invoice_protocol') == 'https'
-				&& preg_match('/^https/', get_option('siteurl')) == 0) {  
+			if(	get_option('web_invoice_force_https') == 'true'
+				&& $_SERVER['HTTPS'] == "on") {  
 				$pageURL = preg_replace('/^http/', 'https', $pageURL); 
 			}
 			return $pageURL;
