@@ -275,6 +275,15 @@
 	margin-bottom: 3px;
 }
 
+#invoice_sorter_table tr.loading {
+	background: url(../images/loading.gif) no-repeat center;
+	line-height: 1.5em;
+}
+
+#invoice_sorter_table th .hidden-check {
+	visibility: hidden;
+}
+
 #add_new_web_invoice .error {
 	background: #FFF;
 	border: 1px solid red;

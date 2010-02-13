@@ -80,6 +80,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.13**
+
+* Website Payments Pro HTTPS interface headers
+* Load archived invoices via AJAX
+
 **Version 1.11.12**
 
 * Bug fix

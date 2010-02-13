@@ -99,11 +99,14 @@ function web_invoice_default($message='')
 	foreach ($all_invoices as $invoice) {
 		// Stop if this is a recurring bill
 		if(!web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
+			if ($_REQUEST['archived'] != 'true' && web_invoice_meta($invoice->invoice_num,'archive_status') == 'archived') continue;
+			
 			$x_counter++;
 			unset($class_settings);
 
 			//Basic Settings
 			$invoice_id = $invoice->invoice_num;
+			
 			$subject = $invoice->subject;
 			$invoice_link = web_invoice_build_invoice_link($invoice_id);
 			$magic_link = preg_replace('/invoice_id/', 'generate_from', $invoice_link);
@@ -183,7 +186,7 @@ function web_invoice_default($message='')
 	</tbody>
 </table>
 	<?php if($wpdb->query("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived'")) { ?><a
-	href="" id="web_invoice_show_archived"><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
+	href="admin.php?page=web-invoice/web-invoice.php&archived=true" class="<?php print ($_REQUEST['archived'] == 'true')?'expanded':'collapsed';?>" id="web_invoice_show_archived" ><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
 </form>
 	<?php
 
@@ -231,6 +234,7 @@ function web_invoice_user_default($message='')
 <table class="widefat" id="invoice_sorter_table">
 	<thead>
 		<tr>
+			<th></th>
 			<th class="invoice_id_col"><?php _e('Invoice Id', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 			<th><?php _e('Subject', WEB_INVOICE_TRANS_DOMAIN); ?></th>
 			<th><?php _e('Amount', WEB_INVOICE_TRANS_DOMAIN); ?></th>
@@ -245,11 +249,14 @@ function web_invoice_user_default($message='')
 	foreach ($all_invoices as $invoice) {
 		// Stop if this is a recurring bill
 		//if(!web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
+			if ($_REQUEST['archived'] != 'true' && web_invoice_meta($invoice->invoice_num,'archive_status') == 'archived') continue;
+			
 			$x_counter++;
 			unset($class_settings);
 
 			//Basic Settings
 			$invoice_id = $invoice->invoice_num;
+			
 			$subject = $invoice->subject;
 			$invoice_link = web_invoice_build_invoice_link($invoice_id);
 			$user_id = $invoice->user_id;
@@ -299,6 +306,7 @@ function web_invoice_user_default($message='')
 
 
 				$output_row  = "<tr class='$class_settings'>\n";
+				$output_row .= "	<th class='check-column'><input type='checkbox' class='hidden-check' name='multiple_invoices[]' value='$invoice_id'/></th>\n";
 				$output_row .= "	<td>$display_id</td>\n";
 				$output_row .= "	<td>$subject</td>\n";
 				$output_row .= "	<td>$show_money</td>\n";
@@ -324,7 +332,7 @@ function web_invoice_user_default($message='')
 	</tbody>
 </table>
 	<?php if($wpdb->query("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived'")) { ?><a
-	href="" id="web_invoice_show_archived"><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
+	href="users.php?page=user_invoice_overview&archived=true" class="<?php print ($_REQUEST['archived'] == 'true')?'expanded':'collapsed';?>" id="web_invoice_show_archived"><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
 </form>
 	<?php
 
@@ -410,6 +418,8 @@ function web_invoice_recurring_overview($message='')
 	$x_counter = 0;
 	foreach ($all_invoices as $invoice) {
 		if(web_invoice_meta($invoice->invoice_num,'web_invoice_recurring_billing')) {
+			if ($_REQUEST['archived'] != 'true' && web_invoice_meta($invoice->invoice_num,'archive_status') == 'archived') continue;
+			
 			$x_counter++;
 
 			unset($class_settings);
@@ -418,6 +428,7 @@ function web_invoice_recurring_overview($message='')
 			$invoice_id = $invoice->invoice_num;
 
 			if(web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id')) $custom_id = web_invoice_meta($invoice_id,'web_invoice_custom_invoice_id'); else $custom_id = $invoice_id;
+						
 			$subject = $invoice->subject;
 			$invoice_link = web_invoice_build_invoice_link($invoice_id);
 			$magic_link = preg_replace('/invoice_id/', 'generate_from', $invoice_link);
@@ -497,8 +508,10 @@ function web_invoice_recurring_overview($message='')
 	?>
 	</tbody>
 </table>
-	<?php if($wpdb->query("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived'")) { ?><a
-	href="" id="web_invoice_show_archived"><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
+	<?php if($wpdb->query(
+				"SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_value = 'archived' ".
+				"AND invoice_id IN (SELECT invoice_id FROM `".Web_Invoice::tablename('meta')."` WHERE meta_key = 'web_invoice_recurring_billing')")) { ?><a
+	href="admin.php?page=web_invoice_recurring_billing&archived=true" class="<?php print ($_REQUEST['archived'] == 'true')?'expanded':'collapsed';?>" id="web_invoice_show_archived"><?php _e('Show / Hide Archived', WEB_INVOICE_TRANS_DOMAIN); ?></a><?php }?>
 </form>
 	<?php
 	// web_invoice_options_manageInvoice();

@@ -114,9 +114,18 @@ class Web_Invoice_PayflowPro
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim($this->fields, "& "));
 			
-			$this->response = curl_exec($ch);
+			$headers[] = "Connect: close"; // either text/namevalue or text/xml
+			$headers[] = "Content-Type: text/namevalue"; // either text/namevalue or text/xml
+			$headers[] = "X-VPS-Client-Timeout: 95"; // timeout length - keep trying to access the page for this long (in seconds)
+			$headers[] = "X-VPS-VIT-OS-Name: ".PHP_OS;  // Name of your Operating System (OS)
+			$headers[] = "X-VPS-VIT-OS-Version: ".php_uname('r');  // OS Version
+			$headers[] = "X-VPS-VIT-Integration-Product: Web Invoice";  // application name
+			$headers[] = "X-VPS-VIT-Integration-Version: ".WEB_INVOICE_VERSION_NUM; // Application version
+			$headers[] = "X-VPS-Request-ID: ".md5(uniqid(null, true));
 			
-			// print $this->response; exit(0);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			
+			$this->response = curl_exec($ch);
 
 			$this->parseResults();
 
@@ -164,9 +173,10 @@ class Web_Invoice_PayflowPro
 
 	private function _prepareParameters()
 	{
+		$this->fields = "";
 		foreach($this->params as $key => $value)
 		{
-			$this->fields .= "$key=" . urlencode($value) . "&";
+			$this->fields .= "$key=" . $value . "&";
 		}
 	}
 

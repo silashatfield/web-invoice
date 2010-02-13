@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.11.12
+ Version: 1.11.13
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -36,7 +36,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-define("WEB_INVOICE_VERSION_NUM", "1.10.10");
+define("WEB_INVOICE_VERSION_NUM", "1.10.13");
 define("WEB_INVOICE_TRANS_DOMAIN", "web-invoice");
 
 require_once "Flow.php";
@@ -128,7 +128,7 @@ class Web_Invoice {
 	}
 
 	function admin_head() {
-		echo "<link rel='stylesheet' href='".$this->uri."/css/wp_admin.css?v=1.11.2' type='text/css'type='text/css' media='all' />";
+		echo "<link rel='stylesheet' href='".$this->uri."/css/wp_admin.css?v=1.11.13' type='text/css'type='text/css' media='all' />";
 	}
 
 	function web_invoice_add_pages() {
@@ -192,7 +192,7 @@ class Web_Invoice {
 			
 			if (get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page'))) {
 				wp_enqueue_script('jquery');
-				wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.11.11');
+				wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.11.13');
 				
 				// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
 				if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);

@@ -79,8 +79,7 @@ function web_invoice_frontend_js() {
 						
 			$pageURL = "http://".$host.$_SERVER['REQUEST_URI'];
 			
-			if(	get_option('web_invoice_force_https') == 'true'
-				&& $_SERVER['HTTPS'] == "on") {  
+			if(	get_option('web_invoice_force_https') == 'true' ) {  
 				$pageURL = preg_replace('/^http/', 'https', $pageURL); 
 			}
 			return $pageURL;

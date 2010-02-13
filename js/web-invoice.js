@@ -195,9 +195,19 @@ jQuery(document)
 							})
 
 					jQuery("#web_invoice_show_archived").click( function() {
-						jQuery(".web_invoice_archived").toggle();
+						if (jQuery("#invoice_sorter_table tr.web_invoice_archived").size() > 0) {
+							jQuery(".web_invoice_archived").toggle();
+						} else {
+							jQuery("#invoice_sorter_table tbody").prepend('<tr class="alternate loading"><td colspan="7" >&nbsp;</td></tr>');
+							jQuery("#invoice_sorter_table tbody").load(jQuery("#web_invoice_show_archived").attr('href')+" #invoice_sorter_table tbody tr", null, function() {
+								jQuery(".web_invoice_archived").toggle();
+							});
+						}
 						return false;
-					})
+					});
+					if (jQuery("#web_invoice_show_archived").hasClass('expanded')) {
+						jQuery(".web_invoice_archived").toggle();
+					}
 					jQuery("#web_invoice_enable_recurring_billing").click(
 							function() {
 								jQuery(".web_invoice_enable_recurring_billing")
