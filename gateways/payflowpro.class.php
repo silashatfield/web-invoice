@@ -112,6 +112,7 @@ class Web_Invoice_PayflowPro
 			
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim($this->fields, "& "));
 			
 			$headers[] = "Connect: close"; // either text/namevalue or text/xml
@@ -326,5 +327,72 @@ class Web_Invoice_PayflowProRecurring extends Web_Invoice_PayflowPro {
 	
 	public function isSuccessful() {
 		return $this->isApproved();
+	}
+	
+	public function deleteProfile($profile_id) {
+		$this->params['METHOD']         = "ManageRecurringPaymentsProfileStatus";
+		$this->params['ACTION']         = "Cancel";
+		
+		if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {	
+			unset($this->params['TENDER']);
+			unset($this->params['TRXTYPE']);
+			$this->params['PROFILEID']      = $profile_id;
+			$this->params['NOTE']           = "Cancelled because related invoice was deleted";
+		} else {
+			$this->params['ACTION']         = "C";
+			$this->params['ORIGPROFILEID']  = $profile_id;
+		}
+		
+		unset($this->params['CURRENCY']);
+			
+		return $this->process();
+	}
+	
+	public function updateProfile($invoice_id) {
+		$this->params['METHOD']         = "UpdateRecurringPaymentsProfile";
+		
+		$invoice = new Web_Invoice_GetInfo($invoice_id);
+		$user_id = $invoice->recipient('user_id');
+
+		if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
+			$this->params['DESC'] = $invoice->display('subscription_name');
+			$this->params['PROFILESTARTDATE'] = date('c', strtotime($invoice->display('startDate')));
+			$this->params['TOTALBILLINGCYCLES'] = $invoice->display('totalOccurrences');
+			$this->params['NOTE']           = "Related invoice was updated";
+			$this->params['PROFILEID']      = web_invoice_meta($invoice_id, 'subscription_id');
+			
+			$this->params["FIRSTNAME"] = get_usermeta($user_id, 'first_name');
+			$this->params["LASTNAME"] = get_usermeta($user_id, 'last_name');
+			$this->params["STREET"] = get_usermeta($user_id, 'address');
+			$this->params["CITY"] = get_usermeta($user_id, 'city');
+			$this->params["STATE"] = get_usermeta($user_id, 'state');
+			$this->params["COUNTRYCODE"] = get_usermeta($user_id, 'country');
+			$this->params["ZIP"] = get_usermeta($user_id, 'zip');
+			$this->params["PHONENUM"] = get_usermeta($user_id, 'phonenumber');
+			
+			if (get_option('web_invoice_pfp_shipping_details') == 'True') {
+				//Shipping Info
+				$this->params["SHIPTONAME"] =  get_usermeta($user_id, 'shipto_first_name')." ". get_usermeta($user_id, 'shipto_last_name');
+				$this->params["SHIPTOSTREET"] =  get_usermeta($user_id, 'shipto_address');
+				$this->params["SHIPTOCITY"] =  get_usermeta($user_id, 'shipto_city');
+				$this->params["SHIPTOSTATE"] =  get_usermeta($user_id, 'shipto_state');
+				$this->params["SHIPTOCOUNTRY"] =  get_usermeta($user_id, 'shipto_country');
+				$this->params["SHIPTOZIP"] =  get_usermeta($user_id, 'shipto_zip');
+				$this->params["SHIPTOPHONENUM"] = get_usermeta($user_id, 'shipto_phonenumber');
+			}
+		} else {
+			$this->params['ACTION']         = "M";
+			$this->params['ORIGPROFILEID']  = web_invoice_meta($invoice_id, 'subscription_id');;
+			
+			$this->params['PROFILENAME'] = $invoice->display('subscription_name');
+			$this->params['START'] = date('mdY',  strtotime($invoice->display('startDate'))+3600*24);
+			$this->params['TERM'] = $invoice->display('totalOccurrences');
+			$this->params['PAYPERIOD'] = web_invoice_pfp_wpppe_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit'));
+		}
+		
+		$this->params["AMT"] = $invoice->display('amount');
+		$this->params["CURRENCYCODE"] = $invoice->display('currency');
+		
+		return $this->process();
 	}
 }

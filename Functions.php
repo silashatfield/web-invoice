@@ -213,6 +213,14 @@ function web_invoice_delete($invoice_id) {
 		$counter=0;
 		foreach ($invoice_id as $single_invoice_id) {
 			$counter++;
+			
+			if (web_invoice_meta($single_invoice_id, 'subscription_id') &&	web_invoice_meta($single_invoice_id, 'recurring_transaction_id')) {
+				require_once('gateways/payflowpro.class.php');
+				
+				$pfp = new Web_Invoice_PayflowProRecurring();
+				$pfp->deleteProfile(web_invoice_meta($single_invoice_id, 'subscription_id'));
+			}
+			
 			$wpdb->query("DELETE FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '$single_invoice_id'");
 
 			do_action('web_invoice_delete', $single_invoice_id);
@@ -227,13 +235,27 @@ function web_invoice_delete($invoice_id) {
 			}
 		}
 		return $counter . " invoice(s) successfully deleted.";
-	} else {
+	} else {	
+		if (web_invoice_meta($single_invoice_id, 'subscription_id') &&	web_invoice_meta($single_invoice_id, 'recurring_transaction_id')) {
+			require_once('gateways/payflowpro.class.php');
+				
+			$pfp = new Web_Invoice_PayflowProRecurring();
+			$pfp->deleteProfile(web_invoice_meta($single_invoice_id, 'subscription_id'));
+		}
+			
 		// Delete Single
 		$wpdb->query("DELETE FROM ".Web_Invoice::tablename('main')." WHERE invoice_num = '$invoice_id'");
 		// Make log entry
 		
 		do_action('web_invoice_delete', $invoice_id);
 		web_invoice_update_log($invoice_id, "deleted", "Deleted on ");
+		
+		$all_invoice_meta_values = $wpdb->get_col("SELECT invoice_id FROM ".Web_Invoice::tablename('meta')." WHERE invoice_id = '$single_invoice_id'");
+
+		foreach ($all_invoice_meta_values as $meta_key) {
+			web_invoice_delete_invoice_meta($single_invoice_id);
+		}
+		
 		return "Invoice successfully deleted.";
 	}
 }
@@ -1413,7 +1435,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 
 				// Billing Info
 				$arb->setParameter("CVV2", $_POST['card_code']);
-				$arb->setParameter("EXPDATE ", $_POST['exp_month'] . $_POST['exp_year']);
+				$arb->setParameter("EXPDATE ", $_POST['exp_month'] . substr($_POST['exp_year'], 2));
 				$arb->setParameter("AMT", $invoice->display('amount'));
 				$arb->setParameter("CURRENCYCODE", $invoice->display('currency'));
 				if($recurring) {
@@ -1435,7 +1457,6 @@ function web_invoice_process_cc_transaction($cc_data) {
 					$arb->setParameter('PAYPERIOD', web_invoice_pfp_wpppe_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit')));
 				}
 				
-				$arb->setParameter('AMT', $invoice->display('amount'));
 				$arb->setParameter('ACTION', 'A');
 					
 				$arb->setParameter("CUSTBROWSER", $_SERVER['HTTP_USER_AGENT']);
@@ -1470,7 +1491,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 				$arb->setParameter("CUSTREF",  $invoice->display('display_id'));
 	
 				$arb->createAccount();
-
+				
 				if ($arb->isSuccessful()) {
 					echo "Transaction okay.";
 					
@@ -1515,7 +1536,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 	
 				// Billing Info
 				$payment->setParameter("CVV2", $_POST['card_code']);
-				$payment->setParameter("EXPDATE ", $_POST['exp_month'] . $_POST['exp_year']);
+				$payment->setParameter("EXPDATE ", $_POST['exp_month'] . substr($_POST['exp_year'], 2));
 				$payment->setParameter("AMT", $invoice->display('amount'));
 				$payment->setParameter("CURRENCYCODE", $invoice->display('currency'));
 				if($recurring) {

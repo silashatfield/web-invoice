@@ -44,6 +44,12 @@ class Web_Invoice_Decider {
 				if(empty($invoice_id)) { web_invoice_show_message("Error - invoice id was not passed."); }
 				else {
 					web_invoice_show_message(web_invoice_process_invoice_update($invoice_id),'updated fade');
+					if (web_invoice_meta($invoice_id, 'subscription_id') &&	web_invoice_meta($invoice_id, 'recurring_transaction_id')) {
+						require_once('gateways/payflowpro.class.php');
+						
+						$pfp = new Web_Invoice_PayflowProRecurring();
+						$pfp->updateProfile($invoice_id);
+					}
 					web_invoice_saved_preview($invoice_id);
 					do_action('web_invoice_invoice_save', $invoice_id);
 				}

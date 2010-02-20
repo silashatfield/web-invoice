@@ -80,6 +80,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.11.14**
+
+* Update Payflow Pro recurring profiles when invoice is updated
+* Cancel Payflow Pro recurring profiles when invoice is deleted
+
 **Version 1.11.13**
 
 * Website Payments Pro HTTPS interface headers
