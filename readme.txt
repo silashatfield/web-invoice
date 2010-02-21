@@ -83,6 +83,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.4**
+
+* Added variables invoice_id and invoice_hash to e-mail templates
+
 **Version 1.12.3**
 
 * Changed date formats for en_US and en_GB

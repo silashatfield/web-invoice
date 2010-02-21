@@ -476,7 +476,9 @@ function web_invoice_email_variables($invoice_id) {
 		'amount' => $invoice_info->display('display_amount'),
 		'link' => $invoice_info->display('link'),
 		'business_email' => get_option("web_invoice_email_address"),
-		'subject' => $invoice_info->display('subject')
+		'subject' => $invoice_info->display('subject'),
+		'invoice_id' => $invoice_info->display('display_id'),
+		'invoice_hash' => $invoice_info->display('invoice_hash'),
 	);
 
 	if($invoice_info->display('description')) {
