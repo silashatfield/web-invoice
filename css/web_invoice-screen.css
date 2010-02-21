@@ -142,10 +142,15 @@
 }
 
 #invoice_page #invoice_business_info {
-	width: 100%;
 	float: left;
 	padding: 10px 10px 10px 0;
 	margin-right: 10px;
+}
+
+#invoice_page #invoice_client_info {
+        float: right;
+        padding: 10px 10px 10px 0;
+        margin-right: 10px;
 }
 
 #invoice_page #recurring_info {

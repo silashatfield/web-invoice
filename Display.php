@@ -3439,7 +3439,7 @@ function web_invoice_print_help($invoice_id) {
 	
 	if (!$web_invoice_print) {
 	?>
-<div class="noprint"><p>You can download a <a href="<?php print $invoice->display('print_link'); ?>&print=0" class="web_invoice_pdf_link">PDF</a> or print a copy of this invoice for your records; just
+<div class="noprint"><p>You can download a <a href="<?php print $invoice->display('print_link'); ?>" class="web_invoice_pdf_link">PDF</a> or print a copy of this invoice for your records; just
 select the 'Print' item under the 'File' menu in your browser, or use the
 &lt;CTRL&gt; + 'P' key combination to print a hard-copy in a more traditional,
 neatly laid-out format. <em>Thank you</em> for your business <em>and</em> your prompt
