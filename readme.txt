@@ -83,6 +83,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.1**
+
+* HTML Syntax issue (missed closing tag)
+
 **Version 1.12.0**
 
 * Much awaited download invoice as PDF

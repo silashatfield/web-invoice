@@ -44,9 +44,19 @@ function web_invoice_the_content($content) {
 
 		?>
 <div id="invoice_page" class="clearfix"><?php
+	if (!$web_invoice_print) {
+	?>
+<div class="noprint"><p>You can download a <a href="<?php print $invoice->display('print_link'); ?>&print=0" class="web_invoice_pdf_link">PDF</a> or print a copy of this invoice for your records; just
+select the 'Print' item under the 'File' menu in your browser, or use the
+&lt;CTRL&gt; + 'P' key combination to print a hard-copy in a more traditional,
+neatly laid-out format. <em>Thank you</em> for your business <em>and</em> your prompt
+payment!</p></div>
+<?php } 
 
 do_action('web_invoice_front_top', $invoice_id);
-	
+
+//Billing Business Address
+if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
 if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
 
 //If this is not recurring invoice, show regular message
@@ -54,9 +64,6 @@ if(!($recurring = web_invoice_recurring($invoice_id)))  web_invoice_show_invoice
 
 // Show this if recurring
 if($recurring)  web_invoice_show_recurring_info($invoice_id);
-
-//Billing Business Address
-if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
 
 if(web_invoice_paid_status($invoice_id)) {
 	web_invoice_show_already_paid($invoice_id);
@@ -299,9 +306,9 @@ function web_invoice_print_pdf() {
 	
 		do_action('web_invoice_front_top', $invoice_id);
 		
-		if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
 		//Billing Business Address
 		if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
+		if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
 	
 		print '<div class="clear"></div>';
 		
@@ -321,7 +328,6 @@ function web_invoice_print_pdf() {
 		}
 		do_action('web_invoice_front_bottom', $invoice_id);
 		?>
-	</div>
 	<script type="text/php">
 		if ( isset($pdf) ) {
     		$font = Font_Metrics::get_font("verdana", "bold");

@@ -1905,7 +1905,7 @@ function web_invoice_draw_itemized_table($invoice_id) {
 
 
 	if(is_array($itemized_array)) {
-		$response .= "<table id=\"web_invoice_itemized_table\">
+		$response .= "<p><table id=\"web_invoice_itemized_table\">
 		<tr>\n";
 		if(get_option('web_invoice_show_quantities') == "Show") {
 			$response .= '<th style="width: 40px; text-align: right;">Quantity</th><th style=\"width: 50px; text-align: right;\">'.__('Unit price', WEB_INVOICE_TRANS_DOMAIN).'</th>';
@@ -1972,7 +1972,7 @@ function web_invoice_draw_itemized_table($invoice_id) {
 		}
 
 		$response .= web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($amount);
-		$response .= "</td></tr></table>";
+		$response .= "</td></tr></table></p>";
 
 		return $response;
 	}
@@ -2172,7 +2172,7 @@ function web_invoice_show_invoice_overview($invoice_id) {
 <?php } ?>
 <p class="web_invoice_main_description"><?php printf(__('We have sent you invoice <b>%1$s</b> with a total amount of %2$s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id'), $invoice->display('display_amount')); ?>.</p>
 	<?php if($invoice->display('due_date')) { ?>
-<p class="web_invoice_due_date"><?php printf(__('Due Date: %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?></p>
+<p class="web_invoice_due_date"><?php printf(__('Due Date: %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?>
 	<?php if($invoice->display('description')) { ?></p>
 
 
@@ -2180,6 +2180,9 @@ function web_invoice_show_invoice_overview($invoice_id) {
 <?php  } ?> <?php echo web_invoice_draw_itemized_table($invoice_id); ?>
 <?php
 	echo do_action('web_invoice_content_append', $invoice_id);
+?>
+</div>
+<?php 
 }
 
 function web_invoice_show_business_address() {
@@ -2201,15 +2204,7 @@ function web_invoice_show_billing_address($invoice_id) {
 	global $web_invoice_print;
 	
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
-	
-	if (!$web_invoice_print) {
 	?>
-<div class="noprint"><p>You can download a <a href="<?php print $invoice->display('print_link'); ?>&print=0" class="web_invoice_pdf_link">PDF</a> or print a copy of this invoice for your records; just
-select the 'Print' item under the 'File' menu in your browser, or use the
-&lt;CTRL&gt; + 'P' key combination to print a hard-copy in a more traditional,
-neatly laid-out format. <em>Thank you</em> for your business <em>and</em> your prompt
-payment!</p></div>
-<?php } ?>
 <div id="invoice_client_info" class="clearfix">
 <h2 class="invoice_page_subheading"><?php _e('Bill To:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <p class="web_invoice_billing_name"><?php echo stripcslashes("{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"); ?></p>
