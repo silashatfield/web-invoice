@@ -20,7 +20,7 @@ Some features:
 
 * Create invoices from the WordPress control panel
 * Prefill customer information using the WordPress user list
-* Print invoice as PDF document
+* Download invoice as PDF document
 * Send invoice notifications to customers with a secured link back to the web invoice
 * Send invoice reminders to customers with a secured link back to the web invoice
 * Accept credit card payment via PayPal Payflow, Authorize.net, Sage Pay or MerchantPlus NaviGate
@@ -82,6 +82,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.12.0**
+
+* Much awaited download invoice as PDF
 
 **Version 1.11.14**
 
