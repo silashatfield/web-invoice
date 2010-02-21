@@ -20,6 +20,7 @@ Some features:
 
 * Create invoices from the WordPress control panel
 * Prefill customer information using the WordPress user list
+* Print invoice as PDF document
 * Send invoice notifications to customers with a secured link back to the web invoice
 * Send invoice reminders to customers with a secured link back to the web invoice
 * Accept credit card payment via PayPal Payflow, Authorize.net, Sage Pay or MerchantPlus NaviGate
@@ -55,6 +56,8 @@ Web Invoice is already translated to:
 * Portugese (pt_BR) by André Luiz, http://andrewebmaster.com.br
 
 If you like this plugin please give it a good rating, and consider saying thanks, sponsoring a feature or making a donation.
+
+Plug-in uses [TCPDF](http://www.tecnick.com/public/code/cp_dpage.php?aiocp_dp=tcpdf) to generate PDF documents.
 
 This is a fork of [WP-Invoice](http://wordpress.org/extend/plugins/wp-invoice/), however now lot of things have changed since.
 

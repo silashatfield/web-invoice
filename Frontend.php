@@ -24,6 +24,7 @@
  */
 
 function web_invoice_the_content($content) {
+	global $post;
 	$ip=$_SERVER['REMOTE_ADDR'];
 
 	// check if web_invoice_web_invoice_page is set, and that this it matches the current page, and the invoice_id is valid
@@ -65,7 +66,8 @@ if(web_invoice_paid_status($invoice_id)) {
 	web_invoice_show_billing_information($invoice_id);
 	do_action('web_invoice_front_unpaid', $invoice_id);
 }
-?></div>
+?>
+</div>
 <?php
 	do_action('web_invoice_front_bottom', $invoice_id);
 	} else return $content;
@@ -86,6 +88,8 @@ function web_invoice_frontend_js() {
 		}
 		?>
 <script type="text/javascript">
+
+var _invoice_id = "<?php print $_GET['invoice_id'];?>";
 
 function cc_card_pick(card_image, card_num){
 	if (card_image == null) {
@@ -252,4 +256,93 @@ function web_invoice_frontend_css() {
 			echo '<link type="text/css" media="screen" rel="stylesheet" href="' . Web_Invoice::frontend_path() . '/css/web_invoice-screen.css"></link>' . "\n";
 		}
 	}
+}
+
+function web_invoice_print_pdf() {
+	global $post, $web_invoice_print;
+	$web_invoice_print = true;
+	$ip=$_SERVER['REMOTE_ADDR'];
+
+	ob_start();
+		
+	// Check to see a proper invoice id is used, or show regular content
+	if(!($invoice_id = web_invoice_md5_to_invoice($_GET['invoice_id']))) return $content;
+
+	//If already paid, show thank you message
+	// if(web_invoice_paid_status($invoice_id)) return web_invoice_show_already_paid($invoice_id).$content;
+
+	// Show receipt if coming back from PayPal
+	if(isset($_REQUEST['receipt_id'])) return web_invoice_show_paypal_receipt($invoice_id);
+
+	// Invoice viewed, update log
+	web_invoice_update_log($invoice_id, 'visited', "PDF downloaded by $ip");
+
+	?>
+	<style type="text/css">
+		.noprint { display: none; }
+		#invoice_page { width: 500px; margin: 0 auto; font-size: 11px; font-family: 'Trebuchet MS','Lucida Grande',Verdana,Tahoma,Arial; }
+		th { text-align: left; font-size: 13px; padding: 5px; }
+		td { font-size: 12px; vertical-align: top; padding: 5px; }
+		tr td { background-color: #fefefe; }
+		tr.alt_row  td { background-color: #eee; }
+		span.description_text { color: #333; font-size: 0.8px; }
+		tr.web_invoice_bottom_line { font-size: 1.1em; font-weight: bold; }
+		table { width: 100%; }
+		h2 { font-size: 1.1em; }
+		h1 { text-align: center; }
+		p { margin: 5px; 0px; }
+		div.clear { clear: both; }
+		
+		#invoice_client_info { float: right; }
+	</style>
+	<?php
+	
+		do_action('web_invoice_front_top', $invoice_id);
+		
+		if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
+		//Billing Business Address
+		if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
+	
+		print '<div class="clear"></div>';
+		
+		//If this is not recurring invoice, show regular message
+		if(!($recurring = web_invoice_recurring($invoice_id)))  web_invoice_show_invoice_overview($invoice_id);
+	
+		// Show this if recurring
+		if($recurring)  web_invoice_show_recurring_info($invoice_id);
+	
+		if(web_invoice_paid_status($invoice_id)) {
+			web_invoice_show_already_paid($invoice_id);
+			do_action('web_invoice_front_paid', $invoice_id);
+		} else {
+			//Show Billing Information
+			web_invoice_show_billing_information($invoice_id);
+			do_action('web_invoice_front_unpaid', $invoice_id);
+		}
+		do_action('web_invoice_front_bottom', $invoice_id);
+		?>
+	</div>
+	<script type="text/php">
+		if ( isset($pdf) ) {
+    		$font = Font_Metrics::get_font("verdana", "bold");
+			$font_light = Font_Metrics::get_font("verdana");
+			$pdf->page_text(52, 810, "Powered by Web Invoice ".WEB_INVOICE_VERSION_NUM, $font_light, 10, array(0,0,0));
+    		$pdf->page_text(510, 810, "Page {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
+  		}
+	</script>
+	<?php
+	
+	$content = preg_replace(array('/  /', '/\n\n/i'), array(" ", "\n"), '<div id="invoice_page" class="clearfix"><h1>Invoice</h1>'.ob_get_contents().'</div>');
+	
+	ob_clean();
+	
+	require_once "lib/dompdf_config.inc.php";
+	
+	$dompdf = new DOMPDF();
+	$dompdf->load_html($content);
+	$dompdf->set_paper("a4", "portrait");
+	$dompdf->render();
+	$dompdf->stream("web-invoice-{$invoice_id}.pdf");
+	
+	exit(0);
 }

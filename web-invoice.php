@@ -44,7 +44,9 @@ require_once "Functions.php";
 require_once "Display.php";
 require_once "Frontend.php";
 
-global $web_invoice;
+global $web_invoice, $web_invoice_print;
+
+$web_invoice_print = false;
 
 $web_invoice = new Web_Invoice();
 $web_invoice->security();
@@ -104,7 +106,6 @@ class Web_Invoice {
 		add_filter('wp_redirect', array($this, 'redirect'));
 
 		$this->SetUserAccess(get_option('web_invoice_user_level'));
-
 	}
 
 	function SetUserAccess($level = 8) {
@@ -190,33 +191,35 @@ class Web_Invoice {
 				$pf_obj->processRequest($_SERVER['REMOTE_ADDR']);
 			}
 			
-			if (get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page'))) {
-				wp_enqueue_script('jquery');
-				wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.11.13');
+			wp_enqueue_script('jquery');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice-frontend.js", array('jquery'), '1.11.13');
 				
-				// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
-				if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);
-				$_GET['invoice_id'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['invoice_id']);
+			// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
+			if(isset($_GET['invoice_id']) && strlen($_GET['invoice_id']) != 32) unset($_GET['invoice_id']);
+			$_GET['invoice_id'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['invoice_id']);
 				
-				// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
-				if (isset($_GET['generate_from']) && strlen($_GET['generate_from']) != 32) unset($_GET['generate_from']);
-				$_GET['generate_from'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['generate_from']);
+			// Make sure proper MD5 is being passed (32 chars), and strip of everything but numbers and letters
+			if (isset($_GET['generate_from']) && strlen($_GET['generate_from']) != 32) unset($_GET['generate_from']);
+			$_GET['generate_from'] = preg_replace('/[^A-Za-z0-9-]/', '', $_GET['generate_from']);
 				
-				if (isset($_GET['generate_from']) && !empty($_GET['generate_from']) && (get_option('web_invoice_self_generate_from_template') == "yes")) {
-					global $current_user;
-					get_currentuserinfo();
+			if (isset($_GET['generate_from']) && !empty($_GET['generate_from']) && (get_option('web_invoice_self_generate_from_template') == "yes")) {
+				global $current_user;
+				get_currentuserinfo();
 					
-					if ($current_user->ID > 0) {
-						// Convert MD5 hash into Actual Invoice ID
-						$template_id = web_invoice_md5_to_invoice($_GET['generate_from']);
-						$invoice_id = web_invoice_self_generate_from_template($template_id, $current_user->ID);
+				if ($current_user->ID > 0) {
+					// Convert MD5 hash into Actual Invoice ID
+					$template_id = web_invoice_md5_to_invoice($_GET['generate_from']);
+					$invoice_id = web_invoice_self_generate_from_template($template_id, $current_user->ID);
 						
-						$web_invoice_getinfo = new Web_Invoice_GetInfo($invoice_id);
-						wp_redirect($web_invoice_getinfo->display('link'));
-						
-						exit(0);
-					}
+					$web_invoice_getinfo = new Web_Invoice_GetInfo($invoice_id);
+					wp_redirect($web_invoice_getinfo->display('link'));
+					
+					exit(0);
 				}
+			}
+			
+			if (isset($_GET['print'])) {
+				web_invoice_print_pdf();
 			}
 		}
 	}
@@ -884,6 +887,9 @@ class Web_Invoice_GetInfo {
 				$hashed = md5($this->id);
 				if(get_option("permalink_structure")) { return $link_to_page . "?invoice_id=" .$hashed; }
 				else { return  $link_to_page . "&invoice_id=" . $hashed; }
+				break;
+			case 'print_link':
+				return $this->display('link').'&print=1';
 				break;
 
 			case 'hash':

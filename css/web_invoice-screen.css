@@ -286,6 +286,12 @@
 	display: inline-block;
 }
 
+#invoice_page .web_invoice_pdf_link {
+	background: url(../images/pdf.png) no-repeat left top;
+	padding-left: 18px;
+	line-height: 18px;
+}
+
 html[xmlns] #invoice_page .clearfix {
 	display: block;
 }

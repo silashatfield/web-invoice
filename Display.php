@@ -1923,8 +1923,8 @@ function web_invoice_draw_itemized_table($invoice_id) {
 			if(!empty($itemized_item[name])) {
 				if(!strpos($itemized_item[price],'.')) $itemized_item[price] = $itemized_item[price] . ".00";
 
-				if($i % 2) { $response .= "<tr>"; }
-				else { $response .= "<tr  class='alt_row'>"; }
+				if($i % 2) { $response .= "<tr class='alt_row'>"; }
+				else { $response .= "<tr >"; }
 
 				//Quantities
 				if($show_quantity) {
@@ -1944,7 +1944,9 @@ function web_invoice_draw_itemized_table($invoice_id) {
 
 		}
 		if($tax_percent) {
-			$response .= "<tr>";
+			if($i % 2) { $response .= "<tr class='alt_row'>"; }
+				else { $response .= "<tr >"; }
+			
 			if(get_option('web_invoice_show_quantities') == "Show") {
 				$response .= "<td></td><td></td>";
 			}
@@ -1954,10 +1956,11 @@ function web_invoice_draw_itemized_table($invoice_id) {
 			} else {
 				$response .= "<td style='text-align:right;'>" . web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($tax_value)."</td></tr>";
 			}
+			$i++;
 		}
-
-		$response .= "
-		<tr class=\"web_invoice_bottom_line\">";
+		
+		if($i % 2) { $response .= "<tr class=\"web_invoice_bottom_line alt_row\">"; }
+		else { $response .= "<tr  class='web_invoice_bottom_line'>"; }
 		if(get_option('web_invoice_show_quantities') == "Show") {
 			$response .="
 			<td align=\"right\" colspan=\"2\">Invoice Total:</td>
@@ -1969,7 +1972,7 @@ function web_invoice_draw_itemized_table($invoice_id) {
 		}
 
 		$response .= web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($amount);
-		$response .= "</td></table>";
+		$response .= "</td></tr></table>";
 
 		return $response;
 	}
@@ -2159,19 +2162,22 @@ function web_invoice_show_already_paid($invoice_id) {
 }
 
 function web_invoice_show_invoice_overview($invoice_id) {
+	global $web_invoice_print;
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	
 	?>
-<div id="invoice_overview" class="clearfix"><div class="noprint">
+<div id="invoice_overview" class="clearfix">
+<?php if (!$web_invoice_print) { ?><div class="noprint">
 <h2 id="web_invoice_welcome_message" class="invoice_page_subheading"><?php printf(__('Welcome, %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->recipient('callsign')); ?>!</h2></div>
+<?php } ?>
 <p class="web_invoice_main_description"><?php printf(__('We have sent you invoice <b>%1$s</b> with a total amount of %2$s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id'), $invoice->display('display_amount')); ?>.</p>
 	<?php if($invoice->display('due_date')) { ?>
-<p class="web_invoice_due_date"><?php printf(__('Due Date: %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?>
+<p class="web_invoice_due_date"><?php printf(__('Due Date: %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?></p>
 	<?php if($invoice->display('description')) { ?></p>
 
 
 <p><?php echo stripcslashes($invoice->display('description'));  ?></p>
 <?php  } ?> <?php echo web_invoice_draw_itemized_table($invoice_id); ?>
-</div>
 <?php
 	echo do_action('web_invoice_content_append', $invoice_id);
 }
@@ -2192,15 +2198,19 @@ function web_invoice_show_business_address() {
 }
 
 function web_invoice_show_billing_address($invoice_id) {
+	global $web_invoice_print;
+	
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
+	
+	if (!$web_invoice_print) {
 	?>
-<div class="noprint"><p>You can print a copy of this Invoice for your records; just
+<div class="noprint"><p>You can download a <a href="<?php print $invoice->display('print_link'); ?>&print=0" class="web_invoice_pdf_link">PDF</a> or print a copy of this invoice for your records; just
 select the 'Print' item under the 'File' menu in your browser, or use the
 &lt;CTRL&gt; + 'P' key combination to print a hard-copy in a more traditional,
 neatly laid-out format. <em>Thank you</em> for your business <em>and</em> your prompt
 payment!</p></div>
-
-<div id="invoice_business_info" class="clearfix">
+<?php } ?>
+<div id="invoice_client_info" class="clearfix">
 <h2 class="invoice_page_subheading"><?php _e('Bill To:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <p class="web_invoice_billing_name"><?php echo stripcslashes("{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"); ?></p>
 <p class="web_invoice_billing_name"><?php echo stripcslashes($invoice->recipient('company_name')); ?></p>
@@ -2209,12 +2219,16 @@ payment!</p></div>
 "{$invoice->recipient('state')} {$invoice->recipient('zip')}\n".
 "{$invoice->recipient('country')}")); ?></p>
 <p class="web_invoice_billing_phone"><?php echo $invoice->recipient('phonenumber'); ?></p>
+<?php if ($invoice->recipient('tax_id') !== "") {?>
 <p class="web_invoice_billing_tax_id"><?php _e('Tax ID: ', WEB_INVOICE_TRANS_DOMAIN); ?><?php echo $invoice->recipient('tax_id'); ?></p>
+<?php } ?>
 </div>
 	<?php
 }
 
 function web_invoice_show_billing_information($invoice_id) {
+	global $web_invoice_print;
+	
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	$Web_Invoice = new Web_Invoice();
 	$pp = false; $pf = false; $pfp = false; $cc = false; $sp = false; $mb = false; $alertpay = false; $gc = false;
@@ -2231,6 +2245,7 @@ function web_invoice_show_billing_information($invoice_id) {
 	if(stristr(get_option('web_invoice_payment_method'), 'google_checkout')) { $gc = true; $method_count++; }
 	if(stristr(get_option('web_invoice_payment_method'), 'other')) { $other = true; $method_count++; }
 
+	if (!$web_invoice_print) {
 	?>
 
 <div id="billing_overview" class="clearfix noprint">
@@ -2293,6 +2308,7 @@ function web_invoice_show_billing_information($invoice_id) {
 		_web_invoice_method_count = <?php echo $method_count; ?>;
 	</script>
 	<?php
+	}
 }
 
 function web_invoice_show_alertpay_form($invoice_id, $invoice) {
