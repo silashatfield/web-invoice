@@ -57,7 +57,7 @@ Web Invoice is already translated to:
 
 If you like this plugin please give it a good rating, and consider saying thanks, sponsoring a feature or making a donation.
 
-Plug-in uses [TCPDF](http://www.tecnick.com/public/code/cp_dpage.php?aiocp_dp=tcpdf) to generate PDF documents.
+Plug-in uses [dompdf](http://www.digitaljunkies.ca/dompdf/) to generate PDF documents.
 
 This is a fork of [WP-Invoice](http://wordpress.org/extend/plugins/wp-invoice/), however now lot of things have changed since.
 
