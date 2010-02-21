@@ -1328,7 +1328,7 @@ msgid "Due Date: %s"
 msgstr "Data vencimento: %s"
 
 #: Display.php:2112
-msgid "Bill From:"
+msgid "Invoice From:"
 msgstr "Lista de"
 
 #: Display.php:2117
@@ -1337,7 +1337,7 @@ msgid "Tax ID: "
 msgstr "Taxa ID"
 
 #: Display.php:2134
-msgid "Bill To:"
+msgid "Invoice To:"
 msgstr "Cobrançar para:"
 
 #: Display.php:2168

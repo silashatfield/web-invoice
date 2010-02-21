@@ -2188,7 +2188,7 @@ function web_invoice_show_invoice_overview($invoice_id) {
 function web_invoice_show_business_address() {
 	?>
 <div id="invoice_business_info" class="clearfix">
-<h2 class="invoice_page_subheading"><?php _e('Bill From:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+<h2 class="invoice_page_subheading"><?php _e('Invoice From:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <p class="web_invoice_business_name"><?php echo stripcslashes(get_option('web_invoice_business_name')); ?></p>
 <p class="web_invoice_business_address"><?php echo stripcslashes(nl2br(get_option('web_invoice_business_address'))); ?></p>
 <p class="web_invoice_business_phone"><?php echo get_option('web_invoice_business_phone'); ?></p>
@@ -2206,7 +2206,7 @@ function web_invoice_show_billing_address($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	?>
 <div id="invoice_client_info" class="clearfix">
-<h2 class="invoice_page_subheading"><?php _e('Bill To:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
+<h2 class="invoice_page_subheading"><?php _e('Invoice To:', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 <p class="web_invoice_billing_name"><?php echo stripcslashes("{$invoice->recipient('first_name')} {$invoice->recipient('last_name')}"); ?></p>
 <p class="web_invoice_billing_name"><?php echo stripcslashes($invoice->recipient('company_name')); ?></p>
 <p class="web_invoice_billing_address"><?php echo stripcslashes(nl2br("{$invoice->recipient('streetaddress')}\n".

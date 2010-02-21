@@ -1273,7 +1273,7 @@ msgid "Due Date: %s"
 msgstr "Da pagare entro il: %s"
 
 #: Display.php:2077
-msgid "Bill From:"
+msgid "Invoice From:"
 msgstr "Fattura da:"
 
 #: Display.php:2082
@@ -1284,7 +1284,7 @@ msgstr "IVA"
 
 #: Display.php:2099
 #, fuzzy
-msgid "Bill To:"
+msgid "Invoice To:"
 msgstr "Fattura da:"
 
 #: Display.php:2132

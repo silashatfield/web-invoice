@@ -1266,7 +1266,7 @@ msgid "Due Date: %s"
 msgstr "Тэрмін: %s"
 
 #: Display.php:2077
-msgid "Bill From:"
+msgid "Invoice From:"
 msgstr "Рахунак ад:"
 
 #: Display.php:2082
@@ -1277,7 +1277,7 @@ msgstr "Tax ID:"
 
 #: Display.php:2099
 #, fuzzy
-msgid "Bill To:"
+msgid "Invoice To:"
 msgstr "Рахунак ад:"
 
 #: Display.php:2132

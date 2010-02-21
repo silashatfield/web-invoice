@@ -1252,7 +1252,7 @@ msgid "Due Date: %s"
 msgstr ""
 
 #: Display.php:2077
-msgid "Bill From:"
+msgid "Invoice From:"
 msgstr ""
 
 #: Display.php:2082
@@ -1261,7 +1261,7 @@ msgid "Tax ID: "
 msgstr ""
 
 #: Display.php:2099
-msgid "Bill To:"
+msgid "Invoice To:"
 msgstr ""
 
 #: Display.php:2132

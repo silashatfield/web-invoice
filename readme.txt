@@ -83,6 +83,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.3**
+
+* Changed date formats for en_US and en_GB
+* Changed 'Bill To' and 'Bill From' to 'Invoice From' and 'Invoice To'
+
 **Version 1.12.2**
 
 * More improvements to invoice layout
