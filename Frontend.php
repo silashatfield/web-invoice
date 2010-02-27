@@ -330,7 +330,7 @@ function web_invoice_print_pdf() {
 	</script>
 	<?php
 	
-	$content = preg_replace(array('/  /', '/\n\n/i'), array(" ", "\n"), '<div id="invoice_page" class="clearfix"><h1>Invoice</h1>'.ob_get_contents().'</div>');
+	$content = preg_replace(array('/  /', '/\n\n/i', '/&euro;/i'), array(" ", "\n", "&#0128;"), '<div id="invoice_page" class="clearfix"><h1>Invoice</h1>'.ob_get_contents().'</div>');
 	
 	ob_clean();
 	

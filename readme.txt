@@ -86,6 +86,7 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 **Version 1.12.5**
 
 * Google Checkout UK VAT issue
+* DOMPDF EUR work around (€ displayed as ?)
 
 **Version 1.12.4**
 

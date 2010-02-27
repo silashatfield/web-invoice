@@ -1785,7 +1785,7 @@ function web_invoice_currency_symbol($currency = "USD" )
 {
 	$currency_list = array(
 	'CAD'=> '$',
-	'EUR'=> '&#8364;',
+	'EUR'=> '&euro;',
 	'GBP'=> '&pound;',
 	'JPY'=> '&yen;',
 	'USD'=> '$',
