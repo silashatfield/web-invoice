@@ -1477,7 +1477,9 @@ function web_invoice_show_settings()
 		<td><select id='web_invoice_google_checkout_tax_state' 
 			name="web_invoice_google_checkout_tax_state" class="search-input input_field" >
 				<option value="" ></option>
-				<option value="UK">United Kingdom</option>
+				<?php print  "<option value='UK'";
+						if("UK" == get_option('web_invoice_google_checkout_tax_state')) print " selected";
+						print ">United Kingdom</option>"; ?>
 				<optgroup label="United States">
 				<?php 
 				foreach(web_invoice_state_array() as $_state_code => $_state_name) {
@@ -2357,11 +2359,6 @@ function web_invoice_show_google_checkout_form($invoice_id, $invoice) {
 <form action="https://<?php echo $env_base_url; ?>/api/checkout/v2/checkoutForm/Merchant/<?php echo get_option('web_invoice_google_checkout_merchant_id'); ?>" method="post"
 	class="clearfix" accept-charset="utf-8"><input type="hidden" name="_charset_"/><?php
 if ($invoice->display('tax_total')) {
-	if (get_option('web_invoice_google_checkout_tax_state') == 'UK') {
-	?><input type="hidden" name="tax_uk_country" value="<?php echo get_option('web_invoice_google_checkout_tax_state'); ?>"/><?php 
-	} else {
-	?><input type="hidden" name="tax_us_state" value="<?php echo get_option('web_invoice_google_checkout_tax_state'); ?>"/><?php
-	}
 ?>
 <p>Tax may not be applied if you are from a different state</p>
 <?php 
@@ -3351,10 +3348,16 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array, $invo
 			
 		$counter++;
 	}
+
 	
 	if(!empty($tax)) {
-		$output .= " 
-		<input type='hidden' name='tax_rate' value='".($tax/100)."' />\n";
+		if (get_option('web_invoice_google_checkout_tax_state') != 'UK') {
+			$output .= "<input type='hidden' name='tax_rate' value='".($tax/100)."' />\n";
+			$output .= "<input type='hidden' name='tax_us_state' value='".get_option('web_invoice_google_checkout_tax_state')."' />\n";
+		} else {
+			$output .= "<input type='hidden' name='checkout-flow-support.merchant-checkout-flow-support.tax-tables.default-tax-table.tax-rules.default-tax-rule-1.rate' value='".($tax/100)."' />\n";
+	   		$output .= "<input type='hidden' name='checkout-flow-support.merchant-checkout-flow-support.tax-tables.default-tax-table.tax-rules.default-tax-rule-1.tax-area.postal-area.country-code' value='GB' />\n";
+		}
 	}
 
 	return $output;

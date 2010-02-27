@@ -83,6 +83,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.5**
+
+* Google Checkout UK VAT issue
+
 **Version 1.12.4**
 
 * Added variables invoice_id and invoice_hash to e-mail templates
