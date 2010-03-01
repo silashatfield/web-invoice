@@ -83,6 +83,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.6**
+
+* Pause and recurring PayPal Payflow Pro profiles
+* Update shipping details on recurring PayPal Payflo Pro profiles
+
 **Version 1.12.5**
 
 * Google Checkout UK VAT issue

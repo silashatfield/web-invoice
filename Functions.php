@@ -240,7 +240,10 @@ function web_invoice_delete($invoice_id) {
 			require_once('gateways/payflowpro.class.php');
 				
 			$pfp = new Web_Invoice_PayflowProRecurring();
-			$pfp->deleteProfile(web_invoice_meta($single_invoice_id, 'subscription_id'));
+			if ($pfp->deleteProfile(web_invoice_meta($single_invoice_id, 'subscription_id'))) {
+				web_invoice_delete_invoice_meta($single_invoice_id, 'subscription_id');
+				web_invoice_update_log($invoice_id, 'pfp_subscription_update', "Subscription cancelled. REF: ".$pfp->getRef());
+			}
 		}
 			
 		// Delete Single
@@ -1475,7 +1478,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 				$arb->setParameter("ZIP", $_POST['zip']);
 				$arb->setParameter("PHONENUM", $_POST['phonenumber']);
 				$arb->setParameter("EMAIL", $_POST['email_address']);
-				$arb->setParameter("COMMENT1", "WP User - " . $invoice->recipient('user_id'));
+				$arb->setParameter("COMMENT1", "{$_POST['first_name']} {$_POST['last_name']} ".$invoice->display('subscription_name')." Recurring");
 				
 				if (get_option('web_invoice_pfp_shipping_details') == 'True') {
 					//Shipping Info
@@ -1521,7 +1524,8 @@ function web_invoice_process_cc_transaction($cc_data) {
 					
 					web_invoice_update_invoice_meta($invoice_id, 'subscription_id', $arb->getSubscriberID());
 					web_invoice_update_invoice_meta($invoice_id, 'recurring_transaction_id', $arb->getTransactionID());
-						
+					web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'active');
+					
 					web_invoice_update_log($invoice_id, 'subscription', ' Subscription initiated, Subcription ID - ' . $arb->getSubscriberID());
 					web_invoice_mark_as_paid($invoice_id);
 				}
@@ -1578,7 +1582,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		
 				$payment->process();
 				
-				if($payment->isApproved()) {
+				if ($payment->isApproved()) {
 					echo "Transaction okay.";
 		
 					update_usermeta($wp_users_id,'last_name',$_POST['last_name']);
@@ -1605,7 +1609,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		
 					//Mark invoice as paid
 					web_invoice_paid($invoice_id);
-					web_invoice_update_log($invoice_id, 'pfp_success', "Successful payment. REF: {$payment->getTransactionID()}");
+					web_invoice_update_log($invoice_id, 'pfp_success', "Successful payment. REF: {$payment->getPref()}");
 					web_invoice_update_invoice_meta($invoice_id, 'transaction_id', $payment->getTransactionID());
 					
 					web_invoice_mark_as_paid($invoice_id);
@@ -1613,7 +1617,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		
 				} else {
 					$errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transaction = true;
-					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".serialize($payment));
+					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".$arb->getRef()." ".serialize($payment));
 				}
 			}
 		} else {

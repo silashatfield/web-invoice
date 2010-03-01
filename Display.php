@@ -816,8 +816,13 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 
 	<tr>
 		<th></th>
-		<td><?php _e("All <b>recurring billing</b> fields must be filled out to activate recurring billing. ", WEB_INVOICE_TRANS_DOMAIN) ?><span
-			onclick="web_invoice_cancel_recurring()" class="web_invoice_click_me"><?php _e("Cancel Recurring Billing", WEB_INVOICE_TRANS_DOMAIN) ?></span></td>
+		<td><?php _e("All <b>recurring billing</b> fields must be filled out to activate recurring billing. ", WEB_INVOICE_TRANS_DOMAIN) ?>
+		<?php if (web_invoice_meta($invoice_id, 'pfp_status') == 'active') { ?>
+			<a href="admin.php?page=new_web_invoice&web_invoice_action=doPausePfp&invoice_id=<?php print $invoice_id; ?>" class="web_invoice_click_me"><?php _e("Pause Recurring Billing", WEB_INVOICE_TRANS_DOMAIN) ?></a> |
+		<?php } else if (web_invoice_meta($invoice_id, 'pfp_status') == 'paused') { ?>
+			<a href="admin.php?page=new_web_invoice&web_invoice_action=doRestartRecurringPfp&invoice_id=<?php print $invoice_id; ?>" class="web_invoice_click_me"><?php _e("Restart Recurring Billing", WEB_INVOICE_TRANS_DOMAIN) ?></a> |
+		<?php } ?>
+			<span onclick="web_invoice_cancel_recurring()" class="web_invoice_click_me"><?php _e("Cancel Recurring Billing", WEB_INVOICE_TRANS_DOMAIN) ?></span></td>
 	</tr>
 </table>
 </div>

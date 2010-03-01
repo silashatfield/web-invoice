@@ -34,7 +34,7 @@ class Web_Invoice_Decider {
 
 		$web_invoice_action = (!empty($_REQUEST['web_invoice_action']) ? $_REQUEST['web_invoice_action'] : $web_invoice_action);
 		$invoice_id = $_REQUEST['invoice_id'];
-		$web_invoice_recurring_billing = $_REQUEST['web_invoice_recurring_billing'];
+		$web_invoice_recurring_billing = web_invoice_meta($invoice_id, 'web_invoice_recurring_billing');
 		//echo "do this: " . $web_invoice_action;
 
 		echo "<div class='wrap'>";
@@ -48,7 +48,16 @@ class Web_Invoice_Decider {
 						require_once('gateways/payflowpro.class.php');
 						
 						$pfp = new Web_Invoice_PayflowProRecurring();
-						$pfp->updateProfile($invoice_id);
+						if (web_invoice_meta($invoice_id, 'web_invoice_recurring_billing')){
+							$pfp->updateProfile($invoice_id);
+							web_invoice_update_log($invoice_id, 'pfp_subscription_update', "Subscription updated. REF: ".$pfp->getRef());
+						} else {
+							if ($pfp->deleteProfile(web_invoice_meta($invoice_id, 'subscription_id'))) {
+								web_invoice_update_log($invoice_id, 'pfp_subscription_update', "Subscription cancelled. REF: ".$pfp->getRef());
+								web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'cancelled');
+								web_invoice_delete_invoice_meta($invoice_id, 'subscription_id');
+							}
+						}
 					}
 					web_invoice_saved_preview($invoice_id);
 					do_action('web_invoice_invoice_save', $invoice_id);
@@ -59,7 +68,47 @@ class Web_Invoice_Decider {
 				web_invoice_show_message(web_invoice_clear_invoice_status($invoice_id),'updated fade');
 				web_invoice_options_manageInvoice($invoice_id);
 				break;
-
+				
+			case "doPausePfp":
+				if (web_invoice_meta($invoice_id, 'subscription_id') &&	web_invoice_meta($invoice_id, 'recurring_transaction_id')) {
+					require_once('gateways/payflowpro.class.php');
+						
+					$pfp = new Web_Invoice_PayflowProRecurring();
+					if (web_invoice_meta($invoice_id, 'web_invoice_recurring_billing')) {
+						$profile_id = web_invoice_meta($invoice_id, 'subscription_id');
+						if ($pfp->pauseProfile($profile_id)) {
+							web_invoice_update_log($invoice_id, 'pfp_subscription_update', "Subscription paused. REF: ".$pfp->getRef());
+							web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'paused');
+							web_invoice_delete_invoice_meta($invoice_id,'subscription_id');
+							web_invoice_show_message('Paused subscription','updated fade');
+						} else {
+							web_invoice_show_message('Failed to pause subscription','updated fade');
+						}
+					}
+				}
+				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+				break;
+				
+			case "doRestartRecurringPfp":
+				if (web_invoice_meta($invoice_id, 'recurring_transaction_id')) {
+					require_once('gateways/payflowpro.class.php');
+						
+					$pfp = new Web_Invoice_PayflowProRecurring();
+					if (web_invoice_meta($invoice_id, 'web_invoice_recurring_billing')){
+						$profile_id = web_invoice_meta($invoice_id, 'recurring_transaction_id');
+						if ($pfp->reactivateProfile($profile_id, $invoice_id)) {
+							web_invoice_update_log($invoice_id, 'pfp_subscription_update', "Subscription reactivated. REF: ".$pfp->getRef());
+							web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'active');
+							web_invoice_update_invoice_meta($invoice_id, 'subscription_id', $profile_id);
+							web_invoice_show_message('Reactivated subscription','updated fade');
+						} else {
+							web_invoice_show_message('Failed to reactivate subscription','updated fade');
+						}
+					}
+				}
+				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
+				break;
+				
 			case "complete_removal":
 				web_invoice_complete_removal();
 				web_invoice_show_settings();
