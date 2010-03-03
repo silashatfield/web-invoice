@@ -36,7 +36,7 @@ Some features:
   the list of gateways you support). e.g PayPal and Moneybookers
 * All user interfaces are internationalized
 * E-mail templates and hooks to allow you to customize the e-mails sent to your clients
-* Integrate with other plugins, actions available: web_invoice_mark_as_paid, web_invoice_content_append, web_invoice_front_top, web_invoice_front_bottom, web_invoice_front_top, web_invoice_front_paid, web_invoice_front_unpaid, web_invoice_invoice_save, web_invoice_process_settings, web_invoice_display_settings
+* Integrate with other plugins, actions available: web_invoice_mark_as_paid, web_invoice_content_append, web_invoice_front_top, web_invoice_front_bottom, web_invoice_front_top, web_invoice_front_paid, web_invoice_front_unpaid, web_invoice_invoice_save, web_invoice_process_settings, web_invoice_display_settings, web_invoice_invoice_restart_recurring, web_invoice_invoice_pause_recurring
 
 Sponsored features:
 
@@ -82,6 +82,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 1. Frontend Example
 
 == Change Log ==
+
+**Version 1.12.7**
+
+* Added new hooks/actions web_invoice_invoice_pause_recurring and web_invoice_invoice_restart_recurring
 
 **Version 1.12.6**
 
