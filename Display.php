@@ -2373,6 +2373,7 @@ if ($invoice->display('tax_total')) {
 		echo web_invoice_create_google_checkout_itemized_list($invoice->display('itemized'),$invoice_id, web_invoice_recurring($invoice_id));
 	}
 	?>
+	<input name="checkout-flow-support.merchant-checkout-flow-support.continue-shopping-url" type="hidden" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>"> 
 <fieldset id="credit_card_information">
 <ol>
 	<li><label for="submit">&nbsp;</label> <input type="image" name="Google Checkout" 
@@ -3331,6 +3332,7 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array, $invo
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge.currency' value='{$currency}' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-name' value='Recurring invoice #{$display_id}' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-description' value='{$desc}' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-id.merchant-item-id' value='{$invoice_id}-rec' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.quantity' value='1' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price' value='".number_format($tax_free_sum, 2)."' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price.currency' value='{$currency}' />";

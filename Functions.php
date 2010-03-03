@@ -150,10 +150,11 @@ function web_invoice_payment_meta($payment_id, $meta_key)
 
 function web_invoice_update_invoice_meta($invoice_id,$meta_key,$meta_value)
 {
-
 	global $wpdb;
+	global $_web_invoice_meta_cache;
+	
 	if(empty($meta_value)) {
-		// Dlete meta_key if no value is set
+		// Delete meta_key if no value is set
 		$wpdb->query("DELETE FROM ".Web_Invoice::tablename('meta')." WHERE  invoice_id = '$invoice_id' AND meta_key = '$meta_key'");
 	}
 	else
@@ -164,14 +165,19 @@ function web_invoice_update_invoice_meta($invoice_id,$meta_key,$meta_value)
 		else
 		{ $wpdb->query("INSERT INTO `".Web_Invoice::tablename('meta')."` (invoice_id, meta_key, meta_value) VALUES ('$invoice_id','$meta_key','$meta_value')"); }
 	}
+
+	if (isset($_web_invoice_meta_cache[$invoice_id][$meta_key])) {
+		$_web_invoice_meta_cache[$invoice_id][$meta_key] = $meta_value;
+	}
 }
 
 function web_invoice_update_payment_meta($payment_id,$meta_key,$meta_value)
 {
-
 	global $wpdb;
+	global $_web_invoice_payment_meta_cache;
+	
 	if(empty($meta_value)) {
-		// Dlete meta_key if no value is set
+		// Delete meta_key if no value is set
 		$wpdb->query("DELETE FROM ".Web_Invoice::tablename('payment_meta')." WHERE  payment_id = '$payment_id' AND meta_key = '$meta_key'");
 	}
 	else
@@ -182,26 +188,41 @@ function web_invoice_update_payment_meta($payment_id,$meta_key,$meta_value)
 		else
 		{ $wpdb->query("INSERT INTO `".Web_Invoice::tablename('payment_meta')."` (payment_id, meta_key, meta_value) VALUES ('$payment_id','$meta_key','$meta_value')"); }
 	}
+	
+	if (isset($_web_invoice_payment_meta_cache[$payment_id][$meta_key])) {
+		$_web_invoice_payment_meta_cache[$payment_id][$meta_key] = $meta_value;
+	}
 }
 
 function web_invoice_delete_invoice_meta($invoice_id,$meta_key='')
 {
 	global $wpdb;
+	global $_web_invoice_meta_cache;
+
+	
 	if(empty($meta_key))
 	{ $wpdb->query("DELETE FROM `".Web_Invoice::tablename('meta')."` WHERE invoice_id = '$invoice_id' ");}
 	else
 	{ $wpdb->query("DELETE FROM `".Web_Invoice::tablename('meta')."` WHERE invoice_id = '$invoice_id' AND meta_key = '$meta_key'");}
-
+	
+	if (isset($_web_invoice_meta_cache[$invoice_id][$meta_key])) {
+		$_web_invoice_meta_cache[$invoice_id][$meta_key] = false;
+	}
 }
 
 function web_invoice_delete_payment_meta($payment_id,$meta_key='')
 {
 	global $wpdb;
+	global $_web_invoice_payment_meta_cache;
+	
 	if(empty($meta_key))
 	{ $wpdb->query("DELETE FROM `".Web_Invoice::tablename('payment_meta')."` WHERE invoice_id = '$payment_id' ");}
 	else
 	{ $wpdb->query("DELETE FROM `".Web_Invoice::tablename('payment_meta')."` WHERE invoice_id = '$payment_id' AND meta_key = '$meta_key'");}
 
+	if (isset($_web_invoice_payment_meta_cache[$payment_id][$meta_key])) {
+		unset($_web_invoice_payment_meta_cache[$payment_id][$meta_key]);
+	}
 }
 
 function web_invoice_delete($invoice_id) {
@@ -1531,7 +1552,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 				}
 	
 				if($arb->isError()) {
-					$errors [ 'processing_problem' ] [] .=  "One-time credit card payment is processed successfully.  However, recurring billing setup failed."; $stop_transaction = true;
+					$errors ['processing_problem'][] .=  "One-time credit card payment is processed successfully. However, recurring billing setup failed."; $stop_transaction = true;
 					web_invoice_update_log($invoice_id, 'subscription_error', 'Response Code: ' . $arb->getResponseCode() . ' | Subscription error - ' . $arb->getResponseText());
 					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".serialize($payment));
 				}

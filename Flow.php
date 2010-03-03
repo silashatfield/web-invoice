@@ -34,6 +34,9 @@ class Web_Invoice_Decider {
 
 		$web_invoice_action = (!empty($_REQUEST['web_invoice_action']) ? $_REQUEST['web_invoice_action'] : $web_invoice_action);
 		$invoice_id = $_REQUEST['invoice_id'];
+		if (!$invoice_id) {
+			$invoice_id = $_REQUEST['multiple_invoices'][0];
+		}
 		$web_invoice_recurring_billing = web_invoice_meta($invoice_id, 'web_invoice_recurring_billing');
 		//echo "do this: " . $web_invoice_action;
 
@@ -80,6 +83,7 @@ class Web_Invoice_Decider {
 							web_invoice_update_log($invoice_id, 'pfp_subscription_update', "Subscription paused. REF: ".$pfp->getRef());
 							web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'paused');
 							web_invoice_delete_invoice_meta($invoice_id,'subscription_id');
+							do_action('web_invoice_invoice_pause_recurring', $invoice_id);
 							web_invoice_show_message('Paused subscription','updated fade');
 						} else {
 							web_invoice_show_message('Failed to pause subscription','updated fade');
@@ -100,6 +104,7 @@ class Web_Invoice_Decider {
 							web_invoice_update_log($invoice_id, 'pfp_subscription_update', "Subscription reactivated. REF: ".$pfp->getRef());
 							web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'active');
 							web_invoice_update_invoice_meta($invoice_id, 'subscription_id', $profile_id);
+							do_action('web_invoice_invoice_restart_recurring', $invoice_id);
 							web_invoice_show_message('Reactivated subscription','updated fade');
 						} else {
 							web_invoice_show_message('Failed to reactivate subscription','updated fade');
