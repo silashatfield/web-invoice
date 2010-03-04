@@ -369,8 +369,13 @@ jQuery(document)
 											
 											if (jQuery('#web_invoice_pfp_authentication').val() == '3token') {
 												jQuery('.pfp_info.unipay').hide();
+												jQuery('.pfp_info.wpppe').hide();
+											} else if (jQuery('#web_invoice_pfp_authentication').val() == 'unipay') {
+												jQuery('.pfp_info.wpppe').hide();
+												jQuery('.pfp_info.3token').hide();
 											} else {
 												jQuery('.pfp_info.3token').hide();
+												jQuery('.pfp_info.unipay').hide();
 											}
 										}
 										if (payment_method_array

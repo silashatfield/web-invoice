@@ -113,7 +113,7 @@ function cc_card_pick(card_image, card_num){
 
 function process_cc_checkout(type) {
 	if (type == null) {
-		type = 'pfp';
+		type = '';
 	}
 
 	jQuery('#web_invoice_process_wait span').html('<img src="<?php echo Web_Invoice::frontend_path(); ?>/images/processing-ajax.gif">');
@@ -130,7 +130,7 @@ function process_cc_checkout(type) {
 		link_id = 'wp_cc_response';
 		_checkout_form = 'checkout_form';
 	}
-	
+
 	var req = jQuery.post ( site_url, jQuery('#' + _checkout_form).serialize(), function(html) {
 
 			var explode = html.toString().split('\n');

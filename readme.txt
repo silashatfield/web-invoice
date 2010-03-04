@@ -83,6 +83,12 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.8**
+
+* Record start date when a recurring payment starts
+* Not set the Profile start date to current date when updating Payflow profiles
+* Fixed Authorize.net issues
+
 **Version 1.12.7**
 
 * Added new hooks/actions web_invoice_invoice_pause_recurring and web_invoice_invoice_restart_recurring

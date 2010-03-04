@@ -84,10 +84,12 @@ class Web_Invoice_Decider {
 							web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'paused');
 							web_invoice_delete_invoice_meta($invoice_id,'subscription_id');
 							do_action('web_invoice_invoice_pause_recurring', $invoice_id);
-							web_invoice_show_message('Paused subscription','updated fade');
+							$message = 'Paused subscription.';
 						} else {
-							web_invoice_show_message('Failed to pause subscription','updated fade');
+							$message = 'Failed to pause subscription.';
 						}
+						$message .= " <a href='admin.php?page=new_web_invoice&web_invoice_action=doInvoice&invoice_id=".$invoice_id."'>Continue editing</a>";
+						web_invoice_show_message($message, 'updated fade');
 					}
 				}
 				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}
@@ -105,10 +107,12 @@ class Web_Invoice_Decider {
 							web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'active');
 							web_invoice_update_invoice_meta($invoice_id, 'subscription_id', $profile_id);
 							do_action('web_invoice_invoice_restart_recurring', $invoice_id);
-							web_invoice_show_message('Reactivated subscription','updated fade');
+							$message = 'Reactivated subscription.';
 						} else {
-							web_invoice_show_message('Failed to reactivate subscription','updated fade');
+							$message = 'Failed to reactivate subscription.';
 						}
+						$message .= " <a href='admin.php?page=new_web_invoice&web_invoice_action=doInvoice&invoice_id=".$invoice_id."'>Continue editing</a>";
+						web_invoice_show_message($message, 'updated fade');
 					}
 				}
 				if($web_invoice_recurring_billing) { web_invoice_recurring_overview(); } else { web_invoice_default();}

@@ -4,7 +4,7 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web-invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 1.12.7
+ Version: 1.12.8
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
  License: GPL
@@ -274,16 +274,13 @@ class Web_Invoice {
 			wp_enqueue_script('jquery.calculation',$this->uri."/js/jquery.calculation.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.tablesorter',$this->uri."/js/jquery.tablesorter.min.js", array('jquery'), '1.8.0');
 			wp_enqueue_script('jquery.autogrow-textarea',$this->uri."/js/jquery.autogrow-textarea.js", array('jquery'), '1.8.0');
-			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.11.10');
+			wp_enqueue_script('web-invoice',$this->uri."/js/web-invoice.js", array('jquery'), '1.12.8');
 		} else {
 			if(isset($_POST['web_invoice_id_hash'])) {
 
 				$md5_invoice_id = $_POST['web_invoice_id_hash'];
-
-				// Convert MD5 hash into Actual Invoice ID
-				$all_invoices = $wpdb->get_col("SELECT invoice_num FROM ".Web_Invoice::tablename('main')." ");
-				foreach ($all_invoices as $value) { if(md5($value) == $md5_invoice_id) {$invoice_id = $value;} }
-
+				$invoice_id = web_invoice_md5_to_invoice($md5_invoice_id);
+				
 				//Check to see if this is a credit card transaction, if so process
 				if(web_invoice_does_invoice_exist($invoice_id)) { web_invoice_process_cc_transaction($_POST); exit; }
 			}
@@ -745,6 +742,10 @@ class Web_Invoice_GetInfo {
 
 			case 'last_name':
 				return (get_usermeta($uid,'shipto_last_name')!="")?get_usermeta($uid,'shipto_last_name'):get_usermeta($uid,'last_name');
+				break;
+				
+			case 'email_address':
+				return $user_email;
 				break;
 
 			case 'phonenumber':

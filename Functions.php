@@ -1331,7 +1331,6 @@ function web_invoice_go_secure($destination) {
 }
 
 function web_invoice_process_cc_transaction($cc_data) {
-
 	$errors = array ();
 	$errors_msg = null;
 	$_POST['processing_problem'] = '';
@@ -1543,6 +1542,8 @@ function web_invoice_process_cc_transaction($cc_data) {
 						update_usermeta($wp_users_id,'shipto_country',$_POST['shipto_country']);
 					}
 					
+					web_invoice_update_recurring_start_date($invoice_id, strtotime(date('Y-m-d')));
+					
 					web_invoice_update_invoice_meta($invoice_id, 'subscription_id', $arb->getSubscriberID());
 					web_invoice_update_invoice_meta($invoice_id, 'recurring_transaction_id', $arb->getTransactionID());
 					web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'active');
@@ -1630,7 +1631,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		
 					//Mark invoice as paid
 					web_invoice_paid($invoice_id);
-					web_invoice_update_log($invoice_id, 'pfp_success', "Successful payment. REF: {$payment->getPref()}");
+					web_invoice_update_log($invoice_id, 'pfp_success', "Successful payment. REF: {$payment->getTransactionID()}");
 					web_invoice_update_invoice_meta($invoice_id, 'transaction_id', $payment->getTransactionID());
 					
 					web_invoice_mark_as_paid($invoice_id);
@@ -1732,6 +1733,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 					$arb->createAccount();
 	
 					if ($arb->isSuccessful()) {
+						web_invoice_update_recurring_start_date($invoice_id, strtotime(date('Y-m-d')));
 						web_invoice_update_invoice_meta($invoice_id, 'subscription_id',$arb->getSubscriberID());
 						web_invoice_update_log($invoice_id, 'subscription', ' Subscription initiated, Subcription ID - ' . $arb->getSubscriberID());
 					}
@@ -2199,6 +2201,12 @@ function web_invoice_md5_to_invoice($md5) {
 			return $_web_invoice_md5_to_invoice_cache[$md5];
 		}
 	}
+}
+
+function web_invoice_update_recurring_start_date($invoice_id, $date) {
+	web_invoice_update_invoice_meta($invoice_id,'web_invoice_subscription_start_day', date('d', $date));
+	web_invoice_update_invoice_meta($invoice_id,'web_invoice_subscription_start_year', date('Y', $date));
+	web_invoice_update_invoice_meta($invoice_id,'web_invoice_subscription_start_month', date('m', $date));
 }
 
 function web_invoice_get_alertpay_api_url() {
