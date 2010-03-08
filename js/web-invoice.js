@@ -620,6 +620,8 @@ jQuery(document)
 							}
 						}
 					});
+					
+					jQuery("div.web_invoice_status").addClass("updated");
 					recalc();
 				});
 

@@ -83,6 +83,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.9**
+
+* Moved invoice history bellow rest of invoice content
+
 **Version 1.12.8**
 
 * Record start date when a recurring payment starts

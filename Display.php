@@ -984,9 +984,9 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 
 </div>
 </form>
-
+</div>
 		<?php if(web_invoice_get_invoice_status($invoice_id,'100')) { ?>
-<div class="updated web_invoice_status">
+<div class="web_invoice_status">
 <h2><?php _e("This Invoice's History ", WEB_INVOICE_TRANS_DOMAIN) ?>(<a
 	href="admin.php?page=new_web_invoice&invoice_id=<?php echo $invoice_id; ?>&web_invoice_action=clear_log"><?php _e("Clear Log", WEB_INVOICE_TRANS_DOMAIN) ?></a>)</h2>
 <ul id="invoice_history_log">
