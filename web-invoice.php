@@ -856,7 +856,7 @@ class Web_Invoice_GetInfo {
 				
 			
 			case 'profileEndDate':
-				return date(__('Y-m-d'), strtotime("+".($this->display('interval_length')*($this->display('totalOccurrences')-1))." ".$this->display('interval_unit'), strtotime($this->display('startDate'))));
+				return date(__('Y-m-d'), strtotime("+".($this->display('interval_length')*($this->display('totalOccurrences')-1))." ".$this->display('interval_unit'), strtotime($this->display('startDate'))+3600*24));
 				break;
 				
 
