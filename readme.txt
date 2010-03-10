@@ -83,6 +83,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.10**
+
+* New display property profileEndDate
+
 **Version 1.12.9**
 
 * Moved invoice history bellow rest of invoice content
