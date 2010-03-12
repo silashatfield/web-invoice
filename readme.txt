@@ -83,6 +83,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.11**
+
+* Fix recurring billing layout
+* Imrove PDF layout
+
 **Version 1.12.10**
 
 * New display property profileEndDate

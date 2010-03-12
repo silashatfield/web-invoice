@@ -2181,10 +2181,14 @@ function web_invoice_show_invoice_overview($invoice_id) {
 	<?php if($invoice->display('due_date')) { ?>
 <p class="web_invoice_due_date"><?php printf(__('Due Date: %s', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?>
 	<?php if($invoice->display('description')) { ?></p>
-
-
 <p><?php echo stripcslashes($invoice->display('description'));  ?></p>
-<?php  } ?> <?php echo web_invoice_draw_itemized_table($invoice_id); ?>
+<?php  } ?> 
+<?php 		
+		//Billing Business Address
+		if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
+		if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
+?>
+<?php echo web_invoice_draw_itemized_table($invoice_id); ?>
 <?php
 	echo do_action('web_invoice_content_append', $invoice_id);
 ?>
@@ -3084,21 +3088,26 @@ function web_invoice_show_cc_form($invoice_id, $invoice) {
 function web_invoice_show_recurring_info($invoice_id) {
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 	?>
-<div id="recurring_info" class="clearfix"><?php if($invoice->display('due_date')) { ?>
-<p class="web_invoice_due_date"><?php printf(__("Due Date: %s", WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); } ?></p>
-
+<div id="recurring_info" class="clearfix">
 <h2 id="web_invoice_welcome_message" class="invoice_page_subheading"><?php printf(__('Welcome, %s!', WEB_INVOICE_TRANS_DOMAIN), $invoice->recipient('callsign')); ?></h2>
 <?php if($invoice->display('description')) { ?>
 <p><?php echo $invoice->display('description');  ?></p>
 <?php  } ?>
 
-<p class="recurring_info_breakdown"><?php printf(__('This is a recurring bill, id: <b>%s</b>.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id')); ?></p>
+<p class="recurring_info_breakdown"><?php printf(__('This is a recurring invoice, id: <b>%s</b>.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_id')); ?></p>
 <p><?php printf(__('You will be billed %1$s in the amount of %2$s ', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('display_billing_rate'), $invoice->display('display_amount'));
 
 // Determine if starting now or t a set date
 if (web_invoice_meta($invoice_id,'web_invoice_subscription_start_day') != '' && web_invoice_meta($invoice_id,'web_invoice_subscription_start_month')  != '' && web_invoice_meta($invoice_id,'web_invoice_subscription_start_year'  != ''))
 echo web_invoice_meta($invoice_id,'web_invoice_subscription_start_day') .", ". web_invoice_meta($invoice_id,'web_invoice_subscription_start_month') .", ".  web_invoice_meta($invoice_id,'web_invoice_subscription_start_year');
 ?>.</p>
+<?php if($invoice->display('due_date')) { ?>
+<p class="web_invoice_due_date"><?php printf(__("Due Date: %s", WEB_INVOICE_TRANS_DOMAIN), $invoice->display('due_date')); ?></p><?php } ?>
+<?php 	
+//Billing Business Address
+if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
+if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
+?>
 <?php echo web_invoice_draw_itemized_table($invoice_id); ?></div>
 <?php
 }

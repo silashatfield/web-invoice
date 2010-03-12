@@ -47,10 +47,6 @@ function web_invoice_the_content($content) {
 web_invoice_print_help($invoice_id);
 do_action('web_invoice_front_top', $invoice_id);
 
-//Billing Business Address
-if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
-if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
-
 //If this is not recurring invoice, show regular message
 if(!($recurring = web_invoice_recurring($invoice_id)))  web_invoice_show_invoice_overview($invoice_id);
 
@@ -251,8 +247,8 @@ function web_invoice_frontend_css() {
 		echo '<meta name="robots" content="noindex, nofollow" />';
 
 		if(get_option('web_invoice_use_css') == 'yes') {
-			echo '<link type="text/css" media="print" rel="stylesheet" href="' . Web_Invoice::frontend_path() . '/css/web_invoice-print.css?2010022101"></link>' . "\n";
-			echo '<link type="text/css" media="screen" rel="stylesheet" href="' . Web_Invoice::frontend_path() . '/css/web_invoice-screen.css?201022201"></link>' . "\n";
+			echo '<link type="text/css" media="print" rel="stylesheet" href="' . Web_Invoice::frontend_path() . '/css/web_invoice-print.css?2010031201"></link>' . "\n";
+			echo '<link type="text/css" media="screen" rel="stylesheet" href="' . Web_Invoice::frontend_path() . '/css/web_invoice-screen.css?201031201"></link>' . "\n";
 		}
 	}
 }
@@ -266,12 +262,6 @@ function web_invoice_print_pdf() {
 		
 	// Check to see a proper invoice id is used, or show regular content
 	if(!($invoice_id = web_invoice_md5_to_invoice($_GET['invoice_id']))) return $content;
-
-	//If already paid, show thank you message
-	// if(web_invoice_paid_status($invoice_id)) return web_invoice_show_already_paid($invoice_id).$content;
-
-	// Show receipt if coming back from PayPal
-	if(isset($_REQUEST['receipt_id'])) return web_invoice_show_paypal_receipt($invoice_id);
 
 	// Invoice viewed, update log
 	web_invoice_update_log($invoice_id, 'visited', "PDF downloaded by $ip");
@@ -289,18 +279,15 @@ function web_invoice_print_pdf() {
 		table { width: 100%; }
 		h2 { font-size: 1.1em; }
 		h1 { text-align: center; }
-		p { margin: 5px; 0px; }
+		p { margin: 5px 0px; }
 		div.clear { clear: both; }
 		
-		#invoice_client_info { float: right; }
+		#invoice_client_info { width: 100%; text-align: right; padding-top: -145; }
+		##invoice_business_info { width: 100%; text-align: left; height: 100; }
 	</style>
 	<?php
 	
 		do_action('web_invoice_front_top', $invoice_id);
-		
-		//Billing Business Address
-		if(get_option('web_invoice_show_business_address') == 'yes') web_invoice_show_business_address();
-		if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_billing_address($invoice_id);
 	
 		print '<div class="clear"></div>';
 		
