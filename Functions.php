@@ -1826,6 +1826,25 @@ function web_invoice_currency_symbol($currency = "USD" )
 	if(!$success) return $currency;
 }
 
+function web_invoice_currency_symbol_format($currency = "USD" )
+{
+	$currency_list = array(
+	'CAD'=> __('$%01.2f'),
+	'EUR'=> __('&euro;%01.2f'),
+	'GBP'=> __('&pound;%01.2f'),
+	'JPY'=> __('&yen;%01.2f'),
+	'USD'=> __('$%01.2f'),
+	'BRL'=> __('R$%01.2f')
+	);
+
+
+	foreach($currency_list as $value => $display)
+	{
+		if($currency == $value) { return $display; $success = true; break;}
+	}
+	if(!$success) return __("{$currency}%d");
+}
+
 function web_invoice_contextual_help_list($content) {
 	// Will add help and FAQ here eventually
 	return $content;

@@ -118,7 +118,7 @@ function web_invoice_default($message='')
 
 			// Determine Currency
 			$currency_code = web_invoice_determine_currency($invoice_id);
-			$show_money = web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($invoice->amount);
+			$show_money = sprintf(web_invoice_currency_symbol_format($currency_code), web_invoice_currency_format($invoice->amount));
 
 			// Determine What to Call Recipient
 			$profileuser = get_userdata($user_id);
@@ -267,7 +267,7 @@ function web_invoice_user_default($message='')
 
 			// Determine Currency
 			$currency_code = web_invoice_determine_currency($invoice_id);
-			$show_money = web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($invoice->amount);
+			$show_money = sprintf(web_invoice_currency_symbol_format($currency_code), web_invoice_currency_format($invoice->amount));
 
 			// Determine What to Call Recipient
 			$profileuser = get_userdata($user_id);
@@ -436,7 +436,7 @@ function web_invoice_recurring_overview($message='')
 			// Determine Currency
 			$currency_code = web_invoice_determine_currency($invoice_id);
 
-			$show_money = web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($invoice->amount);
+			$show_money = sprintf(web_invoice_currency_symbol_format($currency_code), web_invoice_currency_format($invoice->amount));
 
 			// Determine What to Call Recipient
 			$profileuser = get_userdata($user_id);
@@ -1943,7 +1943,7 @@ function web_invoice_draw_itemized_table($invoice_id) {
 				$response .= "<td>" . stripslashes($itemized_item[name]) . " <br /><span class='description_text'>" . stripslashes($itemized_item[description]) . "</span></td>";
 
 				//Item Price
-				$response .= "<td style=\"width: 70px; text-align: right;\">" . web_invoice_currency_symbol($currency_code) .  web_invoice_currency_format($itemized_item[quantity] * $itemized_item[price]) . "</td>";
+				$response .= "<td style=\"width: 70px; text-align: right;\">" . sprintf(web_invoice_currency_symbol_format($currency_code),  web_invoice_currency_format($itemized_item[quantity] * $itemized_item[price])) . "</td>";
 
 				$response .="</tr>";
 				$i++;
@@ -1959,9 +1959,9 @@ function web_invoice_draw_itemized_table($invoice_id) {
 			}
 			$response .= "<td>Tax (". round($tax_percent,2). "%) </td>";
 			if(get_option('web_invoice_show_quantities') == "Show") {
-				$response .= "<td style='text-align:right;' colspan='2'>" . web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($tax_value)."</td></tr>";
+				$response .= "<td style='text-align:right;' colspan='2'>" . sprintf(web_invoice_currency_symbol_format($currency_code), web_invoice_currency_format($tax_value))."</td></tr>";
 			} else {
-				$response .= "<td style='text-align:right;'>" . web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($tax_value)."</td></tr>";
+				$response .= "<td style='text-align:right;'>" . sprintf(web_invoice_currency_symbol_format($currency_code), web_invoice_currency_format($tax_value))."</td></tr>";
 			}
 			$i++;
 		}
@@ -1978,7 +1978,7 @@ function web_invoice_draw_itemized_table($invoice_id) {
 			<td style=\"text-align: right;\" class=\"grand_total\">";
 		}
 
-		$response .= web_invoice_currency_symbol($currency_code) . web_invoice_currency_format($amount);
+		$response .= sprintf(web_invoice_currency_symbol_format($currency_code), web_invoice_currency_format($amount));
 		$response .= "</td></tr></table></p>";
 
 		return $response;

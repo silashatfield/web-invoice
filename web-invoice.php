@@ -946,7 +946,7 @@ class Web_Invoice_GetInfo {
 				break;
 
 			case 'display_amount':
-				return web_invoice_currency_symbol($this->display('currency')).web_invoice_currency_format($invoice_info->amount);
+				return sprintf(web_invoice_currency_symbol_format($this->display('currency')), web_invoice_currency_format($invoice_info->amount));
 				break;
 
 			case 'description':

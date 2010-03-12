@@ -87,6 +87,7 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 * Fix recurring billing layout
 * Imrove PDF layout
+* Move money formatting to locale
 
 **Version 1.12.10**
 
