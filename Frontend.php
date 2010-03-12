@@ -274,7 +274,7 @@ function web_invoice_print_pdf() {
 		td { font-size: 12px; vertical-align: top; padding: 5px; }
 		tr td { background-color: #fefefe; }
 		tr.alt_row  td { background-color: #eee; }
-		span.description_text { color: #333; font-size: 0.8px; }
+		span.description_text { color: #333; font-size: 0.8em; }
 		tr.web_invoice_bottom_line { font-size: 1.1em; font-weight: bold; }
 		table { width: 100%; }
 		h2 { font-size: 1.1em; }

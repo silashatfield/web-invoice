@@ -83,6 +83,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.12**
+
+* Fixing amounts greater than 1000 shown inaccurately
+* Item description in PDF was too tiny
+
 **Version 1.12.11**
 
 * Fix recurring billing layout

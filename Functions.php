@@ -1829,12 +1829,12 @@ function web_invoice_currency_symbol($currency = "USD" )
 function web_invoice_currency_symbol_format($currency = "USD" )
 {
 	$currency_list = array(
-	'CAD'=> __('$%01.2f'),
-	'EUR'=> __('&euro;%01.2f'),
-	'GBP'=> __('&pound;%01.2f'),
-	'JPY'=> __('&yen;%01.2f'),
-	'USD'=> __('$%01.2f'),
-	'BRL'=> __('R$%01.2f')
+	'CAD'=> __('$%s'),
+	'EUR'=> __('&euro;%s'),
+	'GBP'=> __('&pound;%s'),
+	'JPY'=> __('&yen;%s'),
+	'USD'=> __('$%s'),
+	'BRL'=> __('R$%s')
 	);
 
 
