@@ -83,6 +83,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.13**
+
+* Localized missed phrases ('Quantity', 'Tax', 'Invoice Total'). Thanks Martin Kamensky.
+
 **Version 1.12.12**
 
 * Fixing amounts greater than 1000 shown inaccurately
