@@ -3331,19 +3331,19 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array, $invo
 				$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='0' />\n";
 				$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.start-date' value='".date('Y-m-d', strtotime($invoice->display('startDate')))."' />";
 			} else {
-				$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='".number_format($tax_free_sum, 2)."' />\n";
+				$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='".number_format($tax_free_sum, 2, null, '')."' />\n";
 			}
 			
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.type' value='google'/>";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.period' value='".web_invoice_google_checkout_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit'))."' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.times' value='{$invoice->display('totalOccurrences')}' />";
-			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge' value='".number_format($tax_free_sum, 2)."' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge' value='".number_format($tax_free_sum, 2, null, '')."' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.payments.subscription-payment-1.maximum-charge.currency' value='{$currency}' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-name' value='Recurring invoice #{$display_id}' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-description' value='{$desc}' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.item-id.merchant-item-id' value='{$invoice_id}-rec' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.quantity' value='1' />";
-			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price' value='".number_format($tax_free_sum, 2)."' />";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price' value='".number_format($tax_free_sum, 2, null, '')."' />";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.subscription.recurrent-item.unit-price.currency' value='{$currency}' />";
 			
 			$counter++;
@@ -3359,7 +3359,7 @@ function web_invoice_create_google_checkout_itemized_list($itemized_array, $invo
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.quantity' value='{$itemized_item[quantity]}' />\n";
 			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price.currency' value='{$currency}' />\n";
 				
-			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='".number_format($itemized_item[price], 2)."' />\n";
+			$output .= "<input type='hidden' name='shopping-cart.items.item-{$counter}.unit-price' value='".number_format($itemized_item[price], 2, null, '')."' />\n";
 		}
 			
 		$counter++;
