@@ -894,12 +894,12 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 		<table class="itemized_list">
 
 			<tr>
-				<td align="right"><?php _e("Invoice Total:", WEB_INVOICE_TRANS_DOMAIN) ?></td>
+				<td align="right"><?php _e("Invoice Total", WEB_INVOICE_TRANS_DOMAIN) ?>:</td>
 				<td class="item_total"><span id='amount'></span></td>
 			</tr>
 
 			<tr>
-				<td align="right"><?php _e("Recurring Invoice Total:", WEB_INVOICE_TRANS_DOMAIN) ?></td>
+				<td align="right"><?php _e("Recurring Invoice Total", WEB_INVOICE_TRANS_DOMAIN) ?>:</td>
 				<td class="item_total"><span id='recurring_total'></span></td>
 			</tr>
 
@@ -932,7 +932,7 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 	</tr>
 
 	<tr class="invoice_main">
-		<th><?php _e("Tax ", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<th><?php _e("Tax", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td style="font-size: 1.1em; padding-top: 7px;"><input
 			style="width: 35px;" name="web_invoice_tax" id="web_invoice_tax"
 			value="<?php echo $web_invoice_tax ?>" class="noautocomplete" />%</td>
