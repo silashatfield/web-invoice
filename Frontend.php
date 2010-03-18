@@ -153,16 +153,14 @@ function process_cc_checkout(type) {
 				}
 			}
 
-			if ( ! shown )
-			{
-			if(html == 'Transaction okay.') {
-
-				jQuery('#' + link_id).fadeIn("slow");
-				jQuery('#' + link_id).html("<?php _e('Thank you! <br />Payment processed successfully!', WEB_INVOICE_TRANS_DOMAIN); ?>");
-				jQuery("#credit_card_information").hide();
-
-				jQuery('#' + link_id).show();
-				window.location = '';
+			if ( ! shown ) {
+				if(html == 'Transaction okay.') {
+					jQuery('#' + link_id).fadeIn("slow");
+					jQuery('#' + link_id).html("<?php _e('Thank you! <br />Payment processed successfully!', WEB_INVOICE_TRANS_DOMAIN); ?>");
+					jQuery("#credit_card_information").hide();
+	
+					jQuery('#' + link_id).show();
+					window.location = site_url;
 				}
 			} else {
 				add_remove_class('success','error',link_id);

@@ -1384,6 +1384,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		if (isset($_POST['processor']) && $_POST['processor'] == 'sagepay') {
 			$data_arr = array();
 			$data_arr['VendorTxCode'] = $invoice->display('trx_id');
+			$data_arr['VendorEMail'] = get_option("web_invoice_email_address");
 			$data_arr['Amount'] = $invoice->display('amount');
 			$data_arr['Currency'] = $invoice->display('currency');
 			$data_arr['Description'] = $invoice->display('subject');
@@ -1639,7 +1640,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 		
 				} else {
 					$errors [ 'processing_problem' ] [] .= $payment->getResponseText();$stop_transaction = true;
-					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".$arb->getRef()." ".serialize($payment));
+					web_invoice_update_log($invoice_id, 'pfp_failure', "Failed PFP payment. REF: ".$payment->getTransactionID()." ".serialize($payment));
 				}
 			}
 		} else {

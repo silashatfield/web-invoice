@@ -83,6 +83,11 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/) for 
 
 == Change Log ==
 
+**Version 1.12.15**
+
+* SagePay VendorEMail added
+* Possible fix for redirect to SSL after payment issue 
+
 **Version 1.12.14**
 
 * Google Checkout XML error when amount is greater than 1000
