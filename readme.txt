@@ -83,6 +83,10 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/forum.
 
 == Change Log ==
 
+**Version 2.0.0**
+
+* Compatibility with WPMU
+
 **Version 1.12.15**
 
 * SagePay VendorEMail added
