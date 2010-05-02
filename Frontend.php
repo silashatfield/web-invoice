@@ -29,6 +29,7 @@ function web_invoice_the_content($content) {
 
 	// check if web_invoice_web_invoice_page is set, and that this it matches the current page, and the invoice_id is valid
 	if(get_option('web_invoice_web_invoice_page') != '' && is_page(get_option('web_invoice_web_invoice_page'))) {
+		print $content;
 
 		// Check to see a proper invoice id is used, or show regular content
 		if(!($invoice_id = web_invoice_md5_to_invoice($_GET['invoice_id']))) return $content;

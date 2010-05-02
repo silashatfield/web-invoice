@@ -3115,7 +3115,7 @@ if(get_option('web_invoice_show_billing_address') == 'yes') web_invoice_show_bil
 
 
 function web_invoice_draw_user_selection_form($user_id) {
-	global $wpdb;
+	global $wpdb, $blog_id;
 	$_SESSION['last_new_invoice'] = true;
 	?>
 
@@ -3128,7 +3128,14 @@ function web_invoice_draw_user_selection_form($user_id) {
 		<td><select name='user_id' class='user_selection'>
 			<option></option>
 			<?php
-			$get_all_users = $wpdb->get_results("SELECT * FROM ". $wpdb->prefix . "users LEFT JOIN ". $wpdb->prefix . "usermeta on ". $wpdb->prefix . "users.id=". $wpdb->prefix . "usermeta.user_id and ". $wpdb->prefix . "usermeta.meta_key='last_name' ORDER BY ". $wpdb->prefix . "usermeta.meta_value");
+			if (is_dir(WP_CONTENT_DIR . '/mu-plugins')) {
+				$prefix = 'wp_';
+				$get_all_users = $wpdb->get_results("SELECT * FROM {$prefix}users LEFT JOIN {$prefix}usermeta on {$prefix}users.id={$prefix}usermeta.user_id WHERE {$prefix}usermeta.meta_key='primary_blog' and {$prefix}usermeta.meta_value = {$blog_id} ORDER BY {$prefix}usermeta.meta_value");
+			} else {
+				$prefix = $wpdb->prefix;
+				$get_all_users = $wpdb->get_results("SELECT * FROM {$prefix}users LEFT JOIN {$prefix}usermeta on {$prefix}users.id={$prefix}usermeta.user_id ORDER BY {$prefix}usermeta.meta_value");
+			}
+			
 			foreach ($get_all_users as $user)
 			{
 				$profileuser = get_user_to_edit($user->ID);
