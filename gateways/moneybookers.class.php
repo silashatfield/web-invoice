@@ -21,9 +21,6 @@
  */
 
 /**
- * Please note that this class is experimental at the moment. I'm waiting for a
- * test account from Moneybookers.
- *
  * @author moha
  *
  */
