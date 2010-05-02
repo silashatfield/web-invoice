@@ -2533,6 +2533,7 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemized_list($invoice->display('itemized'),$invoice_id);
 	?>
 	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" /> 
+	<input type="hidden" name="notify_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
 <fieldset id="credit_card_information">
 <ol>
 

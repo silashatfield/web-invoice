@@ -1804,7 +1804,8 @@ function web_invoice_currency_array() {
 	"CZK"=> __("Czech Koruna"),
 	"ILS"=> __("Israeli Shekel"),
 	"MXN"=> __("Mexican Peso"),
-	"BRL"=> __("Brazilian real"));
+	"BRL"=> __("Brazilian Real"),
+	"MYR"=> __("Malaysian Ringgit"));
 
 	return $currency_list;
 }
@@ -1817,7 +1818,8 @@ function web_invoice_currency_symbol($currency = "USD" )
 	'GBP'=> '&pound;',
 	'JPY'=> '&yen;',
 	'USD'=> '$',
-	'BRL'=> 'R$');
+	'BRL'=> 'R$',
+	'MYR'=> 'RM');
 
 
 	foreach($currency_list as $value => $display)
