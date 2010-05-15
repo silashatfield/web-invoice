@@ -316,6 +316,12 @@ class Web_Invoice {
 		global $wpdb;
 
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		
+		if ( ! empty($wpdb->charset) )
+        	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+		if ( ! empty($wpdb->collate) )
+        	$charset_collate .= " COLLATE $wpdb->collate";
+		
 
 		//change old table name to new one
 		if($wpdb->get_var("SHOW TABLES LIKE 'web_invoice'")) {
@@ -336,7 +342,7 @@ class Web_Invoice {
 				  status int(11) NOT NULL,
 				  PRIMARY KEY  (id),
 				  UNIQUE KEY invoice_num (invoice_num)
-				);";
+				) {$charset_collate};";
 		dbDelta($sql_main);
 		//}
 
@@ -349,7 +355,7 @@ class Web_Invoice {
 					  `value` longtext NOT NULL,
 					  time_stamp timestamp NOT NULL,
 					  PRIMARY KEY  (id)
-					);";
+					) {$charset_collate};";
 			dbDelta($sql_log);
 		} else {
 			$sql_log = "CREATE TABLE IF NOT EXISTS " . Web_Invoice::tablename('log') . " (
@@ -359,7 +365,7 @@ class Web_Invoice {
 					  `value` longtext NOT NULL,
 					  time_stamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
 					  PRIMARY KEY  (id)
-					);";
+					) {$charset_collate};";
 			dbDelta($sql_log);
 		}
 		//}
@@ -373,7 +379,7 @@ class Web_Invoice {
 				PRIMARY KEY  (`meta_id`),
 				KEY `invoice_id` (`invoice_id`),
 				KEY `meta_key` (`meta_key`)
-				);";
+				) {$charset_collate};";
 		dbDelta($sql_meta);
 		//}
 
@@ -385,7 +391,7 @@ class Web_Invoice {
 				  user_id int(20) NOT NULL,
 				  status int(11) NOT NULL,
 				  PRIMARY KEY  (payment_id)
-				);";
+				) {$charset_collate};";
 			dbDelta($sql_payment);
 		} else {
 			if ($wpdb->get_var("SHOW COLUMNS FROM ". Web_Invoice::tablename('payment') ." LIKE 'invoice_id'") != 'invoice_id') {
@@ -409,7 +415,7 @@ class Web_Invoice {
 				PRIMARY KEY  (`payment_meta_id`),
 				KEY `payment_id` (`payment_id`),
 				KEY `meta_key` (`meta_key`)
-				);";
+				) {$charset_collate};";
 		dbDelta($sql_payment_meta);
 		//}
 

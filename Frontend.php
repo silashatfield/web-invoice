@@ -322,6 +322,8 @@ function web_invoice_print_pdf() {
 	
 	require_once "lib/dompdf_config.inc.php";
 	
+	ob_clean();
+	
 	$dompdf = new DOMPDF();
 	$dompdf->load_html($content);
 	$dompdf->set_paper("a4", "portrait");

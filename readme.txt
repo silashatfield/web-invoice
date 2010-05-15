@@ -86,6 +86,8 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/forum.
 **Version 2.0.0**
 
 * Compatibility with WPMU
+* PDF permission issue - take 2
+* Select correct charset (inherit from Wordpress) when creating tables
 
 **Version 1.12.15**
 
