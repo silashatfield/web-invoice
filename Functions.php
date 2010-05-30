@@ -1875,6 +1875,7 @@ function web_invoice_currency_symbol($currency = "USD" )
 	'USD'=> '$',
 	'BRL'=> 'R$',
 	'MYR'=> 'RM',
+	'AUD'=> '$',
 	'ZAR'=> 'R');
 
 
@@ -1894,7 +1895,8 @@ function web_invoice_currency_symbol_format($currency = "USD" )
 	'JPY'=> __('&yen;%s'),
 	'USD'=> __('$%s'),
 	'BRL'=> __('R$%s'),
-	'ZAR'=> __('R%s')
+	'ZAR'=> __('R%s'),
+        'AUD'=> __('$%s'),
 	);
 
 
