@@ -1516,6 +1516,16 @@ function web_invoice_show_settings()
 			<?php echo (get_option('web_invoice_paypal_only_button')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
 		</select></td>
 	</tr>
+	<tr class="paypal_info">
+		<th width="200"><?php _e("PayPal Sandbox:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
+		<td><select id='web_invoice_paypal_sandbox'
+			name="web_invoice_paypal_sandbox">
+			<option value="True"
+			<?php echo (get_option('web_invoice_paypal_sandbox')=='True')?'selected="selected"':''; ?>><?php _e("yes", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+			<option value="False"
+			<?php echo (get_option('web_invoice_paypal_sandbox')=='False')?'selected="selected"':''; ?>><?php _e("no", WEB_INVOICE_TRANS_DOMAIN) ?></option>
+		</select></td>
+	</tr>
 	<tr class="payflow_info">
 		<th width="200"><?php _e("PayPal Payflow Username:", WEB_INVOICE_TRANS_DOMAIN) ?></th>
 		<td><input id='web_invoice_payflow_login'
@@ -2160,10 +2170,12 @@ function web_invoice_show_paypal_receipt($invoice_id) {
 }
 
 function web_invoice_show_already_paid($invoice_id) {
+	apply_filters('web_invoice_web_variables', $invoice_id);
+	
 	$invoice = new Web_Invoice_GetInfo($invoice_id);
 ?>
 	<div id="invoice_paid" class="clearfix">
-		<p><?php print sprintf(__('This invoice was paid on %s.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('paid_date')); ?></p>
+		<p><?php print preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_web_apply_variables', get_option('web_invoice_web_already_paid_note', sprintf(__('This invoice was paid on %s.', WEB_INVOICE_TRANS_DOMAIN), $invoice->display('paid_date')))); ?></p>
 	</div>
 <?php 
 }
@@ -2505,11 +2517,16 @@ function web_invoice_paypal_convert_interval($val, $length) {
 }
 
 function web_invoice_show_paypal_form($invoice_id, $invoice) {
+if (get_option('web_invoice_paypal_sandbox') == 'True') {
+	$_url = "https://www.sandbox.paypal.com/us/cgi-bin/webscr";
+} else {
+	$_url = "https://www.paypal.com/us/cgi-bin/webscr";
+}
 	?>
 <div id="paypal_payment_form" class="payment_form"><?php if (get_option('web_invoice_paypal_only_button') == 'False') { ?>
 <h2 class="invoice_page_subheading"><?php _e('Billing Information', WEB_INVOICE_TRANS_DOMAIN); ?></h2>
 	<?php } ?>
-<form action="https://www.paypal.com/us/cgi-bin/webscr" method="post"
+<form action="<?php print $_url; ?>" method="post"
 	class="clearfix"><input type="hidden" name="currency_code"
 	value="<?php echo $invoice->display('currency'); ?>" /> <input
 	type="hidden" name="no_shipping" value="1" /> <input type="hidden"
@@ -2533,7 +2550,7 @@ function web_invoice_show_paypal_form($invoice_id, $invoice) {
 	if(is_array($invoice->display('itemized'))) echo web_invoice_create_paypal_itemized_list($invoice->display('itemized'),$invoice_id);
 	?>
 	<input type="hidden" name="amount" value="<?php echo $invoice->display('amount'); ?>" /> 
-	<input type="hidden" name="notify_url" value="<?php echo web_invoice_build_invoice_link($invoice_id); ?>" />
+	<input type="hidden" name="notify_url" value="<?php echo web_invoice_build_invoice_link_paypal($invoice_id); ?>" />
 <fieldset id="credit_card_information">
 <ol>
 
@@ -3133,7 +3150,7 @@ function web_invoice_draw_user_selection_form($user_id) {
 				$get_all_users = $wpdb->get_results("SELECT * FROM {$prefix}users LEFT JOIN {$prefix}usermeta on {$prefix}users.id={$prefix}usermeta.user_id WHERE {$prefix}usermeta.meta_key='primary_blog' and {$prefix}usermeta.meta_value = {$blog_id} ORDER BY {$prefix}usermeta.meta_value");
 			} else {
 				$prefix = $wpdb->prefix;
-				$get_all_users = $wpdb->get_results("SELECT * FROM {$prefix}users LEFT JOIN {$prefix}usermeta on {$prefix}users.id={$prefix}usermeta.user_id ORDER BY {$prefix}usermeta.meta_value");
+				$get_all_users = $wpdb->get_results("SELECT ID FROM {$prefix}users ORDER BY {$prefix}users.user_nicename");
 			}
 			
 			foreach ($get_all_users as $user)

@@ -3,7 +3,7 @@ Contributors: mohanjith
 Donate link: http://mohanjith.com/c/wordpress
 Tags: bill, moneybookers, google checkout, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
-Tested up to: 2.9.2
+Tested up to: 3.0.0
 Stable tag: 1.12.15
 
 Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
@@ -31,7 +31,7 @@ Some features:
 * Easily use old invoices as templates for new ones
 * Dynamic and intuitive user interface
 * Automatically mark invoices paid via Moneybookers (Requires merchant status), AlertPay 
-  (Requires merchant status) or Google Checkout as paid 
+  (Requires merchant status), PayPal, Payflow, Payflow Pro, Sage Pay, Authorize.net or Google Checkout as paid 
 * Split gateway support (Your client is given the option of choosing the preferred gateway from
   the list of gateways you support). e.g PayPal and Moneybookers
 * All user interfaces are internationalized
@@ -88,6 +88,8 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/forum.
 * Compatibility with WPMU
 * PDF permission issue - take 2
 * Select correct charset (inherit from Wordpress) when creating tables
+* WordPress 3.0 compatibility
+* PayPal IPN
 
 **Version 1.12.15**
 

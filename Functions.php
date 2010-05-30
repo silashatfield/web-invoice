@@ -512,11 +512,50 @@ function web_invoice_email_variables($invoice_id) {
 	}
 }
 
+function web_invoice_web_variables($invoice_id) {
+	global $web_invoices_web_variables;
+
+	$invoice_info = new Web_Invoice_GetInfo($invoice_id);
+	$recipient = new Web_Invoice_GetInfo($invoice_id);
+
+	$web_invoices_web_variables = array(
+		'call_sign' => $recipient->recipient('callsign'),
+		'streetaddress' => $recipient->recipient('streetaddress'), 
+		'city' => $recipient->recipient('city'), 
+		'zip' => $recipient->recipient('zip'), 
+		'state' => $recipient->recipient('state'), 
+		'country' => $recipient->recipient('country'), 
+		'business_name' => stripslashes(get_option("web_invoice_business_name")),
+		'recurring' => (web_invoice_recurring($invoice_id) ? " recurring " : ""),
+		'amount' => $invoice_info->display('display_amount'),
+		'link' => $invoice_info->display('link'),
+		'business_email' => get_option("web_invoice_email_address"),
+		'subject' => $invoice_info->display('subject'),
+		'invoice_id' => $invoice_info->display('display_id'),
+		'invoice_hash' => $invoice_info->display('invoice_hash'),
+	);
+
+	if($invoice_info->display('description')) {
+		$web_invoices_web_variables['description'] = $invoice_info->display('description').".";
+	} else {
+		$web_invoices_web_variables['description'] = "";
+	}
+}
+
 function web_invoice_email_apply_variables($matches) {
 	global $web_invoices_email_variables;
 
 	if (isset($web_invoices_email_variables[$matches[2]])) {
 		return $web_invoices_email_variables[$matches[2]];
+	}
+	return $matches[2];
+}
+
+function web_invoice_web_apply_variables($matches) {
+	global $web_invoices_web_variables;
+
+	if (isset($web_invoices_web_variables[$matches[2]])) {
+		return $web_invoices_web_variables[$matches[2]];
 	}
 	return $matches[2];
 }
@@ -596,10 +635,21 @@ function web_invoice_build_invoice_link($invoice_id) {
 
 	$link_to_page = get_permalink(get_option('web_invoice_web_invoice_page'));
 
-
 	$hashed_invoice_id = md5($invoice_id);
 	if(get_option("permalink_structure")) { $link = $link_to_page . "?invoice_id=" .$hashed_invoice_id; }
 	else { $link =  $link_to_page . "&invoice_id=" . $hashed_invoice_id; }
+
+	return $link;
+}
+
+function web_invoice_build_invoice_link_paypal($invoice_id) {
+	// in invoice class
+	global $wpdb;
+
+	$link_to_page = get_permalink(get_option('web_invoice_web_invoice_page'));
+
+	if(get_option("permalink_structure")) { $link = $link_to_page . "?paypal_ipn=1&invoice_id=" .$invoice_id; }
+	else { $link =  $link_to_page . "&paypal_ipn=1&invoice_id=" . $invoice_id; }
 
 	return $link;
 }
@@ -692,6 +742,7 @@ function web_invoice_complete_removal()
 	// PayPal
 	delete_option('web_invoice_paypal_address');
 	delete_option('web_invoice_paypal_only_button');
+	delete_option('web_invoice_paypal_sandbox');
 	
 	// Payflow
 	delete_option('web_invoice_payflow_login');
@@ -1550,6 +1601,8 @@ function web_invoice_process_cc_transaction($cc_data) {
 					web_invoice_update_invoice_meta($invoice_id, 'pfp_status', 'active');
 					
 					web_invoice_update_log($invoice_id, 'subscription', ' Subscription initiated, Subcription ID - ' . $arb->getSubscriberID());
+
+                                        web_invoice_paid($invoice_id);
 					web_invoice_mark_as_paid($invoice_id);
 				}
 	
@@ -1694,6 +1747,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 	
 				//Mark invoice as paid
 				web_invoice_paid($invoice_id);
+                                web_invoice_mark_as_paid($invoice_id);
 				// if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
 	
 				if($recurring) {
@@ -2111,6 +2165,7 @@ function web_invoice_process_settings() {
 	// PayPal
 	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 	if(isset($_POST['web_invoice_paypal_only_button'])) update_option('web_invoice_paypal_only_button', $_POST['web_invoice_paypal_only_button']);
+	if(isset($_POST['web_invoice_paypal_sandbox'])) update_option('web_invoice_paypal_sandbox', $_POST['web_invoice_paypal_sandbox']);
 
 	// Payflow
 	if(isset($_POST['web_invoice_payflow_login'])) update_option('web_invoice_payflow_login', $_POST['web_invoice_payflow_login']);
