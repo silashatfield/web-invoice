@@ -1896,7 +1896,7 @@ function web_invoice_currency_symbol_format($currency = "USD" )
 	'USD'=> __('$%s'),
 	'BRL'=> __('R$%s'),
 	'ZAR'=> __('R%s'),
-        'AUD'=> __('$%s'),
+	'AUD'=> __('$%s'),
 	);
 
 
@@ -1904,7 +1904,7 @@ function web_invoice_currency_symbol_format($currency = "USD" )
 	{
 		if($currency == $value) { return $display; $success = true; break;}
 	}
-	if(!$success) return __("{$currency}%d");
+	if(!$success) return __("{$currency}%s");
 }
 
 function web_invoice_contextual_help_list($content) {
