@@ -4,7 +4,7 @@ Donate link: http://mohanjith.com/c/wordpress
 Tags: bill, moneybookers, google checkout, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
 Tested up to: 3.0.0
-Stable tag: trunk
+Stable tag: 2.0.1
 
 Web-Invoice lets you create and send web invoices and setup recurring billing for your clients.
 
@@ -54,6 +54,7 @@ Web Invoice is already translated to:
 * Belarusian (be_BY) by iam, http://www.antsar.info
 * Portugese (pt_BR) by André Luiz, http://andrewebmaster.com.br
 * Spanish (es_ES) by Danilo Casati, http://www.e-rgonomy.com/
+* Swidish (sv_SE) by Lena Petersson, http://designerstudion.se/
 
 If you like this plugin please give it a good rating, and consider saying thanks, sponsoring a feature or making a donation.
 
@@ -82,6 +83,12 @@ Please visit the [Web Invoice community forum](http://mohanjith.com/forum/forum.
 1. Frontend Example
 
 == Change Log ==
+
+**Version 2.0.2**
+
+* PDF UTF support
+* Swedish localization
+* Multiple Tax rates
 
 **Version 2.0.1**
 

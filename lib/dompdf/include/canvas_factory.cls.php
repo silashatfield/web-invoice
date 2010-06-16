@@ -58,6 +58,8 @@ class Canvas_Factory {
 
     $backend = strtolower(DOMPDF_PDF_BACKEND);
     
+    print $class;
+    
     if ( isset($class) && class_exists($class, false) )
       $class .= "_Adapter";
     

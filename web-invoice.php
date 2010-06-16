@@ -4,10 +4,10 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 2.0.1
+ Version: 2.0.2 beta 1
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
- Stable tag: trunk
+ Stable tag: 2.0.1
  License: GPL
 
  Copyright 2010  S H Mohanjith (email : moha@mohanjith.net)
@@ -235,7 +235,7 @@ class Web_Invoice {
 		$Web_Invoice_Decider = new Web_Invoice_Decider('overview');
 
 		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
-		if(!function_exists('curl_exec')) echo "<div id=\"message\" class='error' ><p>cURL is not turned on on your server, credit card processing will not work. If you have access to your php.ini file, activate <b>extension=php_curl.dll</b>.</p></div>";
+		if(!function_exists('curl_exec')) echo "<div id=\"message\" class='error' ><p>".__('cURL is not turned on on your server, credit card processing will not work. If you have access to your php.ini file, activate <b>extension=php_curl.dll</b>.')."</p></div>";
 		echo $Web_Invoice_Decider->display();
 	}
 	
@@ -287,7 +287,7 @@ class Web_Invoice {
 				$invoice_id = web_invoice_md5_to_invoice($md5_invoice_id);
 				
 				//Check to see if this is a credit card transaction, if so process
-				if(web_invoice_does_invoice_exist($invoice_id)) { web_invoice_process_cc_transaction($_POST); exit; }
+				if(web_invoice_does_invoice_exist($invoice_id)) { web_invoice_process_cc_transaction($_POST); exit(0); }
 			}
 			
 			if (isset($_GET['invoice_id'])) {

@@ -1,123 +1,143 @@
-# Copyright (C) YEAR S H Mohanjith
-# This file is distributed under the same license as the PACKAGE package.
-#
-# , 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: web-invoice\n"
+"Project-Id-Version: Web Invoice v2.0.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/web-invoice\n"
 "POT-Creation-Date: 2010-06-16 08:24+0000\n"
-"PO-Revision-Date: 2010-06-16 14:01+0530\n"
+"PO-Revision-Date: 2010-06-16 14:00+0530\n"
 "Last-Translator: S H Mohanjith <moha@mohanjith.net>\n"
-"Language-Team: American English <kde-i18n-doc@lists.kde.org>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Language: English\n"
-"X-Poedit-Country: UNITED KINGDOM\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ../\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: .\n"
 
+# @ web-invoice
 #: Display.php:34
 #: Display.php:653
 msgid "Invoice page not selected. "
-msgstr ""
+msgstr "Fakturasida ej vald."
 
+# @ web-invoice
 #: Display.php:35
 #: Display.php:654
 msgid "Payment method not set. "
-msgstr ""
+msgstr "Betalsätt ej konfigurerat."
 
+# @ web-invoice
 #: Display.php:37
 #: Display.php:656
 msgid "Visit "
-msgstr ""
+msgstr "Besök"
 
+# @ web-invoice
 #: Display.php:37
 #: Display.php:656
 msgid " to configure."
-msgstr ""
+msgstr "att konfigurera."
 
+# @ web-invoice
 #: Display.php:41
 #: Display.php:660
 msgid "The plugin database tables are gone, deactivate and reactivate plugin to re-create them."
-msgstr ""
+msgstr "Plugin-programmets databastabeller är borttagna, avaktivera och återaktivera plugin för att återskapa dem."
 
+# @ web-invoice
 #: Display.php:51
 msgid "Invoice Overview"
-msgstr ""
+msgstr "Faktura Översikt"
 
+# @ web-invoice
 #: Display.php:55
 #: Display.php:376
 msgid "-- Actions --"
-msgstr ""
+msgstr "- Aktiviteter -"
 
+# @ web-invoice
 #: Display.php:56
 #: Display.php:377
 msgid "Send Invoice(s)"
-msgstr ""
+msgstr "Skicka Faktura(or)"
 
+# @ web-invoice
 #: Display.php:57
 #: Display.php:378
 msgid "Send Reminder(s)"
-msgstr ""
+msgstr "Skicka Påminnelse(r)"
 
+# @ web-invoice
 #: Display.php:58
 #: Display.php:380
 msgid "Archive Invoice(s)"
-msgstr ""
+msgstr "Arkivera Faktura(or)"
 
+# @ web-invoice
 #: Display.php:59
 #: Display.php:381
 msgid "Un-Archive Invoice(s)"
-msgstr ""
+msgstr "Avarkivera Faktura(or)"
 
+# @ web-invoice
 #: Display.php:60
 msgid "Mark as Sent"
-msgstr ""
+msgstr "Markera som skickad"
 
+# @ web-invoice
 #: Display.php:61
 #: Display.php:379
 msgid "Mark as Paid"
-msgstr ""
+msgstr "Markera som Betald"
 
+# @ web-invoice
 #: Display.php:62
 #: Display.php:383
 msgid "Delete"
-msgstr ""
+msgstr "Ta bort"
 
+# @ web-invoice
 #: Display.php:68
 #: Display.php:219
 msgid "Filter:"
-msgstr ""
+msgstr "Filtrera:"
 
+# @ web-invoice
 #: Display.php:69
 #: Display.php:220
 msgid "All Invoices"
-msgstr ""
+msgstr "Alla fakturor"
 
+# @ web-invoice
 #: Display.php:71
 #: Display.php:222
 msgid "Paid"
-msgstr ""
+msgstr "Betald"
 
+# @ web-invoice
 #: Display.php:73
 #: Display.php:224
 msgid "Unpaid"
-msgstr ""
+msgstr "Obetalt"
 
+# @ web-invoice
 #: Display.php:75
 #: Display.php:226
 msgid "Custom: "
-msgstr ""
+msgstr "Anpassad:"
 
+# @ web-invoice
 #: Display.php:87
 #: Display.php:238
 #: Display.php:404
 msgid "Invoice Id"
-msgstr ""
+msgstr "Faktura nr"
 
+# @ web-invoice
 #: Display.php:88
 #: Display.php:239
 #: Display.php:405
@@ -126,185 +146,223 @@ msgstr ""
 #: Display.php:1032
 #: Display.php:1048
 msgid "Subject"
-msgstr ""
+msgstr "Fakturaärende"
 
+# @ web-invoice
 #: Display.php:89
 #: Display.php:240
 #: Display.php:406
 msgid "Amount"
-msgstr ""
+msgstr "Belopp"
 
+# @ web-invoice
 #: Display.php:90
 #: Display.php:241
 #: Display.php:407
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
+# @ web-invoice
 #: Display.php:91
 #: Display.php:408
 msgid "User"
-msgstr ""
+msgstr "Användare"
 
+# @ web-invoice
 #: Display.php:138
 #: Display.php:287
 #: Display.php:458
 msgid " Paid"
-msgstr ""
+msgstr "Betald"
 
+# @ web-invoice
 #: Display.php:146
 #: Display.php:295
 #: Display.php:466
 msgid "Sent Today. "
-msgstr ""
+msgstr "Skickats idag."
 
+# @ web-invoice
 #: Display.php:147
 #: Display.php:296
 #: Display.php:467
 msgid "Sent Yesterday. "
-msgstr ""
+msgstr "Sändes i går."
 
+# @ web-invoice
 #: Display.php:148
 #: Display.php:297
 #: Display.php:468
 #, php-format
 msgid "Sent %s days ago. "
-msgstr ""
+msgstr "Sändes för %s dagar sedan."
 
+# @ web-invoice
 #: Display.php:151
 #: Display.php:300
 #: Display.php:471
 msgid "Not Sent"
-msgstr ""
+msgstr "Ej Avsänt"
 
+# @ web-invoice
 #: Display.php:162
 #: Display.php:314
 #: Display.php:485
 msgid "View Web Invoice"
-msgstr ""
+msgstr "Se Webb Faktura"
 
+# @ web-invoice
 #: Display.php:164
 #: Display.php:487
 msgid "Copy this link and add to a post/page/widget to allow unprivileged users create invoices for self."
-msgstr ""
+msgstr "Kopiera denna länk och lägg den till en post / sida / widget för att tillåta icke registrerade användare att skapa fakturor för eget bruk."
 
+# @ web-invoice
 #: Display.php:165
 #: Display.php:488
 msgid "Self service template"
-msgstr ""
+msgstr "Självbetjänings mall"
 
+# @ web-invoice
 #: Display.php:178
 msgid "You have not created any invoices yet, "
-msgstr ""
+msgstr "Du har inte skapat några fakturor ännu,"
 
+# @ web-invoice
 #: Display.php:179
 #: Display.php:502
 msgid "create one now."
-msgstr ""
+msgstr "skapa faktura nu."
 
+# @ web-invoice
 #: Display.php:189
 #: Display.php:335
 #: Display.php:514
 msgid "Show / Hide Archived"
-msgstr ""
+msgstr "Visa / Dölj Arkiverade"
 
+# @ web-invoice
 #: Display.php:212
 #: web-invoice.php:145
 msgid "Invoices"
-msgstr ""
+msgstr "Fakturor"
 
+# @ web-invoice
 #: Display.php:325
 msgid "You do not have any invoices yet"
-msgstr ""
+msgstr "Du har inga fakturor ännu"
 
+# @ web-invoice
 #: Display.php:358
 msgid "Recurring Billing Overview"
-msgstr ""
+msgstr "Översikt Återkommande Fakturering"
 
+# @ web-invoice
 #: Display.php:362
 #, php-format
 msgid "You need a %4$s account with Merchant status, %5$s account, %6$s account or a credit card processing account to use recurring billing. You may get an ARB (Automated Recurring Billing) account from %1$s (800-546-1997), %2$s (888-845-9457) or %3$s (866-400-9706)."
-msgstr ""
+msgstr "Du behöver ett %4$s konto med Merchant status, %5$s konto, %6$s konto eller ett kreditkorts konto för att använda återkommande fakturering. Du kan få ett ARB (Automatiserad Återkommande fakturering) konto från %1$s (800-546-1997), %2$s (888-845-9457) eller %3$s (866-400-9706)."
 
+# @ web-invoice
 #: Display.php:368
 msgid "Once you have an account, enter in your username and transaction key into the "
-msgstr ""
+msgstr "När du har ett konto, ange ditt användarnamn och transaktionsnyckel på  "
 
+# @ web-invoice
 #: Display.php:369
 msgid "settings page"
-msgstr ""
+msgstr "inställningssidan"
 
+# @ web-invoice
 #: Display.php:383
 msgid "If you delete a recurring invoice, the subscription will be cancelled."
-msgstr ""
+msgstr "Om du tar bort en återkommande faktura, kommer abonnemanget annulleras."
 
+# @ web-invoice
 #: Display.php:385
 msgid "Apply"
-msgstr ""
+msgstr "Välj"
 
+# @ web-invoice
 #: Display.php:390
 msgid "Filter: "
-msgstr ""
+msgstr "Filtrera:"
 
+# @ web-invoice
 #: Display.php:456
 msgid " Cancelled"
-msgstr ""
+msgstr "Avslutad"
 
+# @ web-invoice
 #: Display.php:474
 msgid "Active Recurring"
-msgstr ""
+msgstr "Aktivt Återkommande"
 
+# @ web-invoice
 #: Display.php:501
 msgid "You have not created any recurring invoices yet, "
-msgstr ""
+msgstr "Du har inte skapat några återkommande fakturor ännu,"
 
+# @ web-invoice
 #: Display.php:524
 msgid "Save and Preview"
-msgstr ""
+msgstr "Spara och Förhandsgranska"
 
+# @ web-invoice
 #: Display.php:526
 msgid "This is what your invoice will appear like in the email message. The recipient will see the itemized list after following their link to your website."
-msgstr ""
+msgstr "Så här ser din faktura ut i e-postmeddelandet. Mottagaren kommer att se den specificerad listan när de följer sin länk till din webbplats."
 
+# @ web-invoice
 #: Display.php:551
 msgid "Do not use the back button or you could have duplicates."
-msgstr ""
+msgstr "Använd inte bakåtknappen då dubbletter kan skapas."
 
+# @ web-invoice
 #: Display.php:668
 msgid "New Web Invoice"
-msgstr ""
+msgstr "Ny Webb Faktura"
 
+# @ web-invoice
 #: Display.php:674
 #: web-invoice.php:140
 msgid "Manage Invoice"
-msgstr ""
+msgstr "Hantera Faktura"
 
+# @ web-invoice
 #: Display.php:679
 msgid "Invoice Paid"
-msgstr ""
+msgstr "Faktura Betald"
 
+# @ web-invoice
 #: Display.php:681
 #: Display.php:685
 #: Display.php:693
 #, php-format
 msgid "%s on "
-msgstr ""
+msgstr "%s på"
 
+# @ web-invoice
 #: Display.php:683
 msgid "Recurring Billing Initiated"
-msgstr ""
+msgstr "Återkommande Fakturering Startad"
 
+# @ web-invoice
 #: Display.php:689
 msgid "Recurring Billing Problems"
-msgstr ""
+msgstr "Återkommande Fakturering Fel"
 
+# @ web-invoice
 #: Display.php:710
 msgid "Client Information"
-msgstr ""
+msgstr "Kundinformation"
 
+# @ web-invoice
 #: Display.php:714
 msgid "Your business name isn't set, go to Settings page to set it."
-msgstr ""
+msgstr "Din Företagsnamn har ej angivits, gå till sidan Inställningar för att ange det "
 
+# @ web-invoice
 #: Display.php:716
 #: Display.php:2461
 #: Display.php:2566
@@ -316,12 +374,14 @@ msgstr ""
 #: Display.php:2942
 #: Display.php:3039
 msgid "Email Address"
-msgstr ""
+msgstr "E-postadress"
 
+# @ web-invoice
 #: Display.php:718
 msgid "Go to User Profile"
-msgstr ""
+msgstr "Gå till Användarprofil"
 
+# @ web-invoice
 #: Display.php:722
 #: Display.php:2410
 #: Display.php:2527
@@ -330,332 +390,410 @@ msgstr ""
 #: Display.php:2889
 #: Display.php:3016
 msgid "Billing Information"
-msgstr ""
+msgstr "Faktureringsinformation"
 
+# @ web-invoice
 #: Display.php:726
 msgid "Set First Name"
-msgstr ""
+msgstr "Ange Förnamn"
 
+# @ web-invoice
 #: Display.php:729
 msgid "Set Last Name"
-msgstr ""
+msgstr "Ange Efternamn"
 
+# @ web-invoice
 #: Display.php:732
 msgid "Set Company"
-msgstr ""
+msgstr "Ange Företagsnamn"
 
+# @ web-invoice
 #: Display.php:735
 msgid "Set Street Address"
-msgstr ""
+msgstr "Ange Gatuadress"
 
+# @ web-invoice
 #: Display.php:738
 msgid "Set City"
-msgstr ""
+msgstr "Ange Stad"
 
+# @ web-invoice
 #: Display.php:741
 msgid "Set State"
-msgstr "Set State/Province/County"
+msgstr "Ange Stat"
 
+# @ web-invoice
 #: Display.php:744
 msgid "Set Zip Code"
-msgstr "Set Zip/Postal Code"
+msgstr "Ange Postnummer"
 
+# @ web-invoice
 #: Display.php:747
 msgid "Set Country"
-msgstr ""
+msgstr "Ange Land"
 
+# @ web-invoice
 #: Display.php:752
 #: Display.php:2088
 msgid "Tax ID"
-msgstr ""
+msgstr "F-skatt nr."
 
+# @ web-invoice
 #: Display.php:757
 msgid "Set Tax ID"
-msgstr ""
+msgstr "Ange F-skatt nr."
 
+# @ web-invoice
 #: Display.php:765
 #: web-invoice.php:141
 msgid "Recurring Billing"
-msgstr ""
+msgstr "Återkommande Fakturering"
 
+# @ web-invoice
 #: Display.php:770
 msgid "Create a recurring billing schedule for this invoice."
-msgstr ""
+msgstr "Skapa en återkommande faktureringsrutin för denna faktura."
 
+# @ web-invoice
 #: Display.php:780
 msgid "A name to identify this subscription by in addition to the invoice id. (ex: 'standard hosting')"
-msgstr ""
+msgstr "Ett identifierbart namn för denna prenumeration utöver fakturanummret. (Ex: 'månadsavgift webbhotell')"
 
+# @ web-invoice
 #: Display.php:780
 msgid "Subscription Name"
-msgstr ""
+msgstr "Prenumerations Namn"
 
+# @ web-invoice
 #: Display.php:785
 msgid "Start Date"
-msgstr ""
+msgstr "Startdatum"
 
+# @ web-invoice
 #: Display.php:786
 msgid "Start automatically as soon as the customer enters their billing information. "
-msgstr ""
+msgstr "Startas automatiskt så snart kund lagt in sin faktureringsinformation."
 
+# @ web-invoice
 #: Display.php:788
 msgid "Specify Start Date"
-msgstr ""
+msgstr "Ange startdatum"
 
+# @ web-invoice
 #: Display.php:794
 #: Display.php:961
 msgid "In One Week"
-msgstr ""
+msgstr "På en vecka"
 
+# @ web-invoice
 #: Display.php:796
 #: Display.php:963
 msgid "In 30 Days"
-msgstr ""
+msgstr "I 30 dagar"
 
+# @ web-invoice
 #: Display.php:799
 msgid "Start automatically"
-msgstr ""
+msgstr "Starta automatiskt"
 
+# @ web-invoice
 #: Display.php:806
 msgid "This will be the number of times the client will be billed. (ex: 12)"
-msgstr ""
+msgstr "Så här många gånger kommer kunden att faktureras. (Ex: 12)"
 
+# @ web-invoice
 #: Display.php:806
 msgid "Bill Every"
-msgstr ""
+msgstr "Fakturera Varje"
 
+# @ web-invoice
 #: Display.php:808
 msgid "year(s)"
-msgstr ""
+msgstr "år(en)"
 
+# @ web-invoice
 #: Display.php:808
 msgid "month(s)"
-msgstr ""
+msgstr "månad(er)"
 
+# @ web-invoice
 #: Display.php:808
 msgid "days"
-msgstr ""
+msgstr "dagar"
 
+# @ web-invoice
 #: Display.php:813
 msgid "Keep it under the maximum of 9999."
-msgstr ""
+msgstr "Håll det under maximala 9999."
 
+# @ web-invoice
 #: Display.php:813
 msgid "Total Billing Cycles"
-msgstr ""
+msgstr "Totala Faktureringscykler"
 
+# @ web-invoice
 #: Display.php:819
 msgid "All <b>recurring billing</b> fields must be filled out to activate recurring billing. "
-msgstr ""
+msgstr "Alla fält för <b>återkommande fakturering</b> måste fyllas i för att aktivera funktionen."
 
+# @ web-invoice
 #: Display.php:821
 msgid "Pause Recurring Billing"
-msgstr ""
+msgstr "Pausa Återkommande Fakturering"
 
+# @ web-invoice
 #: Display.php:823
 msgid "Restart Recurring Billing"
-msgstr ""
+msgstr "Starta Om Återkommande Fakturering"
 
+# @ web-invoice
 #: Display.php:825
 msgid "Cancel Recurring Billing"
-msgstr ""
+msgstr "Avbryt Återkommande Fakturering"
 
+# @ web-invoice
 #: Display.php:833
 msgid "Invoice Details"
-msgstr ""
+msgstr "Fakturainformation"
 
+# @ web-invoice
 #: Display.php:843
 msgid "Description / PO"
-msgstr ""
+msgstr "Beskrivning"
 
+# @ web-invoice
 #: Display.php:848
 msgid "Itemized List"
-msgstr ""
+msgstr "Specificerad Lista"
 
+# @ web-invoice
 #: Display.php:852
 msgid "ID"
-msgstr ""
+msgstr "Nr:"
 
+# @ web-invoice
 #: Display.php:853
 #: Display.php:2644
 #: Display.php:2680
 msgid "Name"
-msgstr ""
+msgstr "Vara, tjänst"
 
+# @ web-invoice
 #: Display.php:854
 msgid "Description"
-msgstr ""
+msgstr "Beskrivning"
 
+# @ web-invoice
 #: Display.php:855
 #: Display.php:1928
 msgid "Quantity"
-msgstr ""
+msgstr "Antal"
 
+# @ web-invoice
 #: Display.php:856
 msgid "Unit Price"
-msgstr ""
+msgstr "Enhetspris"
 
+# @ web-invoice
 #: Display.php:857
 msgid "Total"
-msgstr ""
+msgstr "Totalt"
 
+# @ web-invoice
 #: Display.php:890
 msgid "Add Another Item"
-msgstr ""
+msgstr "Lägg till en artikel"
 
+# @ web-invoice
 #: Display.php:897
 #: Display.php:1983
 #: Display.php:1987
 msgid "Invoice Total"
-msgstr ""
+msgstr "Faktura Totalt"
 
+# @ web-invoice
 #: Display.php:902
 msgid "Recurring Invoice Total"
-msgstr ""
+msgstr "Återkommande Fakturering Totalt"
 
+# @ web-invoice
 #: Display.php:915
 msgid "Publish"
-msgstr ""
+msgstr "Publicera"
 
+# @ web-invoice
 #: Display.php:922
 msgid "Invoice ID "
-msgstr ""
+msgstr "Faktura Nr"
 
+# @ web-invoice
 #: Display.php:929
 msgid "Custom Invoice ID"
-msgstr ""
+msgstr "Anpassat Fakturanr"
 
+# @ web-invoice
 #: Display.php:935
 #: Display.php:1970
 msgid "Tax"
-msgstr ""
+msgstr "Moms"
 
+# @ web-invoice
 #: Display.php:942
 msgid "Currency"
-msgstr ""
+msgstr "Valuta"
 
+# @ web-invoice
 #: Display.php:952
 msgid "Due Date"
-msgstr ""
+msgstr "Förfallodatum"
 
+# @ web-invoice
 #: Display.php:965
 msgid "Clear"
-msgstr ""
+msgstr "Rensa"
 
+# @ web-invoice
 #: Display.php:990
 msgid "This Invoice's History "
-msgstr ""
+msgstr "Denna Fakturas Historik"
 
+# @ web-invoice
 #: Display.php:991
 msgid "Clear Log"
-msgstr ""
+msgstr "Töm logg"
 
+# @ web-invoice
 #: Display.php:1006
 #: web-invoice.php:142
 msgid "E-mail templates"
-msgstr ""
+msgstr "E-post mallar"
 
+# @ web-invoice
 #: Display.php:1012
 msgid "Invoice e-mail"
-msgstr ""
+msgstr "Faktura e-post"
 
+# @ web-invoice
 #: Display.php:1022
 #: Display.php:1038
 #: Display.php:1054
 msgid "Content"
-msgstr ""
+msgstr "Innehåll"
 
+# @ web-invoice
 #: Display.php:1028
 msgid "Reminder e-mail"
-msgstr ""
+msgstr "Påminnelse via e-post"
 
+# @ web-invoice
 #: Display.php:1044
 msgid "Receipt e-mail"
-msgstr ""
+msgstr "Kvitto e-post"
 
+# @ web-invoice
 #: Display.php:1061
 #: Display.php:1855
 msgid "Update"
-msgstr ""
+msgstr "Uppdatera"
 
+# @ web-invoice
 #: Display.php:1094
 msgid "Invoice Settings"
-msgstr ""
+msgstr "Faktura Inställningar"
 
+# @ web-invoice
 #: Display.php:1102
 msgid "Select the page where your invoices will be displayed. Clients must follow their secured link, simply opening the page will not show any invoices."
-msgstr ""
+msgstr "Välj den sida där dina fakturor kommer att visas. Kunderna måste följa egna säkerhetslänkar, att bara att öppna sidan visar inte några fakturor."
 
+# @ web-invoice
 #: Display.php:1102
 msgid "Page to Display Invoices"
-msgstr ""
+msgstr "Sida för Visning av Fakturor"
 
+# @ web-invoice
 #: Display.php:1118
 msgid "If your website has an SSL certificate and you want to use it, the link to the invoice will be formatted for https."
-msgstr ""
+msgstr "Om din webbplats har ett SSL-certifikat och du vill använda det, kommer länken till fakturan att formateras för https."
 
+# @ web-invoice
 #: Display.php:1118
 msgid "Protocol to Use for Invoice URLs"
-msgstr ""
+msgstr "Protokoll att använda för Faktura Webbadresser"
 
+# @ web-invoice
 #: Display.php:1129
 msgid "If enforced, WordPress will automatically reload the invoice page into HTTPS mode even if the user attemps to open it in non-secure mode."
-msgstr ""
+msgstr "Om påtvingat, kommer WordPress automatiskt ladda fakturasidan i HTTPS-läge även om användaren försöker att öppna det i ett icke-säkert läge."
 
+# @ web-invoice
 #: Display.php:1129
 msgid "Enforce HTTPS"
-msgstr ""
+msgstr "Verkställa HTTPS"
 
+# @ web-invoice
 #: Display.php:1133
 #: Display.php:1315
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
+# @ web-invoice
 #: Display.php:1135
 #: Display.php:1315
 msgid "No"
-msgstr ""
+msgstr "Nej"
 
+# @ web-invoice
 #: Display.php:1137
 msgid "Do you need an SSL Certificate?"
-msgstr ""
+msgstr "Behöver du ett SSL-certifikat?"
 
+# @ web-invoice
 #: Display.php:1142
 msgid "Business Name:"
-msgstr ""
+msgstr "Företagets namn:"
 
+# @ web-invoice
 #: Display.php:1150
 msgid "This will display on the invoice page when printed for clients' records."
-msgstr ""
+msgstr "Detta visas på fakturasidan när den skrivs ut för kundens bokföring."
 
+# @ web-invoice
 #: Display.php:1150
 msgid "Business Address"
-msgstr ""
+msgstr "Företagsadress"
 
+# @ web-invoice
 #: Display.php:1156
 msgid "Business Phone"
-msgstr ""
+msgstr "Företagets Tel."
 
+# @ web-invoice
 #: Display.php:1164
 msgid "Business Tax ID"
-msgstr ""
+msgstr "Företagets F-skattenr"
 
+# @ web-invoice
 #: Display.php:1173
 msgid "Address used to send out e-mail to client with web invoice link."
-msgstr ""
+msgstr "Adress för att skicka ut e-post till kund med webb-faktura länk."
 
+# @ web-invoice
 #: Display.php:1173
 msgid "Return eMail Address"
-msgstr ""
+msgstr "Svars e-postadress"
 
+# @ web-invoice
 #: Display.php:1182
 msgid "An email will be sent automatically to client thanking them for their payment."
-msgstr ""
+msgstr "Ett mail skickas automatiskt till kunden för att tacka dem för deras betalning."
 
+# @ web-invoice
 #: Display.php:1182
 msgid "Send Payment Confirmation"
-msgstr ""
+msgstr "Skicka Betalningsbekräftelse"
 
+# @ web-invoice
 #: Display.php:1186
 #: Display.php:1198
 #: Display.php:1210
@@ -674,8 +812,9 @@ msgstr ""
 #: Display.php:1666
 #: Display.php:1707
 msgid "yes"
-msgstr ""
+msgstr "ja"
 
+# @ web-invoice
 #: Display.php:1188
 #: Display.php:1200
 #: Display.php:1212
@@ -694,483 +833,594 @@ msgstr ""
 #: Display.php:1668
 #: Display.php:1709
 msgid "no"
-msgstr ""
+msgstr "nej"
 
+# @ web-invoice
 #: Display.php:1194
 msgid "Send a copy of email sent to client thanking them to you."
-msgstr ""
+msgstr "Skicka en kopia av e-posten till klient där du tackat för deras betalning."
 
+# @ web-invoice
 #: Display.php:1194
 msgid "CC Payment Confirmation"
-msgstr ""
+msgstr "Kreditkort Betalningsbekräftelse"
 
+# @ web-invoice
 #: Display.php:1206
 msgid "Redirect to new invoice page after adding user."
-msgstr ""
+msgstr "Omdirigera till ny fakturasida efter att användare lagts till."
 
+# @ web-invoice
 #: Display.php:1206
 msgid "Redirect after adding user"
-msgstr ""
+msgstr "Omdirigera efter att användare lagts till"
 
+# @ web-invoice
 #: Display.php:1217
 msgid "User Level to Manage web-invoice"
-msgstr ""
+msgstr "Användarnivå för åtkomst till Webb-faktura"
 
+# @ web-invoice
 #: Display.php:1234
 msgid "Allow users not allowed to manage web-invoice to create invoices for self from templates with no access to the admin dashboard. Anonymous users are not allowed to create any invoices."
-msgstr ""
+msgstr "Tillåt icke auktoriserade användare att använda web-faktura för att skapa fakturor för eget bruk från fakturamall, detta ger inte tillgång till administrationspanelen. Anonyma användare tillåts inte skapa faktura."
 
+# @ web-invoice
 #: Display.php:1235
 msgid "Allow users to create invoices for self"
-msgstr ""
+msgstr "Tillåt användare att skapa fakturor för eget bruk"
 
+# @ web-invoice
 #: Display.php:1249
 msgid "Invoice Page Display Settings:"
-msgstr ""
+msgstr "Fakturasidans Visningsinställningar:"
 
+# @ web-invoice
 #: Display.php:1254
 msgid "Disable this if you want to use your own stylesheet."
-msgstr ""
+msgstr "Avaktivera om du vill använda din egen formatmall."
 
+# @ web-invoice
 #: Display.php:1255
 msgid "Use CSS"
-msgstr ""
+msgstr "Använd CSS"
 
+# @ web-invoice
 #: Display.php:1267
 msgid "Show your business name and address on invoice."
-msgstr ""
+msgstr "Visa ditt företags namn och adress på fakturan."
 
+# @ web-invoice
 #: Display.php:1267
 msgid "Show Address on Invoice"
-msgstr ""
+msgstr "Visa adress på Faktura"
 
+# @ web-invoice
 #: Display.php:1279
 msgid "Show billing name and address on invoice."
-msgstr ""
+msgstr "Visa fakturamottagarens namn och adress på fakturan."
 
+# @ web-invoice
 #: Display.php:1279
 msgid "Show Billing Address on Invoice"
-msgstr ""
+msgstr "Visa faktureringsadress på Faktura"
 
+# @ web-invoice
 #: Display.php:1291
 msgid "Show quantity breakdowns in the itemized list on the front-end."
-msgstr ""
+msgstr "Visa kvantiteten i den specificerade listan på front-end."
 
+# @ web-invoice
 #: Display.php:1291
 msgid "Quantities on Front End"
-msgstr ""
+msgstr "Kvantitet på Front End"
 
+# @ web-invoice
 #: Display.php:1294
 msgid "Show"
-msgstr ""
+msgstr "Visa"
 
+# @ web-invoice
 #: Display.php:1296
 msgid "Hide"
-msgstr ""
+msgstr "Dölj"
 
+# @ web-invoice
 #: Display.php:1302
 msgid "Payment Settings"
-msgstr ""
+msgstr "Betal Inställningar"
 
+# @ web-invoice
 #: Display.php:1307
 msgid "Default Currency:"
-msgstr ""
+msgstr "Standard Valuta:"
 
+# @ web-invoice
 #: Display.php:1314
 msgid "Special proxy must be used to process credit card transactions on GoDaddy servers."
-msgstr ""
+msgstr "Särskild proxyinställning skall användas för att behandla kreditkortstransaktioner på GoDaddy servrar."
 
+# @ web-invoice
 #: Display.php:1314
 msgid "Using Godaddy Hosting"
-msgstr ""
+msgstr "Används GoDaddy Hosting"
 
+# @ web-invoice
 #: Display.php:1321
 msgid "Some payment processors may not be available unless protocol is https and enforce https is selected."
-msgstr ""
+msgstr "Vissa betalprocesser är kanske inte tillgängliga om inte protokollet https används och tillämpa https väljs."
 
+# @ web-invoice
 #: Display.php:1321
 msgid "Payment Method:"
-msgstr ""
+msgstr "Betalningsmetod:"
 
+# @ web-invoice
 #: Display.php:1325
 #: Display.php:2279
 msgid "AlertPay"
-msgstr ""
+msgstr "AlertPay"
 
+# @ web-invoice
 #: Display.php:1327
 msgid "Credit Card"
-msgstr ""
+msgstr "Kreditkort"
 
+# @ web-invoice
 #: Display.php:1329
 #: Display.php:2287
 msgid "Moneybookers"
-msgstr ""
+msgstr "Moneybookers"
 
+# @ web-invoice
 #: Display.php:1331
 #: Display.php:2291
 msgid "Google Checkout"
-msgstr ""
+msgstr "Google Checkout"
 
+# @ web-invoice
 #: Display.php:1333
 #: Display.php:2295
 msgid "PayPal"
-msgstr ""
+msgstr "PayPal"
 
+# @ web-invoice
 #: Display.php:1335
 #: Display.php:2302
 msgid "PayPal Payflow"
-msgstr ""
+msgstr "PayPal Payflow"
 
+# @ web-invoice
 #: Display.php:1337
 msgid "PayPal Payflow Pro"
-msgstr ""
+msgstr "PayPal Payflow Pro"
 
+# @ web-invoice
 #: Display.php:1339
 msgid "Other/Bank details"
-msgstr ""
+msgstr "Övrigt / Bankuppgifter"
 
+# @ web-invoice
 #: Display.php:1341
 #: Display.php:2283
 msgid "Sage Pay"
-msgstr ""
+msgstr "Sage Pay"
 
+# @ web-invoice
 #: Display.php:1346
 msgid "Your AlertPay username:"
-msgstr ""
+msgstr "Ditt AlertPay användarnamn:"
 
+# @ web-invoice
 #: Display.php:1352
 msgid "Do you need an AlertPay account?"
-msgstr ""
+msgstr "Behöver du ett AlertPay konto?"
 
+# @ web-invoice
 #: Display.php:1356
 msgid "Enable AlertPay IPN:"
-msgstr ""
+msgstr "Aktivera AlertPay IPN:"
 
+# @ web-invoice
 #: Display.php:1363
 msgid "Your alert URL is"
-msgstr ""
+msgstr "Din alert webbadress är"
 
+# @ web-invoice
 #: Display.php:1365
 #: Display.php:1469
 #: Display.php:1576
 msgid "Copy this link"
-msgstr ""
+msgstr "Kopiera den här länken"
 
+# @ web-invoice
 #: Display.php:1367
 msgid "Please note that AlertPay has issues with some SSL certificates. (Your milage may vary)."
-msgstr ""
+msgstr "Observera att AlertPay har problem med vissa SSL-certifikat."
 
+# @ web-invoice
 #: Display.php:1371
 msgid "AlertPay IPN security code:"
-msgstr ""
+msgstr "AlertPay IPN säkerhetskod:"
 
+# @ web-invoice
 #: Display.php:1378
 #: Display.php:1774
 msgid "Test / Live Mode:"
-msgstr ""
+msgstr "Test / Live-läge:"
 
+# @ web-invoice
 #: Display.php:1381
 #: Display.php:1777
 msgid "Test - Do Not Process Transactions"
-msgstr ""
+msgstr "Test - Transaktioner Behandlas Inte"
 
+# @ web-invoice
 #: Display.php:1383
 #: Display.php:1455
 #: Display.php:1596
 #: Display.php:1699
 #: Display.php:1779
 msgid "Live - Process Transactions"
-msgstr ""
+msgstr "Live - Transaktioner Behandlas"
 
+# @ web-invoice
 #: Display.php:1387
 msgid "AlertPay IPN IP:"
-msgstr ""
+msgstr "AlertPay IPN IP:"
 
+# @ web-invoice
 #: Display.php:1394
 msgid "Moneybookers Username:"
-msgstr ""
+msgstr "Moneybookers Användarnamn:"
 
+# @ web-invoice
 #: Display.php:1401
 msgid "Do you need a Moneybookers account?"
-msgstr ""
+msgstr "Behöver du ett Moneybookers konto?"
 
+# @ web-invoice
 #: Display.php:1406
 msgid "Moneybookers Username for recurring payments (optional):"
-msgstr ""
+msgstr "Moneybookers Användarnamn för återkommande betalningar (valfritt):"
 
+# @ web-invoice
 #: Display.php:1415
 msgid "Enable Moneybookers payment notifications:"
-msgstr ""
+msgstr "Aktivera Moneybookers betalmeddelanden:"
 
+# @ web-invoice
 #: Display.php:1425
 msgid "Moneybookers payment notification secret:"
-msgstr ""
+msgstr "Moneybookers betalmeddelande hemlig:"
 
+# @ web-invoice
 #: Display.php:1432
 msgid "Moneybookers payment notification IP:"
-msgstr ""
+msgstr "Moneybookers betalmeddelande IP:"
 
+# @ web-invoice
 #: Display.php:1440
 msgid "Google Checkout Merchant Id:"
-msgstr ""
+msgstr "Google Checkout Merchant ID:"
 
+# @ web-invoice
 #: Display.php:1446
 msgid "Do you need a Google Checkout account?"
-msgstr ""
+msgstr "Behöver du ett Google Checkout-konto?"
 
+# @ web-invoice
 #: Display.php:1450
 #: Display.php:1591
 #: Display.php:1692
 msgid "Sandbox / Live Mode:"
-msgstr ""
+msgstr "Sandbox / Live-läge:"
 
+# @ web-invoice
 #: Display.php:1453
 #: Display.php:1594
 #: Display.php:1697
 msgid "Sandbox - Do Not Process Transactions"
-msgstr ""
+msgstr "Sandbox - Transaktioner Behandlas inte "
 
+# @ web-invoice
 #: Display.php:1459
 msgid "Enable Google Checkout Level 2 integration:"
-msgstr ""
+msgstr "Aktivera Google Checkout Nivå 2 integration:"
 
+# @ web-invoice
 #: Display.php:1467
 msgid "HTML API callback URL is"
-msgstr ""
+msgstr "HTML API Svarswebbadress är"
 
+# @ web-invoice
 #: Display.php:1474
 msgid "Google Checkout merchant key:"
-msgstr ""
+msgstr "Google Checkout merchant nyckel:"
 
+# @ web-invoice
 #: Display.php:1481
 msgid "Google Checkout tax country/state:"
-msgstr ""
+msgstr "Google Checkout moms land/stat:"
 
+# @ web-invoice
 #: Display.php:1501
 msgid "PayPal Username:"
-msgstr ""
+msgstr "PayPal Användarnamn:"
 
+# @ web-invoice
 #: Display.php:1506
 #: Display.php:1535
 #: Display.php:1587
 msgid "Do you need a PayPal account?"
-msgstr ""
+msgstr "Behöver du ett PayPal-konto?"
 
+# @ web-invoice
 #: Display.php:1510
 msgid "Just PayPal button (No form):"
-msgstr ""
+msgstr "Enbart PayPal-knapp (inget formulär):"
 
+# @ web-invoice
 #: Display.php:1520
 msgid "PayPal Sandbox:"
-msgstr ""
+msgstr "PayPal Sandbox:"
 
+# @ web-invoice
 #: Display.php:1530
 msgid "PayPal Payflow Username:"
-msgstr ""
+msgstr "PayPal Payflow Användarnamn:"
 
+# @ web-invoice
 #: Display.php:1539
 msgid "PayPal Payflow Partner name:"
-msgstr ""
+msgstr "PayPal Payflow Partner namn:"
 
+# @ web-invoice
 #: Display.php:1546
 msgid "Just PayPal Payflow button (No form):"
-msgstr ""
+msgstr "Enbart PayPal Payflow-knapp (inget formulär):"
 
+# @ web-invoice
 #: Display.php:1556
 #: Display.php:1662
 #: Display.php:1703
 msgid "Display shipping details form:"
-msgstr ""
+msgstr "Visa leveransinformationen:"
 
+# @ web-invoice
 #: Display.php:1566
 msgid "Enable PayPal Payflow silent post integration:"
-msgstr ""
+msgstr "Aktivera PayPal Payflow silent post integration:"
 
+# @ web-invoice
 #: Display.php:1574
 msgid "Silent post URL is"
-msgstr ""
+msgstr "Silent post webbadress:"
 
+# @ web-invoice
 #: Display.php:1582
 msgid "PayPal Payflow Pro Partner name:"
-msgstr ""
+msgstr "PayPal Payflow Pro Partner namn:"
 
+# @ web-invoice
 #: Display.php:1600
 msgid "PayPal Payflow Pro authentication mode:"
-msgstr ""
+msgstr "PayPal Payflow Pro autentiseringsläge:"
 
+# @ web-invoice
 #: Display.php:1604
 msgid "3TOKEN"
-msgstr ""
+msgstr "3TOKEN"
 
+# @ web-invoice
 #: Display.php:1606
 msgid "UNIPAY"
-msgstr ""
+msgstr "UNIPAY"
 
+# @ web-invoice
 #: Display.php:1608
 msgid "Website Payments Pro"
-msgstr ""
+msgstr "Website Payments Pro"
 
+# @ web-invoice
 #: Display.php:1612
 msgid "PayPal Payflow Pro Username:"
-msgstr ""
+msgstr "PayPal Payflow Pro Användarnamn:"
 
+# @ web-invoice
 #: Display.php:1619
 msgid "PayPal Payflow Pro Password:"
-msgstr ""
+msgstr "PayPal Payflow Pro Lösenord:"
 
+# @ web-invoice
 #: Display.php:1626
 msgid "PayPal Payflow Pro Signature:"
-msgstr ""
+msgstr "PayPal Payflow Pro Signatur:"
 
+# @ web-invoice
 #: Display.php:1634
 msgid "Website Payments Pro Vendor:"
-msgstr ""
+msgstr "Website Payments Pro återförsäljare:"
 
+# @ web-invoice
 #: Display.php:1641
 msgid "Website Payments Pro Username:"
-msgstr ""
+msgstr "Website Payments Pro Användarnamn:"
 
+# @ web-invoice
 #: Display.php:1648
 msgid "Website Payments Pro Password:"
-msgstr ""
+msgstr "Website Payments Pro Lösenord:"
 
+# @ web-invoice
 #: Display.php:1655
 msgid "PayPal Payflow Pro Third party e-mail address:"
-msgstr ""
+msgstr "PayPal Payflow Pro Tredjeparts e-postadress:"
 
+# @ web-invoice
 #: Display.php:1673
 msgid "Sage Pay vendor login name:"
-msgstr ""
+msgstr "Sage Pay säljares inloggningsnamn:"
 
+# @ web-invoice
 #: Display.php:1679
 msgid "Do you need a Sage Pay account?"
-msgstr ""
+msgstr "Behöver du ett Sage Pay konto?"
 
+# @ web-invoice
 #: Display.php:1684
 msgid "Sage Pay encryption password is different from your Sage Pay vendor password"
-msgstr ""
+msgstr "Sage Pay lösenordkryptering skiljer sig från ditt Sage Pay säljares lösenord"
 
+# @ web-invoice
 #: Display.php:1685
 msgid "Sage Pay encryption password:"
-msgstr ""
+msgstr "Sage Pay krypterat lösenord:"
 
+# @ web-invoice
 #: Display.php:1695
 msgid "Simulator - Do Not Process Transactions"
-msgstr ""
+msgstr "Simulering - Transaktioner Behandlas inte "
 
+# @ web-invoice
 #: Display.php:1714
 msgid "Other/Bank details:"
-msgstr ""
+msgstr "Övrigt / Bankuppgifter:"
 
+# @ web-invoice
 #: Display.php:1725
 msgid "Your credit card processor will provide you with a gateway username."
-msgstr ""
+msgstr "Din kreditkortstjänst ger dig ett användarnamn för din betalgateway "
 
+# @ web-invoice
 #: Display.php:1725
 msgid "Gateway Username"
-msgstr ""
+msgstr "Gateway Användarnamn"
 
+# @ web-invoice
 #: Display.php:1734
 msgid "You will be able to generate this in your credit card processor's control panel."
-msgstr ""
+msgstr "Du kommer kunna generera detta i din kreditkorttjänsts kontrollpanel."
 
+# @ web-invoice
 #: Display.php:1734
 msgid "Gateway Transaction Key"
-msgstr ""
+msgstr "Gateway Transaktionsnyckel"
 
+# @ web-invoice
 #: Display.php:1744
 msgid "This is the URL provided to you by your credit card processing company."
-msgstr ""
+msgstr "Det här är webbadressen som du fått av din kreditkortstjänsts företag."
 
+# @ web-invoice
 #: Display.php:1744
 msgid "Gateway URL"
-msgstr ""
+msgstr "Gateway Webbadress"
 
+# @ web-invoice
 #: Display.php:1750
 msgid "MerchantPlus"
-msgstr ""
+msgstr "MerchantPlus"
 
+# @ web-invoice
 #: Display.php:1752
 msgid "Authorize.Net"
-msgstr ""
+msgstr "Authorize.Net"
 
+# @ web-invoice
 #: Display.php:1754
 msgid "Authorize.Net Developer"
-msgstr ""
+msgstr "Authorize.Net Utvecklare"
 
+# @ web-invoice
 #: Display.php:1760
 msgid "Recurring billing gateway URL is most likely different from the Gateway URL, and will almost always be with Authorize.net. Be advised - test credit card numbers will be declined even when in test mode."
-msgstr ""
+msgstr "Den återkommande faktureringens webbadress skiljer sig troligen från Gateway webbadressen, och nästan alltid med Authorize.net. Märk väl - test med kreditkortsnummer kommer att avvisas även i testläge."
 
+# @ web-invoice
 #: Display.php:1760
 msgid "Recurring Billing Gateway URL"
-msgstr ""
+msgstr "Återkommande fakturering, Gateway webbadress"
 
+# @ web-invoice
 #: Display.php:1767
 msgid "Authorize.net ARB"
-msgstr ""
+msgstr "Authorize.net ARB"
 
+# @ web-invoice
 #: Display.php:1769
 msgid "Authorize.Net ARB Testing"
-msgstr ""
+msgstr "Authorize.Net ARB Test"
 
+# @ web-invoice
 #: Display.php:1785
 msgid "Advanced Gateway Settings"
-msgstr ""
+msgstr "Advanced Gateway inställningar"
 
+# @ web-invoice
 #: Display.php:1791
 msgid "Get this from your credit card processor. If the transactions are not going through, this character is most likely wrong."
-msgstr ""
+msgstr "Få den här från ditt kreditkortstjänst. Om transaktionerna inte går igenom, är detta sannolikt fel."
 
+# @ web-invoice
 #: Display.php:1791
 msgid "Delimiter Character"
-msgstr ""
+msgstr "Avgränsningstecknet"
 
+# @ web-invoice
 #: Display.php:1800
 msgid "Authorize.net default is blank. Otherwise, get this from your credit card processor. If the transactions are going through, but getting strange responses, this character is most likely wrong."
-msgstr ""
+msgstr "Authorize.net Standardläge är tomt. Om inte få detta genom din kreditkortstjänst. Om dina transaktioner går igenom men det ger konstiga svar, är detta tecken sannolikt fel."
 
+# @ web-invoice
 #: Display.php:1800
 msgid "Encapsulation Character"
-msgstr ""
+msgstr "Inkapslad Karaktär"
 
+# @ web-invoice
 #: Display.php:1808
 msgid "Merchant Email"
-msgstr ""
+msgstr "Säljarens e-postadress"
 
+# @ web-invoice
 #: Display.php:1816
 msgid "Email Customer (on success):"
-msgstr ""
+msgstr "Skicka E-post till Kund (när genomförts):"
 
+# @ web-invoice
 #: Display.php:1819
 #: Display.php:1846
 msgid "True"
-msgstr ""
+msgstr "Sant"
 
+# @ web-invoice
 #: Display.php:1821
 #: Display.php:1848
 msgid "False"
-msgstr ""
+msgstr "Falskt"
 
+# @ web-invoice
 #: Display.php:1826
 msgid "Customer Receipt Email Header"
-msgstr ""
+msgstr "Kundkvittots E-post rubrik "
 
+# @ web-invoice
 #: Display.php:1835
 msgid "Security: MD5 Hash"
-msgstr ""
+msgstr "Säkerhet: MD5 Hash"
 
+# @ web-invoice
 #: Display.php:1843
 msgid "Delim Data:"
-msgstr ""
+msgstr "Avskiljbar Data:"
 
 #: Display.php:1863
 msgid "Web Invoice Database Tables"
-msgstr ""
+msgstr "Web Invoice Databastabeller"
 
 #: Display.php:1869
 msgid "Main Table - "
-msgstr ""
+msgstr "Huvud Tabell"
 
 #: Display.php:1869
 #: Display.php:1870
@@ -1178,7 +1428,7 @@ msgstr ""
 #: Display.php:1872
 #: Display.php:1873
 msgid "Good"
-msgstr ""
+msgstr "Bra"
 
 #: Display.php:1869
 #: Display.php:1870
@@ -1186,61 +1436,71 @@ msgstr ""
 #: Display.php:1872
 #: Display.php:1873
 msgid "Not Found"
-msgstr ""
+msgstr "Ej funnen"
 
 #: Display.php:1870
 msgid "Meta Table - "
-msgstr ""
+msgstr "Meta tabell"
 
 #: Display.php:1871
 msgid "Log Table - "
-msgstr ""
+msgstr "Logg Tabell"
 
 #: Display.php:1872
 msgid "Payment Table - "
-msgstr ""
+msgstr "Betal Tabell"
 
 #: Display.php:1873
 msgid "Payment Meta Table - "
-msgstr ""
+msgstr "Meta Betaltabell"
 
+# @ web-invoice
 #: Display.php:1878
 msgid "Remove All Web Invoice Databases"
-msgstr ""
+msgstr "Ta bort samtliga Webbfaktureringens Databaser"
 
+# @ web-invoice
 #: Display.php:1879
 msgid "Only do this if you want to completely remove the plugin.  All invoices and logs will be gone... forever."
-msgstr ""
+msgstr "Utförs endast om du vill ta bort pluginprogrammet. Alla fakturor och loggar kommer att raderas permanent. OBS! Kan ej återskapas."
 
+# @ web-invoice
 #: Display.php:1888
 msgid "Do you need to accept credit cards?"
-msgstr ""
+msgstr "Kommer du acceptera betalning via kreditkort?"
 
+# @ web-invoice
 #: Display.php:1928
 msgid "Unit price"
-msgstr ""
+msgstr "Pris per enhet"
 
+# @ web-invoice
 #: Display.php:1930
 msgid "Item"
-msgstr ""
+msgstr "Artikel"
 
+# @ web-invoice
 #: Display.php:1930
 msgid "Cost"
-msgstr ""
+msgstr "Kostnad"
 
+# @ web-invoice
 #: Display.php:2038
 msgid "Billing / Invoicing Info"
-msgstr ""
+msgstr "Räknings / Fakturerings Info"
 
+# @ web-invoice
 #: Display.php:2043
 #: Display.php:2109
 msgid "Company"
-msgstr ""
+msgstr "Företag"
 
+# @ web-invoice
 #: Display.php:2049
 msgid "Street Address"
-msgstr ""
+msgstr "Gatuadress"
 
+# @ web-invoice
 #: Display.php:2055
 #: Display.php:2115
 #: Display.php:2474
@@ -1253,8 +1513,9 @@ msgstr ""
 #: Display.php:2955
 #: Display.php:3052
 msgid "City"
-msgstr ""
+msgstr "Stad"
 
+# @ web-invoice
 #: Display.php:2061
 #: Display.php:2121
 #: Display.php:2478
@@ -1267,18 +1528,21 @@ msgstr ""
 #: Display.php:2959
 #: Display.php:3056
 msgid "State (e.g. CA)"
-msgstr ""
+msgstr "Stat (om USA t.ex. CA)"
 
+# @ web-invoice
 #: Display.php:2064
 #: Display.php:2124
 msgid "Use two-letter state codes for safe credit card processing."
-msgstr ""
+msgstr "Använd två bokstävers stat-koder för säker behandla kreditkort."
 
+# @ web-invoice
 #: Display.php:2069
 #: Display.php:2129
 msgid "ZIP Code"
-msgstr "Zip/Postal Code"
+msgstr "Postnummer"
 
+# @ web-invoice
 #: Display.php:2075
 #: Display.php:2135
 #: Display.php:2465
@@ -1291,13 +1555,15 @@ msgstr "Zip/Postal Code"
 #: Display.php:2946
 #: Display.php:3043
 msgid "Phone Number"
-msgstr ""
+msgstr "Telefonnummer"
 
+# @ web-invoice
 #: Display.php:2078
 #: Display.php:2138
 msgid "Enforce 555-555-5555 format if you are using PayPal."
-msgstr ""
+msgstr "Utför 555-555-5555 format om du använder PayPal."
 
+# @ web-invoice
 #: Display.php:2083
 #: Display.php:2143
 #: Display.php:2486
@@ -1310,84 +1576,101 @@ msgstr ""
 #: Display.php:2967
 #: Display.php:3064
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
+# @ web-invoice
 #: Display.php:2099
 msgid "Create New Invoice For This User"
-msgstr ""
+msgstr "Skapa ny faktura för denna användare"
 
+# @ web-invoice
 #: Display.php:2104
 msgid "Shipping Info"
-msgstr ""
+msgstr "Leveransinformation"
 
+# @ web-invoice
 #: Display.php:2106
 #: Display.php:2677
 #: Display.php:2813
 #: Display.php:2931
 msgid "Same as Billing"
-msgstr ""
+msgstr "Samma som Fakturering"
 
+# @ web-invoice
 #: Display.php:2166
 #, php-format
 msgid "%s, thank you for your payment!"
-msgstr ""
+msgstr "%s, Tack för din betalning!"
 
+# @ web-invoice
 #: Display.php:2167
 #, php-format
 msgid "Invoice %s has been paid."
-msgstr ""
+msgstr "Faktura %s har betalats."
 
+# @ web-invoice
 #: Display.php:2178
 #, php-format
 msgid "This invoice was paid on %s."
-msgstr ""
+msgstr "Denna faktura betalades den %s."
 
+# @ web-invoice
 #: Display.php:2190
 #, php-format
 msgid "Welcome, %s"
-msgstr ""
+msgstr "Välkommen, %s"
 
+# @ web-invoice
 #: Display.php:2192
 #, php-format
 msgid "We have sent you invoice <b>%1$s</b> with a total amount of %2$s"
-msgstr ""
+msgstr "Vi har skickat dig en faktura <b>%1$s</b> med ett totalt belopp på  %2$s"
 
+# @ web-invoice
 #: Display.php:2194
 #: Display.php:3123
 #, php-format
 msgid "Due Date: %s"
-msgstr ""
+msgstr "Förfallodatum: %s"
 
+# @ web-invoice
 #: Display.php:2214
 msgid "Invoice From:"
-msgstr ""
+msgstr "Faktura från:"
 
+# @ web-invoice
 #: Display.php:2219
 #: Display.php:2241
 msgid "Tax ID: "
-msgstr ""
+msgstr "F-skatt nr:"
 
+# @ web-invoice
 #: Display.php:2232
 msgid "Invoice To:"
-msgstr ""
+msgstr "Faktura till:"
 
+# @ web-invoice
 #: Display.php:2271
 msgid "Pay with:"
-msgstr ""
+msgstr "Betala med:"
 
+# @ web-invoice
 #: Display.php:2275
 #: Display.php:2298
 msgid "Visa Master American Express"
-msgstr ""
+msgstr "Visa Master American Express"
 
+# @ web-invoice
 #: Display.php:2306
 msgid "Other/Bank"
-msgstr ""
+msgstr "Övrigt / Bank"
 
+# @ web-invoice
 #: Display.php:2384
 msgid "Tax may not be applied if you are from a different state"
-msgstr ""
+msgstr "Moms tillämpas"
 
+# @ web-invoice
 #: Display.php:2453
 #: Display.php:2558
 #: Display.php:2751
@@ -1396,8 +1679,9 @@ msgstr ""
 #: Display.php:2934
 #: Display.php:3031
 msgid "First Name"
-msgstr ""
+msgstr "Förnamn"
 
+# @ web-invoice
 #: Display.php:2457
 #: Display.php:2562
 #: Display.php:2755
@@ -1406,8 +1690,9 @@ msgstr ""
 #: Display.php:2938
 #: Display.php:3035
 msgid "Last Name"
-msgstr ""
+msgstr "Efternamn"
 
+# @ web-invoice
 #: Display.php:2470
 #: Display.php:2579
 #: Display.php:2656
@@ -1418,8 +1703,9 @@ msgstr ""
 #: Display.php:2951
 #: Display.php:3048
 msgid "Address"
-msgstr ""
+msgstr "Adress"
 
+# @ web-invoice
 #: Display.php:2482
 #: Display.php:2591
 #: Display.php:2668
@@ -1430,310 +1716,345 @@ msgstr ""
 #: Display.php:2963
 #: Display.php:3060
 msgid "Zip Code"
-msgstr "Zip/Postal Code"
+msgstr "Postnummer"
 
+# @ web-invoice
 #: Display.php:2678
 #: Display.php:2814
 #: Display.php:2932
 msgid "Shipping Information"
-msgstr ""
+msgstr "Leveransinformation"
 
+# @ web-invoice
 #: Display.php:2788
 #: Display.php:3068
 msgid "Credit Card Number"
-msgstr ""
+msgstr "Kreditkortsnummer"
 
+# @ web-invoice
 #: Display.php:2797
 #: Display.php:3077
 msgid "Expiration Date"
-msgstr ""
+msgstr "Utgångsdatum"
 
+# @ web-invoice
 #: Display.php:2798
 #: Display.php:3078
 msgid "Month"
-msgstr ""
+msgstr "Månad"
 
+# @ web-invoice
 #: Display.php:2801
 #: Display.php:3081
 msgid "Year"
-msgstr ""
+msgstr "År"
 
+# @ web-invoice
 #: Display.php:2807
 #: Display.php:3087
 msgid "Security Code"
-msgstr ""
+msgstr "Säkerhetskod"
 
+# @ web-invoice
 #: Display.php:2857
 #: Display.php:3094
 #, php-format
 msgid "Pay %s"
-msgstr ""
+msgstr "Betala %s"
 
+# @ web-invoice
 #: Display.php:3110
 #, php-format
 msgid "Welcome, %s!"
-msgstr ""
+msgstr "Välkommen, %s!"
 
+# @ web-invoice
 #: Display.php:3115
 #, php-format
 msgid "This is a recurring invoice, id: <b>%s</b>."
-msgstr ""
+msgstr "Detta är ett återkommande faktura, nr: <b>%s</b>."
 
+# @ web-invoice
 #: Display.php:3116
 #, php-format
 msgid "You will be billed %1$s in the amount of %2$s "
-msgstr ""
+msgstr "Du kommer faktureras %1$s till ett belopp av %2$s "
 
+# @ web-invoice
 #: Display.php:3144
 msgid "Start New Invoice For: "
-msgstr ""
+msgstr "Starta en ny faktura för:"
 
+# @ web-invoice
 #: Display.php:3144
 msgid "Create New Invoice For: "
-msgstr ""
+msgstr "Skapa ny faktura för:"
 
+# @ web-invoice
 #: Display.php:3170
 msgid "Create New Invoice"
-msgstr ""
+msgstr "Skapa ny faktura"
 
+# @ web-invoice
 #: Display.php:3174
 msgid "copy from another"
-msgstr ""
+msgstr "kopiera från en annan"
 
+# @ web-invoice
 #: Display.php:3184
 msgid "(recurring)"
-msgstr ""
+msgstr "(Återkommande)"
 
+# @ web-invoice
 #: Display.php:3190
 msgid "New Invoice from Template"
-msgstr ""
+msgstr "Ny faktura från mall"
 
+# @ web-invoice
 #: Display.php:3192
 msgid "cancel"
-msgstr ""
+msgstr "avbryt"
 
+# @ web-invoice
 #: Display.php:3196
 msgid "User must have a profile to receive invoices."
-msgstr ""
+msgstr "Användare måste ha en registrerad profil för att ta emot fakturor."
 
+# @ web-invoice
 #: Display.php:3198
 #: Display.php:3200
 msgid "Create a new user account."
-msgstr ""
+msgstr "Skapa nytt användarkonto."
 
+# @ web-invoice
 #: Frontend.php:135
 #: Frontend.php:194
 msgid "<b>There are problems with your transaction:</b>"
-msgstr ""
+msgstr "<b>Det har uppståt problem med din transaktion:</b>"
 
+# @ web-invoice
 #: Frontend.php:160
 msgid "Thank you! <br />Payment processed successfully!"
-msgstr ""
+msgstr "Tack! <br/> Betalningen har genomförts!"
 
 #: Functions.php:448
 msgid "Y-m-d H:i:s"
-msgstr ""
+msgstr "År-Mån-Dag T:m:s"
 
 #: Functions.php:469
 #: web-invoice.php:692
 #: web-invoice.php:822
 #: web-invoice.php:827
 msgid "M d Y"
-msgstr ""
+msgstr "M D Å"
 
 #: Functions.php:474
 msgid "."
-msgstr ""
+msgstr "."
 
 #: Functions.php:474
 msgid ","
-msgstr ""
+msgstr ","
 
+# @ web-invoice
 #: Functions.php:1365
 msgid "Jan"
-msgstr ""
+msgstr "Jan"
 
+# @ web-invoice
 #: Functions.php:1366
 msgid "Feb"
-msgstr ""
+msgstr "Feb"
 
+# @ web-invoice
 #: Functions.php:1367
 msgid "Mar"
-msgstr ""
+msgstr "Mar"
 
+# @ web-invoice
 #: Functions.php:1368
 msgid "Apr"
-msgstr ""
+msgstr "Apr"
 
+# @ web-invoice
 #: Functions.php:1369
 msgid "May"
-msgstr ""
+msgstr "Maj"
 
+# @ web-invoice
 #: Functions.php:1370
 msgid "Jun"
-msgstr ""
+msgstr "Jun"
 
+# @ web-invoice
 #: Functions.php:1371
 msgid "Jul"
-msgstr ""
+msgstr "Jul"
 
+# @ web-invoice
 #: Functions.php:1372
 msgid "Aug"
-msgstr ""
+msgstr "Aug"
 
+# @ web-invoice
 #: Functions.php:1373
 msgid "Sep"
-msgstr ""
+msgstr "Sep"
 
+# @ web-invoice
 #: Functions.php:1374
 msgid "Oct"
-msgstr ""
+msgstr "Okt"
 
+# @ web-invoice
 #: Functions.php:1375
 msgid "Nov"
-msgstr ""
+msgstr "Nov"
 
+# @ web-invoice
 #: Functions.php:1376
 msgid "Dec"
-msgstr ""
+msgstr "Dec"
 
 #: Functions.php:1843
 msgid "Australian Dollars"
-msgstr ""
+msgstr "Australian Dollars"
 
 #: Functions.php:1844
 msgid "Canadian Dollars"
-msgstr ""
+msgstr "Canadian Dollars"
 
 #: Functions.php:1845
 msgid "Euros"
-msgstr ""
+msgstr "Euros"
 
 #: Functions.php:1846
 msgid "Pounds Sterling"
-msgstr ""
+msgstr "Pounds Sterling"
 
 #: Functions.php:1847
 msgid "Yen"
-msgstr ""
+msgstr "Yen"
 
 #: Functions.php:1848
 msgid "U.S. Dollars"
-msgstr ""
+msgstr "U.S. Dollars"
 
 #: Functions.php:1849
 msgid "New Zealand Dollar"
-msgstr ""
+msgstr "New Zealand Dollar"
 
 #: Functions.php:1850
 msgid "Swiss Franc"
-msgstr ""
+msgstr "Swiss Franc"
 
 #: Functions.php:1851
 msgid "Hong Kong Dollar"
-msgstr ""
+msgstr "Hong Kong Dollar"
 
 #: Functions.php:1852
 msgid "Singapore Dollar"
-msgstr ""
+msgstr "Singapore Dollar"
 
 #: Functions.php:1853
 msgid "Swedish Krona"
-msgstr ""
+msgstr "Svensk Krona"
 
 #: Functions.php:1854
 msgid "Danish Krone"
-msgstr ""
+msgstr "Danish Krone"
 
 #: Functions.php:1855
 msgid "Polish Zloty"
-msgstr ""
+msgstr "Polish Zloty"
 
 #: Functions.php:1856
 msgid "Norwegian Krone"
-msgstr ""
+msgstr "Norwegian Krone"
 
 #: Functions.php:1857
 msgid "Hungarian Forint"
-msgstr ""
+msgstr "Hungarian Forint"
 
 #: Functions.php:1858
 msgid "Czech Koruna"
-msgstr ""
+msgstr "Czech Koruna"
 
 #: Functions.php:1859
 msgid "Israeli Shekel"
-msgstr ""
+msgstr "Israeli Shekel"
 
 #: Functions.php:1860
 msgid "Mexican Peso"
-msgstr ""
+msgstr "Mexican Peso"
 
 #: Functions.php:1861
 msgid "Brazilian Real"
-msgstr ""
+msgstr "Brazilian Real"
 
 #: Functions.php:1862
 msgid "Malaysian Ringgit"
-msgstr ""
+msgstr "Malaysian Ringgit"
 
 #: Functions.php:1863
 msgid "South African Rand"
-msgstr ""
+msgstr "South African Rand"
 
 #: Functions.php:1892
 #: Functions.php:1896
 #: Functions.php:1899
 #, php-format
 msgid "$%s"
-msgstr ""
+msgstr "$%s"
 
 #: Functions.php:1893
 #, php-format
 msgid "&euro;%s"
-msgstr ""
+msgstr "&euro;%s"
 
 #: Functions.php:1894
 #, php-format
 msgid "&pound;%s"
-msgstr ""
+msgstr "&pound;%s"
 
 #: Functions.php:1895
 #, php-format
 msgid "&yen;%s"
-msgstr ""
+msgstr "&yen;%s"
 
 #: Functions.php:1897
 #, php-format
 msgid "R$%s"
-msgstr ""
+msgstr "R$%s"
 
 #: Functions.php:1898
 #, php-format
 msgid "R%s"
-msgstr ""
+msgstr "R%s"
 
 #: web-invoice.php:139
 msgid "Web Invoice System"
-msgstr ""
+msgstr "Webb Fakturasystem"
 
+# @ web-invoice
 #. #-#-#-#-#  plugin.pot (Web Invoice 2.0.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: web-invoice.php:139
 msgid "Web Invoice"
-msgstr ""
+msgstr "Webb Faktura"
 
+# @ web-invoice
 #: web-invoice.php:140
 msgid "New Invoice"
-msgstr ""
+msgstr "Ny Webbfaktura"
 
 #: web-invoice.php:143
 msgid "Settings"
-msgstr ""
+msgstr "Inställningar"
 
 #: web-invoice.php:145
 msgid "Your invoices"
-msgstr ""
+msgstr "Dina fakturor"
 
 #: web-invoice.php:857
 #: web-invoice.php:859
@@ -1741,7 +2062,7 @@ msgstr ""
 #: web-invoice.php:870
 #: web-invoice.php:940
 msgid "Y-m-d"
-msgstr ""
+msgstr "Å-m-d"
 
 #. Plugin URI of the plugin/theme
 msgid "http://mohanjith.com/wordpress/web-invoice.html"
@@ -1749,7 +2070,7 @@ msgstr ""
 
 #. Description of the plugin/theme
 msgid "Send itemized web invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href=\"admin.php?page=web_invoice_settings\">Web Invoice Settings Page</a> to setup."
-msgstr ""
+msgstr "Skicka Fakturor direkt via din webbplats genom att använda Web-Invoice. Ta emot kreditkortsbetalning via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout eller ditt PayPal konto. Återkommande fakturering kan konfigureras via Authorize.net's ARB, Moneybookers, Google Checkout och PayPal. Besök <a href=\"admin.php?page=web_invoice_settings\">Web Invoice inställningssida</a> för att sätta igång tjänsten."
 
 #. Author of the plugin/theme
 msgid "S H Mohanjith"
@@ -1758,4 +2079,13 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "http://mohanjith.com/"
 msgstr ""
+
+#~ msgid "Webbfaktura"
+#~ msgstr "Webbfaktura"
+#~ msgid "Ny Fakturering"
+#~ msgstr "Ny Fakturering"
+#~ msgid "Återkommande Fakturering"
+#~ msgstr "Återkommande Fakturering"
+#~ msgid "E-post mallar"
+#~ msgstr "E-post mallar"
 
