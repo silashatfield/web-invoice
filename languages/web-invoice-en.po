@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: web-invoice\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/web-invoice\n"
-"POT-Creation-Date: 2010-06-16 08:24+0000\n"
-"PO-Revision-Date: 2010-06-16 14:01+0530\n"
+"POT-Creation-Date: 2010-06-16 14:56+0000\n"
+"PO-Revision-Date: 2010-06-16 20:29+0530\n"
 "Last-Translator: S H Mohanjith <moha@mohanjith.net>\n"
 "Language-Team: American English <kde-i18n-doc@lists.kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -1521,6 +1521,11 @@ msgstr ""
 msgid "Create a new user account."
 msgstr ""
 
+#: Display.php:3486
+#, php-format
+msgid "You can download a %s or print a copy of this invoice for your records; just "
+msgstr ""
+
 #: Frontend.php:135
 #: Frontend.php:194
 msgid "<b>There are problems with your transaction:</b>"
@@ -1528,6 +1533,10 @@ msgstr ""
 
 #: Frontend.php:160
 msgid "Thank you! <br />Payment processed successfully!"
+msgstr ""
+
+#: Frontend.php:319
+msgid "Invoice"
 msgstr ""
 
 #: Functions.php:448
@@ -1717,7 +1726,7 @@ msgstr ""
 msgid "Web Invoice System"
 msgstr ""
 
-#. #-#-#-#-#  plugin.pot (Web Invoice 2.0.1)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Web Invoice 2.0.2 beta 1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: web-invoice.php:139
 msgid "Web Invoice"
@@ -1733,6 +1742,10 @@ msgstr ""
 
 #: web-invoice.php:145
 msgid "Your invoices"
+msgstr ""
+
+#: web-invoice.php:238
+msgid "cURL is not turned on on your server, credit card processing will not work. If you have access to your php.ini file, activate <b>extension=php_curl.dll</b>."
 msgstr ""
 
 #: web-invoice.php:857

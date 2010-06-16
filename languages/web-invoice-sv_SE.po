@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Web Invoice v2.0.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/web-invoice\n"
-"POT-Creation-Date: 2010-06-16 08:24+0000\n"
-"PO-Revision-Date: 2010-06-16 14:00+0530\n"
+"POT-Creation-Date: 2010-06-16 14:56+0000\n"
+"PO-Revision-Date: 2010-06-16 20:29+0530\n"
 "Last-Translator: S H Mohanjith <moha@mohanjith.net>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1826,6 +1826,11 @@ msgstr "Användare måste ha en registrerad profil för att ta emot fakturor."
 msgid "Create a new user account."
 msgstr "Skapa nytt användarkonto."
 
+#: Display.php:3486
+#, php-format
+msgid "You can download a %s or print a copy of this invoice for your records; just "
+msgstr "Ladda hem en %s eller skriv ut en fakturakopia genom 'Print' funktionen i 'File' menyn i din browser, eller <CTRL> + 'P' i knappkombination för utskrift av en fakturakopia. Tack! "
+
 # @ web-invoice
 #: Frontend.php:135
 #: Frontend.php:194
@@ -1836,6 +1841,12 @@ msgstr "<b>Det har uppståt problem med din transaktion:</b>"
 #: Frontend.php:160
 msgid "Thank you! <br />Payment processed successfully!"
 msgstr "Tack! <br/> Betalningen har genomförts!"
+
+# @ web-invoice
+#: Frontend.php:319
+#, fuzzy
+msgid "Invoice"
+msgstr "Fakturor"
 
 #: Functions.php:448
 msgid "Y-m-d H:i:s"
@@ -2037,7 +2048,7 @@ msgid "Web Invoice System"
 msgstr "Webb Fakturasystem"
 
 # @ web-invoice
-#. #-#-#-#-#  plugin.pot (Web Invoice 2.0.1)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Web Invoice 2.0.2 beta 1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: web-invoice.php:139
 msgid "Web Invoice"
@@ -2055,6 +2066,10 @@ msgstr "Inställningar"
 #: web-invoice.php:145
 msgid "Your invoices"
 msgstr "Dina fakturor"
+
+#: web-invoice.php:238
+msgid "cURL is not turned on on your server, credit card processing will not work. If you have access to your php.ini file, activate <b>extension=php_curl.dll</b>."
+msgstr "För att kunna ta betalt med kreditkort måste du sätta igång cURL på din server. Detta kan du som har tillgång till din php.ini file göra genom att aktivera <b>extension=php_curl.dll</b>."
 
 #: web-invoice.php:857
 #: web-invoice.php:859
