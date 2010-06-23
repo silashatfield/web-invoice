@@ -87,6 +87,10 @@ or submit feature requests.
 
 == Change Log ==
 
+**Version 2.0.4**
+
+* Slashing issue in from name in mails
+
 **Version 2.0.3**
 
 * Invoice page bug fix
