@@ -54,7 +54,7 @@ Web Invoice is already translated to:
 * Belarusian (be_BY) by iam, http://www.antsar.info
 * Portugese (pt_BR) by André Luiz, http://andrewebmaster.com.br
 * Spanish (es_ES) by Danilo Casati, http://www.e-rgonomy.com/
-* Swidish (sv_SE) by Lena Petersson, http://designerstudion.se/
+* Swedish (sv_SE) by Lena Petersson, http://designerstudion.se/
 
 If you like this plugin please give it a good rating, and consider saying thanks, sponsoring a feature or making a donation.
 
@@ -74,6 +74,9 @@ Please see the [Web Invoice plugin home page](http://mohanjith.com/wordpress/web
 == Frequently Asked Questions ==
 
 Please visit the [Web Invoice community forum](http://mohanjith.com/forum/forum.php?id=1) for suggestions and help.
+
+Please visit the [Web Invoice issue tracker](http://code.google.com/p/web-invoice/issues/list) to report any bugs 
+or submit feature requests.
 
 == Screenshots ==
 
