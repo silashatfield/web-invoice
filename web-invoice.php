@@ -4,10 +4,10 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 2.0.2 beta 1
+ Version: 2.0.2
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
- Stable tag: 2.0.1
+ Stable tag: 2.0.2
  License: GPL
 
  Copyright 2010  S H Mohanjith (email : moha@mohanjith.net)
@@ -37,7 +37,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-define("WEB_INVOICE_VERSION_NUM", "1.12.12");
+define("WEB_INVOICE_VERSION_NUM", "2.0.2");
 define("WEB_INVOICE_TRANS_DOMAIN", "web-invoice");
 
 require_once "Flow.php";
@@ -140,6 +140,7 @@ class Web_Invoice {
 		add_submenu_page($file, __("Manage Invoice"), __("New Invoice"), $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
 		add_submenu_page($file, __("Recurring Billing"), __("Recurring Billing"), $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
 		add_submenu_page($file, __("E-mail templates"), __("E-mail templates"), $this->web_invoice_user_level, 'web_invoice_email_templates', array(&$this,'email_template_page'));
+		// add_submenu_page($file, __("Items/Inventory"), __("Items"), $this->web_invoice_user_level, 'web_invoice_inventory_items', array(&$this,'inventory_items_page'));
 		add_submenu_page($file, __("Settings"), __("Settings"), $this->web_invoice_user_level, 'web_invoice_settings', array(&$this,'settings_page'));
 	
 		add_submenu_page('profile.php', __("Your invoices"), __("Invoices"), 'subscriber', 'user_invoice_overview', array(&$this,'user_invoice_overview'));
@@ -256,6 +257,12 @@ class Web_Invoice {
 
 	function email_template_page() {
 		$Web_Invoice_Decider = new Web_Invoice_Decider('web_invoice_email_templates');
+		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
+		echo $Web_Invoice_Decider->display();
+	}
+	
+	function inventory_items_page() {
+		$Web_Invoice_Decider = new Web_Invoice_Decider('web_invoice_inventory_items');
 		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
 		echo $Web_Invoice_Decider->display();
 	}
@@ -648,7 +655,8 @@ class Web_Invoice_GetInfo {
 
 		if ($this->_row_cache) {
 			$uid = $this->_row_cache->user_id;
-			$user_email = $wpdb->get_var("SELECT user_email FROM ". $wpdb->prefix . "users WHERE id=".$uid);
+			$profileuser = get_user_to_edit($uid);
+			$user_email = $profileuser->user_email;
 		} else {
 			$uid = false;
 			$user_email = false;
