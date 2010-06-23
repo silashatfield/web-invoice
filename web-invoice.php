@@ -4,10 +4,10 @@
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: S H Mohanjith
- Version: 2.0.2
+ Version: 2.0.3
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
- Stable tag: 2.0.1
+ Stable tag: 2.0.3
  License: GPL
 
  Copyright 2010  S H Mohanjith (email : moha@mohanjith.net)
@@ -137,8 +137,8 @@ class Web_Invoice {
 		$file = "web-invoice/" . basename(__FILE__);
 
 		add_menu_page(__('Web Invoice System'), __('Web Invoice'),  $this->web_invoice_user_level, $file, array(&$this,'invoice_overview'),$this->uri."/images/web_invoice.png");
-		add_submenu_page($file, __("Manage Invoice"), __("New Invoice"), $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
 		add_submenu_page($file, __("Recurring Billing"), __("Recurring Billing"), $this->web_invoice_user_level, 'web_invoice_recurring_billing', array(&$this,'recurring'));
+		add_submenu_page($file, __("Manage Invoice"), __("New Invoice"), $this->web_invoice_user_level, 'new_web_invoice', array(&$this,'new_web_invoice'));
 		add_submenu_page($file, __("E-mail templates"), __("E-mail templates"), $this->web_invoice_user_level, 'web_invoice_email_templates', array(&$this,'email_template_page'));
 		// add_submenu_page($file, __("Items/Inventory"), __("Items"), $this->web_invoice_user_level, 'web_invoice_inventory_items', array(&$this,'inventory_items_page'));
 		add_submenu_page($file, __("Settings"), __("Settings"), $this->web_invoice_user_level, 'web_invoice_settings', array(&$this,'settings_page'));
@@ -655,7 +655,7 @@ class Web_Invoice_GetInfo {
 
 		if ($this->_row_cache) {
 			$uid = $this->_row_cache->user_id;
-			$profileuser = get_user_to_edit($uid);
+			$profileuser = get_userdata($uid);
 			$user_email = $profileuser->user_email;
 		} else {
 			$uid = false;
