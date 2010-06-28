@@ -26,7 +26,7 @@
 class Web_Invoice_Decider {
 
 	var $message;
-	var $ouput;
+	var $ouput = "";
 
 	function Web_Invoice_Decider($web_invoice_action = null) {
 
@@ -257,7 +257,7 @@ class Web_Invoice_Decider {
 	function display() {
 		echo "<div class=\"wrap\">";
 		if($this->message) echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
-		echo $this->output;
+		echo isset($this->output)?$this->output:'';
 		echo "</div>";
 	}
 

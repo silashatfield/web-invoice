@@ -253,81 +253,16 @@ function web_invoice_frontend_css() {
 }
 
 function web_invoice_print_pdf() {
-	global $post, $web_invoice_print;
-	$web_invoice_print = true;
 	$ip=$_SERVER['REMOTE_ADDR'];
-
-	ob_start();
 		
 	// Check to see a proper invoice id is used, or show regular content
 	if(!($invoice_id = web_invoice_md5_to_invoice($_GET['invoice_id']))) return $content;
 
 	// Invoice viewed, update log
 	web_invoice_update_log($invoice_id, 'visited', "PDF downloaded by $ip");
-
-	?>
-	<style type="text/css">
-		.noprint { display: none; }
-		#invoice_page { width: 500px; margin: 0 auto; font-size: 11px; font-family: 'Trebuchet MS','Lucida Grande',Verdana,Tahoma,Arial; }
-		th { text-align: left; font-size: 13px; padding: 5px; }
-		td { font-size: 12px; vertical-align: top; padding: 5px; }
-		tr td { background-color: #fefefe; }
-		tr.alt_row  td { background-color: #eee; }
-		span.description_text { color: #333; font-size: 0.8em; }
-		tr.web_invoice_bottom_line { font-size: 1.1em; font-weight: bold; }
-		table { width: 100%; }
-		h2 { font-size: 1.1em; }
-		h1 { text-align: center; }
-		p { margin: 5px 0px; }
-		div.clear { clear: both; }
-		
-		#invoice_client_info { width: 100%; text-align: right; padding-top: -145; }
-		##invoice_business_info { width: 100%; text-align: left; height: 100; }
-	</style>
-	<?php
 	
-		do_action('web_invoice_front_top', $invoice_id);
 	
-		print '<div class="clear"></div>';
-		
-		//If this is not recurring invoice, show regular message
-		if(!($recurring = web_invoice_recurring($invoice_id)))  web_invoice_show_invoice_overview($invoice_id);
-	
-		// Show this if recurring
-		if($recurring)  web_invoice_show_recurring_info($invoice_id);
-	
-		if(web_invoice_paid_status($invoice_id)) {
-			web_invoice_show_already_paid($invoice_id);
-			do_action('web_invoice_front_paid', $invoice_id);
-		} else {
-			//Show Billing Information
-			web_invoice_show_billing_information($invoice_id);
-			do_action('web_invoice_front_unpaid', $invoice_id);
-		}
-		do_action('web_invoice_front_bottom', $invoice_id);
-		?>
-	<script type="text/php">
-		if ( isset($pdf) ) {
-    		$font = Font_Metrics::get_font("verdana", "bold");
-			$font_light = Font_Metrics::get_font("verdana");
-			$pdf->page_text(52, 810, "Powered by Web Invoice ".WEB_INVOICE_VERSION_NUM, $font_light, 10, array(0,0,0));
-    		$pdf->page_text(510, 810, "Page {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
-  		}
-	</script>
-	<?php
-	
-	$content = preg_replace(array('/  /', '/\n\n/i', '/&euro;/i'), array(" ", "\n", "&#0128;"), '<html><head><title>Invoice</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></head><body><div id="invoice_page" class="clearfix"><h1>'.__('Invoice').'</h1>'.ob_get_contents().'</div></body></html>');
-	
-	ob_clean();
-	
-	require_once "lib/dompdf_config.inc.php";
-	
-	ob_clean();
-	
-	$dompdf = new DOMPDF();
-	$dompdf->load_html($content);
-	$dompdf->set_paper("a4", "portrait");
-	$dompdf->render();
+	$dompdf = web_invoice_pdf_get($invoice_id);
 	$dompdf->stream("web-invoice-{$invoice_id}.pdf");
 	
 	exit(0);
