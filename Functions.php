@@ -789,8 +789,11 @@ function web_invoice_build_invoice_link_paypal($invoice_id) {
 
 	$link_to_page = get_permalink(get_option('web_invoice_web_invoice_page'));
 
-	if(get_option("permalink_structure")) { $link = $link_to_page . "?paypal_ipn=1&invoice_id=" .$invoice_id; }
-	else { $link =  $link_to_page . "&paypal_ipn=1&invoice_id=" . $invoice_id; }
+	if(get_option("permalink_structure")) {
+		$link = $link_to_page . "?paypal_ipn=1";
+	} else {
+		$link =  $link_to_page . "&paypal_ipn=1";
+	}
 
 	return $link;
 }
@@ -1054,6 +1057,7 @@ function web_invoice_pdf_get($invoice_id) {
 	ob_clean();
 	
 	require_once "lib/dompdf_config.inc.php";
+	spl_autoload_register('DOMPDF_autoload');
 	
 	$url_parts = parse_url($web_invoice->the_path);
 	
