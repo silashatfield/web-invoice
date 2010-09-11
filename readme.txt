@@ -97,6 +97,10 @@ Important fixes for PDF generation, fixed issue 44 and 41. Also fixed issue with
 
 == Changelog ==
 
+= 2.0.17 =
+
+* Fixed issue 50: Many strings to translate are in the default textdomain
+
 = 2.0.15 =
 
 * Fixed issue 46: Ques: What url do I give Paypal to restart IPN?
