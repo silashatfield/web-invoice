@@ -4,7 +4,7 @@ Donate link: http://mohanjith.com/c/wordpress
 Tags: bill, moneybookers, google checkout, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
 Tested up to: 3.0.1
-Stable tag: 2.0.16
+Stable tag: 2.0.18
 
 Web Invoice lets you create and send web invoices and setup recurring billing for your clients.
 
@@ -92,10 +92,18 @@ or submit feature requests.
 
 == Upgrade Notice ==
 
-= 2.0.14 =
-Important fixes for PDF generation, fixed issue 44 and 41. Also fixed issue with tool tips, 45
+= 2.0.18 =
+Added new field invoice date, fixed a long standing bug with some installations
+where user list was empty and also fixed issue 58 and 59.
 
 == Changelog ==
+
+= 2.0.18 =
+
+* Fixed issue 53: Can't attach a user to a Web Invoice
+* Fixed issue 58: Company name in user profile not copied to shipping details
+* Fixed issue 59: User details not shown when shipping details are missing
+* Fixed issue 52: Add a field for the invoice date
 
 = 2.0.17 =
 
