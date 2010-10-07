@@ -1948,7 +1948,7 @@ function web_invoice_process_cc_transaction($cc_data) {
 	
 				//Mark invoice as paid
 				web_invoice_paid($invoice_id);
-                web_invoice_mark_as_paid($invoice_id);
+				web_invoice_mark_as_paid($invoice_id);
 				// if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
 	
 				if($recurring) {
@@ -2063,6 +2063,7 @@ function web_invoice_currency_array() {
 		"MYR"=> __("Malaysian Ringgit", WEB_INVOICE_TRANS_DOMAIN),
 		"ZAR"=> __("South African Rand", WEB_INVOICE_TRANS_DOMAIN),
 		"COP"=> __("Colombian Pesos", WEB_INVOICE_TRANS_DOMAIN),
+		"RON"=> __("Romanian New Leu", WEB_INVOICE_TRANS_DOMAIN),
 	);
 
 	return $currency_list;
@@ -2632,11 +2633,11 @@ function web_invoice_return_bytes($val) {
 	$last = strtolower($val[strlen($val)-1]);
 	switch($last) {
 		case 'g':
-			$val *= 1024;
+			$val *= 1000;
 		case 'm':
-			$val *= 1024;
+			$val *= 1000;
 		case 'k':
-			$val *= 1024;
+			$val *= 1000;
 	}
 	return $val;
 }
@@ -2645,10 +2646,10 @@ function web_invoice_return_bytes_nice($bytes) {
 	$units = array('B', 'K', 'M', 'G');
   
 	$bytes = max($bytes, 0);
-	$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+	$pow = floor(($bytes ? log($bytes) : 0) / log(1000));
 	$pow = min($pow, count($units) - 1);
   
-	$bytes /= pow(1024, $pow);
+	$bytes /= pow(1000, $pow);
   
 	return round($bytes, 0) . $units[$pow]; 
 }
