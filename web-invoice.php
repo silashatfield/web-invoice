@@ -3,14 +3,14 @@
  Plugin Name: Web Invoice
  Plugin URI: http://mohanjith.com/wordpress/web-invoice.html
  Description: Send itemized web invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
- Author: S H Mohanjith
- Version: 2.0.22
+ Author: S H Mohanjith (Zinglix)
+ Version: 2.1.0
  Author URI: http://mohanjith.com/
  Text Domain: web-invoice
- Stable tag: 2.0.22
+ Stable tag: 2.1.0
  License: GPL
 
- Copyright 2010  S H Mohanjith (email : moha@mohanjith.net)
+ Copyright 2011  S H Mohanjith (email : moha@mohanjith.net)
  */
 
 /*
@@ -37,7 +37,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-define("WEB_INVOICE_VERSION_NUM", "2.0.22");
+define("WEB_INVOICE_VERSION_NUM", "2.1.0");
 define("WEB_INVOICE_PHP_VERSION", "5.2");
 define("WEB_INVOICE_TRANS_DOMAIN", "web-invoice");
 
@@ -351,6 +351,10 @@ if ( $php_version_check )
 	    
 	    if (is_admin())
 	    {
+		if (is_multisite() && !get_option('web_invoice_installed', false)) {
+		    $this->install();
+		}
+		
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('jquery-ui-tabs');
@@ -575,7 +579,7 @@ if ( $php_version_check )
 	    }
 	    
 	    add_option('web_invoice_version', WEB_INVOICE_SCHEDULER_VERSION_NUM);
-	    add_option('web_invoice_email_address',get_bloginfo('admin_email'));
+	    add_option('web_invoice_email_address', get_bloginfo('admin_email'));
 	    add_option('web_invoice_business_name', get_bloginfo('blogname'));
 	    add_option('web_invoice_business_address', '');
 	    add_option('web_invoice_show_billing_address', 'no');
@@ -633,10 +637,13 @@ if ( $php_version_check )
 	    add_option('web_invoice_gateway_email_customer','FALSE');
 	    
 	    // PayPal
+	    add_option('web_invoice_paypal_button','');
+	    add_option('web_invoice_paypal_subscribe_button','');
 	    add_option('web_invoice_paypal_address','');
 	    add_option('web_invoice_paypal_only_button', 'False');
 	    
 	    // Payflow
+	    add_option('web_invoice_payflow_button','');
 	    add_option('web_invoice_payflow_login','');
 	    add_option('web_invoice_payflow_partner','');
 	    add_option('web_invoice_payflow_only_button', 'False');
@@ -658,15 +665,17 @@ if ( $php_version_check )
 	    
 	    // Other
 	    add_option('web_invoice_other_details','');
-	
+	    
 	    // Moneybookers
+	    add_option('web_invoice_moneybookers_button','');
 	    add_option('web_invoice_moneybookers_address','');
 	    add_option('web_invoice_moneybookers_recurring_address','');
 	    add_option('web_invoice_moneybookers_merchant','False');
     	    add_option('web_invoice_moneybookers_secret',uniqid());
-	    add_option('web_invoice_moneybookers_ip', '83.220.158.0-83.220.158.31,213.129.75.193-213.129.75.206,91.208.28.0-91.208.28.255');
+	    add_option('web_invoice_moneybookers_ip', '83.220.158.0-83.220.158.31,213.129.75.193-213.129.75.206,91.208.28.0-91.208.28.255,193.105.47.0-193.105.47.255');
 	    
 	    // AlertPay
+	    add_option('web_invoice_alertpay_button','');
 	    add_option('web_invoice_alertpay_address','');
 	    add_option('web_invoice_alertpay_merchant','False');
 	    add_option('web_invoice_alertpay_secret',uniqid());
@@ -674,11 +683,13 @@ if ( $php_version_check )
 	    add_option('web_invoice_alertpay_ip', '67.205.87.225-67.205.87.226,67.205.87.235');
 	    
 	    // 2CO
+	    add_option('web_invoice_2co_button','');
 	    add_option('web_invoice_2co_sid','');
 	    add_option('web_invoice_2co_secret_word',uniqid());
 	    add_option('web_invoice_2co_demo_mode','FALSE');
 	    
 	    // Google Checkout
+	    add_option('web_invoice_google_checkout_button','');
 	    add_option('web_invoice_google_checkout_env','live');
 	    add_option('web_invoice_google_checkout_merchant_id','');
 	    add_option('web_invoice_google_checkout_level2','False');
@@ -686,6 +697,7 @@ if ( $php_version_check )
 	    add_option('web_invoice_google_checkout_tax_state','NY');
 	    
 	    // Sage Pay
+	    add_option('web_invoice_sagepay_button','');
 	    add_option('web_invoice_sagepay_env','live');
 	    add_option('web_invoice_sagepay_vendor_name','');
 	    add_option('web_invoice_sagepay_vendor_key','');
@@ -707,13 +719,29 @@ You may pay, view and print the invoice online by visiting the following link:
 Best regards,
 %business_name ( %business_email )");
 	    
-	    // Send reminder
+	    // Send reminder (past due date)
 	    add_option('web_invoice_email_send_reminder_subject','[Reminder] %subject');
 	    add_option('web_invoice_email_send_reminder_content',
 "Dear %call_sign, 
 
-%business_name has ent you a reminder for the %recurring
+%business_name has sent you a reminder for the %recurring
 web invoice in the amount of %amount.
+
+%description
+
+You may pay, view and print the invoice online by visiting the following link: 
+%link.
+
+Best regards,
+%business_name ( %business_email )");
+	    
+	    // Send reminder (Due in future)
+	    add_option('web_invoice_email_send_reminder_pre_due_subject','[Reminder] %subject due on %due_date');
+	    add_option('web_invoice_email_send_reminder_pre_due_content',
+"Dear %call_sign, 
+
+%business_name has sent you a friendly reminder for the %recurring
+web invoice in the amount of %amount due on %due_date.
 
 %description
 
@@ -744,7 +772,7 @@ Best regards,
     </head>
     <body>
 	<div id='invoice_page' class='clearfix'>
-	    <img style='float: right;' src='".$this->the_path."/images/web-invoice.gif' style='width:101px; height: 128px;' />
+	    <img style='float: right;' src='".$this->the_path."/images/logo_small_padding.gif' style='width:420px; height: 110px;' />
 	    <h1>Invoice</h1>
 	    %content
 	</div>
@@ -756,6 +784,8 @@ Best regards,
 <div class="noprint"><p>%print_message</p></div>
 %content
 </div>');
+	    
+	    add_option('web_invoice_installed', true);
 	}
     }
 
@@ -1016,7 +1046,7 @@ Best regards,
 		    $paid_date = $wpdb->get_var("SELECT time_stamp FROM  ".Web_Invoice::tablename('log')." WHERE action_type = 'paid' AND invoice_id = '".$this->id."' ORDER BY time_stamp DESC LIMIT 0, 1");
 		    if ($paid_date)
 		    {
-		        return web_invoice_Date::convert($paid_date, 'Y-m-d H', __('M d Y', WEB_INVOICE_TRANS_DOMAIN));
+		        return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)), strtotime(web_invoice_Date::convert($paid_date, 'Y-m-d H', __('M d Y', WEB_INVOICE_TRANS_DOMAIN))));
 		    }
 		    break;
 		    
@@ -1043,25 +1073,70 @@ Best regards,
 		    return web_invoice_meta($this->id,'web_invoice_subscription_total_occurances');
 		    break;
 		
+		case 'installment':
+		    return web_invoice_meta($this->id,'installment',0);
+		    break;
+		
 		case 'startDate':
 		    $web_invoice_subscription_start_day = web_invoice_meta($this->id,'web_invoice_subscription_start_day');
 		    $web_invoice_subscription_start_year = web_invoice_meta($this->id,'web_invoice_subscription_start_year');
 		    $web_invoice_subscription_start_month = web_invoice_meta($this->id,'web_invoice_subscription_start_month');
 		    
-		    if ($web_invoice_subscription_start_month && $web_invoice_subscription_start_year && $web_invoice_subscription_start_day)
+		    if ($web_invoice_subscription_start_month && $web_invoice_subscription_start_year && $web_invoice_subscription_start_day && strtotime($web_invoice_subscription_start_year . "-" . $web_invoice_subscription_start_month . "-" . $web_invoice_subscription_start_day) > time())
 		    {
-		        return date(__('Y-m-d', WEB_INVOICE_TRANS_DOMAIN), strtotime($web_invoice_subscription_start_year . "-" . $web_invoice_subscription_start_month . "-" . $web_invoice_subscription_start_day));
+		        return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)), strtotime($web_invoice_subscription_start_year . "-" . $web_invoice_subscription_start_month . "-" . $web_invoice_subscription_start_day));
 		    } else {
-		        return date(__("Y-m-d", WEB_INVOICE_TRANS_DOMAIN));
+		        return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)), time()+1800);
 		    }
 		    break;
 		
 		case 'endDate':
-		    return date(__('Y-m-d', WEB_INVOICE_TRANS_DOMAIN), strtotime("+".($this->display('interval_length')*$this->display('totalOccurrences'))." ".$this->display('interval_unit'), strtotime($this->display('startDate'))));
+		    return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)), strtotime("+".($this->display('interval_length')*$this->display('totalOccurrences'))." ".$this->display('interval_unit'), strtotime($this->display('startDateM'))));
+		    break;
+		
+		case 'nextDate':
+		    if ($this->display('totalOccurrences') > $this->display('installment')) {
+			if ($this->display('installment') == 0 && strtotime($this->display('startDateM')) >= strtotime($this->display('due_dateM'))) {
+			    $start_date = $this->display('due_dateM');
+			} else {
+			    $start_date = $this->display('startDateM');
+			}
+			return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)), strtotime("+".($this->display('interval_length')*$this->display('installment'))." ".$this->display('interval_unit'), strtotime($start_date)));
+		    }
+		    return $this->display('endDate');
+		    break;
+		
+		case 'startDateM':
+		    $web_invoice_subscription_start_day = web_invoice_meta($this->id,'web_invoice_subscription_start_day');
+		    $web_invoice_subscription_start_year = web_invoice_meta($this->id,'web_invoice_subscription_start_year');
+		    $web_invoice_subscription_start_month = web_invoice_meta($this->id,'web_invoice_subscription_start_month');
+		    
+		    if ($web_invoice_subscription_start_month && $web_invoice_subscription_start_year && $web_invoice_subscription_start_day && strtotime($web_invoice_subscription_start_year . "-" . $web_invoice_subscription_start_month . "-" . $web_invoice_subscription_start_day) > time())
+		    {
+		        return date('Y-m-d', strtotime($web_invoice_subscription_start_year . "-" . $web_invoice_subscription_start_month . "-" . $web_invoice_subscription_start_day));
+		    } else {
+		        return date('Y-m-d', time()+1800);
+		    }
+		    break;
+		
+		case 'endDateM':
+		    return date('Y-m-d', strtotime("+".($this->display('interval_length')*$this->display('totalOccurrences'))." ".$this->display('interval_unit'), strtotime($this->display('startDateM'))));
+		    break;
+		
+		case 'nextDateM':
+		    if ($this->display('totalOccurrences') > $this->display('installment')) {
+			if ($this->display('installment') == 0 && strtotime($this->display('startDateM')) >= strtotime($this->display('due_dateM'))) {
+			    $start_date = $this->display('due_dateM');
+			} else {
+			    $start_date = $this->display('startDateM');
+			}
+			return date('Y-m-d', strtotime("+".($this->display('interval_length')*$this->display('installment'))." ".$this->display('interval_unit'), strtotime($start_date)));
+		    }
+		    return $this->display('endDate');
 		    break;
 		
 		case 'profileEndDate':
-		    return date(__('Y-m-d', WEB_INVOICE_TRANS_DOMAIN), strtotime("+".($this->display('interval_length')*($this->display('totalOccurrences')-1))." ".$this->display('interval_unit'), strtotime($this->display('startDate'))+3600*24));
+		    return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)), strtotime("+".($this->display('interval_length')*($this->display('totalOccurrences')-1))." ".$this->display('interval_unit'), strtotime($this->display('startDate'))+3600*24));
 		    break;
 		    
 		case 'archive_status':
@@ -1165,16 +1240,27 @@ Best regards,
 		    $web_invoice_due_date_day = web_invoice_meta($this->id,'web_invoice_due_date_day');
 		    if (!empty($web_invoice_due_date_month) && !empty($web_invoice_due_date_year) && !empty($web_invoice_due_date_day))
 		    {
-			return date(__('Y-m-d', WEB_INVOICE_TRANS_DOMAIN), strtotime("$web_invoice_due_date_year-$web_invoice_due_date_month-$web_invoice_due_date_day"));
+			return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)), strtotime("$web_invoice_due_date_year-$web_invoice_due_date_month-$web_invoice_due_date_day"));
 		    }
-		    return date(__('Y-m-d', WEB_INVOICE_TRANS_DOMAIN));
+		    return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)));
+		    break;
+		
+		case 'due_dateM':
+		    $web_invoice_due_date_month = web_invoice_meta($this->id,'web_invoice_due_date_month');
+		    $web_invoice_due_date_year = web_invoice_meta($this->id,'web_invoice_due_date_year');
+		    $web_invoice_due_date_day = web_invoice_meta($this->id,'web_invoice_due_date_day');
+		    if (!empty($web_invoice_due_date_month) && !empty($web_invoice_due_date_year) && !empty($web_invoice_due_date_day))
+		    {
+			return date('Y-m-d', strtotime("$web_invoice_due_date_year-$web_invoice_due_date_month-$web_invoice_due_date_day"));
+		    }
+		    return date('Y-m-d');
 		    break;
 		
 		case 'invoice_date':
 		    if ($invoice_info && $invoice_info->invoice_date && !empty($invoice_info->invoice_date)) {
-			date(__('Y-m-d', WEB_INVOICE_TRANS_DOMAIN), strtotime($invoice_info->invoice_date));
+			date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)), strtotime($invoice_info->invoice_date));
 		    }
-		    return date(__('Y-m-d', WEB_INVOICE_TRANS_DOMAIN));
+		    return date(get_option('date_format', __('Y-m-d', WEB_INVOICE_TRANS_DOMAIN)));
 		    break;
 		
 		case 'amount':

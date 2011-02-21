@@ -103,7 +103,7 @@ function web_invoice_query_log($invoice_id,$action_type) {
 	if($results = $wpdb->get_results("SELECT * FROM ".Web_Invoice::tablename('log')." WHERE invoice_id = '$invoice_id' AND action_type = '$action_type' ORDER BY 'time_stamp' DESC")) return $results;
 }
 
-function web_invoice_meta($invoice_id,$meta_key)
+function web_invoice_meta($invoice_id,$meta_key,$default=false)
 {
 	global $wpdb;
 	global $_web_invoice_meta_cache;
@@ -112,7 +112,7 @@ function web_invoice_meta($invoice_id,$meta_key)
 		$_web_invoice_meta_cache[$invoice_id][$meta_key] = $wpdb->get_var("SELECT meta_value FROM `".Web_Invoice::tablename('meta')."` WHERE meta_key = '$meta_key' AND invoice_id = '$invoice_id'");
 	}
 
-	return $_web_invoice_meta_cache[$invoice_id][$meta_key];
+	return ($_web_invoice_meta_cache[$invoice_id][$meta_key])?$_web_invoice_meta_cache[$invoice_id][$meta_key]:$default;
 }
 
 function web_invoice_payment_register($invoice_id, $amount, $trx_id = "", $status = 0) {
@@ -340,8 +340,17 @@ function web_invoice_mark_as_paid($invoice_id) {
 	{
 		foreach ($invoice_id as $single_invoice_id) {
 			$counter++;
+			
 			web_invoice_update_invoice_meta($single_invoice_id,'paid_status','paid');
 			web_invoice_update_log($single_invoice_id,'paid',"Invoice marked as paid");
+			
+			if (web_invoice_recurring($single_invoice_id)) {
+				web_invoice_update_invoice_meta(
+					$single_invoice_id,'installment',
+					web_invoice_meta($single_invoice_id,'installment',0)+1
+				);
+			}
+			
 			if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($single_invoice_id);
 			
 			do_action('web_invoice_mark_as_paid', $single_invoice_id);
@@ -359,7 +368,16 @@ function web_invoice_mark_as_paid($invoice_id) {
 		$counter++;
 		web_invoice_update_invoice_meta($invoice_id,'paid_status','paid');
 		web_invoice_update_log($invoice_id,'paid',"Invoice marked as paid");
+		
+		if (web_invoice_recurring($invoice_id)) {
+			web_invoice_update_invoice_meta(
+				$invoice_id,'installment',
+				web_invoice_meta($invoice_id,'installment',0)+1
+			);
+		}
+		
 		if(get_option('web_invoice_send_thank_you_email') == 'yes') web_invoice_send_email_receipt($invoice_id);
+		
 		do_action('web_invoice_mark_as_paid', $invoice_id);
 			
 		if(get_option('web_invoice_send_thank_you_email') == 'yes') {
@@ -530,6 +548,7 @@ function web_invoice_email_variables($invoice_id) {
 		'invoice_id' => $invoice_info->display('display_id'),
 		'invoice_hash' => $invoice_info->display('invoice_hash'),
 		'invoice_date' => $invoice_info->display('invoice_date'),
+		'due_date' => $invoice_info->display('due_date'),
 	);
 
 	if($invoice_info->display('description')) {
@@ -562,6 +581,7 @@ function web_invoice_pdf_variables($invoice_id) {
 		'invoice_hash' => $invoice_info->display('invoice_hash'),
 		'content' => web_invoice_generate_pdf_content($invoice_id),
 		'invoice_date' => $invoice_info->display('invoice_date'),
+		'due_date' => $invoice_info->display('due_date'),
 	);
 
 	if($invoice_info->display('description')) {
@@ -600,6 +620,7 @@ neatly laid-out format. <em>Thank you</em> for your business <em>and</em> your p
 payment!", WEB_INVOICE_TRANS_DOMAIN), '<a href="'.$invoice_info->display('print_link').'" class="web_invoice_pdf_link">PDF</a>'),
 		'pdf_link' =>  $invoice_info->display('print_link'),
 		'invoice_date' => $invoice_info->display('invoice_date'),
+		'due_date' => $invoice_info->display('due_date'),
 	);
 
 	if($invoice_info->display('description')) {
@@ -631,6 +652,7 @@ function web_invoice_web_variables($invoice_id) {
 		'invoice_id' => $invoice_info->display('display_id'),
 		'invoice_hash' => $invoice_info->display('invoice_hash'),
 		'invoice_date' => $invoice_info->display('invoice_date'),
+		'due_date' => $invoice_info->display('due_date'),
 	);
 
 	if($invoice_info->display('description')) {
@@ -709,7 +731,7 @@ function web_invoice_generate_pdf($invoice_id) {
 	</head>
 	<body>
 		<div id='invoice_page' class='clearfix'>
-			<img style='float: right;' src='".$web_invoice->the_path."/images/web-invoice.png' style='width:101px; height: 128px;' />
+			<img style='float: right;' src='".$web_invoice->the_path."/images/logo_small_padding.png' style='width:420px; height: 110px;' />
 			<h1>Invoice</h1>
 			%content
 		</div>
@@ -892,11 +914,13 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_gateway_email_customer');
 
 	// PayPal
+	delete_option('web_invoice_paypal_button');
 	delete_option('web_invoice_paypal_address');
 	delete_option('web_invoice_paypal_only_button');
 	delete_option('web_invoice_paypal_sandbox');
 	
 	// Payflow
+	delete_option('web_invoice_payflow_button');
 	delete_option('web_invoice_payflow_login');
 	delete_option('web_invoice_payflow_partner');
 	delete_option('web_invoice_payflow_only_button');
@@ -916,10 +940,11 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_pfp_3rdparty_email');
 	delete_option('web_invoice_pfp_shipping_details');
 	
-	// PayPal
+	// Other
 	delete_option('web_invoice_other_details');
 
 	// Moneybookers
+	delete_option('web_invoice_moneybookers_button');
 	delete_option('web_invoice_moneybookers_address');
 	delete_option('web_invoice_moneybookers_recurring_address');
 	delete_option('web_invoice_moneybookers_merchant');
@@ -927,6 +952,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_moneybookers_ip');
 
 	// AlertPay
+	delete_option('web_invoice_alertpay_button');
 	delete_option('web_invoice_alertpay_address');
 	delete_option('web_invoice_alertpay_merchant');
 	delete_option('web_invoice_alertpay_secret');
@@ -934,11 +960,13 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_alertpay_ip');
 	
 	// 2CO
+	delete_option('web_invoice_2co_button');
 	delete_option('web_invoice_2co_sid');
 	delete_option('web_invoice_2co_secret_word');
 	delete_option('web_invoice_2co_demo_mode');
 	
 	// Google Checkout
+	delete_option('web_invoice_google_checkout_button');
 	delete_option('web_invoice_google_checkout_env');
 	delete_option('web_invoice_google_checkout_merchant_id');
 	delete_option('web_invoice_google_checkout_level2');
@@ -946,6 +974,7 @@ function web_invoice_complete_removal()
 	delete_option('web_invoice_google_checkout_tax_state');
 	
 	// Sage Pay
+	delete_option('web_invoice_sagepay_button');
 	delete_option('web_invoice_sagepay_env');
 	delete_option('web_invoice_sagepay_vendor_name');
 	delete_option('web_invoice_sagepay_vendor_key');
@@ -1733,11 +1762,11 @@ function web_invoice_process_cc_transaction($cc_data) {
 				if (get_option('web_invoice_pfp_authentication') == '3token' || get_option('web_invoice_pfp_authentication') == 'unipay') {
 					$arb->setParameter('DESC', $invoice->display('subscription_name'));
 					$arb->setParameter('BILLINGPERIOD', web_invoice_pfp_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit')));
-					$arb->setParameter('PROFILESTARTDATE', date('c', strtotime($invoice->display('startDate'))));
+					$arb->setParameter('PROFILESTARTDATE', date('c', strtotime($invoice->display('startDateM'))));
 					$arb->setParameter('TOTALBILLINGCYCLES', $invoice->display('totalOccurrences'));
 				} else {
 					$arb->setParameter('PROFILENAME', $invoice->display('subscription_name'));
-					$arb->setParameter('START', date('mdY', strtotime($invoice->display('startDate'))+3600*24));
+					$arb->setParameter('START', date('mdY', strtotime($invoice->display('startDateM'))+3600*24));
 					$arb->setParameter('TERM', $invoice->display('totalOccurrences'));
 					$arb->setParameter('PAYPERIOD', web_invoice_pfp_wpppe_convert_interval($invoice->display('interval_length'), $invoice->display('interval_unit')));
 				}
@@ -2074,6 +2103,8 @@ function web_invoice_currency_array() {
 		"PHP"=> __("Philippine Peso", WEB_INVOICE_TRANS_DOMAIN),
 		"IDR"=> __("Indonesian Rupiah", WEB_INVOICE_TRANS_DOMAIN),
 	);
+	
+	asort($currency_list);
 
 	return $currency_list;
 }
@@ -2092,6 +2123,7 @@ function web_invoice_currency_symbol($currency = "USD" )
 		'ZAR' => 'R',
 		'COP' => '$',
 		'IDR' => 'Rp',
+		'CHF' => 'CHF',
 	);
 
 	foreach($currency_list as $value => $display)
@@ -2114,9 +2146,11 @@ function web_invoice_currency_symbol_format($currency = "USD" )
 		'AUD' => __('$%s', WEB_INVOICE_TRANS_DOMAIN),
 		'COP' => __('$%s', WEB_INVOICE_TRANS_DOMAIN),
 		'IDR' => __('Rp %s', WEB_INVOICE_TRANS_DOMAIN),
+		'CHF' => __('CHF %s', WEB_INVOICE_TRANS_DOMAIN),
 	);
 
-
+	$success = false;
+	
 	foreach($currency_list as $value => $display)
 	{
 		if($currency == $value) { return $display; $success = true; break;}
@@ -2124,7 +2158,7 @@ function web_invoice_currency_symbol_format($currency = "USD" )
 	if(!$success) return __("{$currency}%s", WEB_INVOICE_TRANS_DOMAIN);
 }
 
-function web_invoice_contextual_help_list($content, $screen_id, $screen) {
+function web_invoice_contextual_help_list($content, $screen_id) {
 	if (strstr($screen_id, 'web-invoice')) {
 		$content = '<h2>WordPress</h2>'.$content;
 		$content .= '<h2>Web Invoice</h2>'.
@@ -2154,6 +2188,7 @@ function web_invoice_contextual_help_list($content, $screen_id, $screen) {
 		'<li><code>print_message</code> - Instructions on how to print, only in web template</li>'.
 		'<li><code>pdf_link</code> - Link to the invoice PDF, only in web template</li>'.
 		'<li><code>invoice_date</code> - Invoice date or the date the invoice was created</li>'.
+		'<li><code>due_date</code> - Due date or today</li>'.
 		'</ul>';
 	}
 	// Will add help and FAQ here eventually
@@ -2445,11 +2480,14 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_gateway_email_customer'])) update_option('web_invoice_gateway_email_customer', $_POST['web_invoice_gateway_email_customer']);
 
 	// PayPal
+	if(isset($_POST['web_invoice_paypal_button'])) update_option('web_invoice_paypal_button', $_POST['web_invoice_paypal_button']);
+	if(isset($_POST['web_invoice_paypal_subscribe_button'])) update_option('web_invoice_paypal_subscribe_button', $_POST['web_invoice_paypal_subscribe_button']);
 	if(isset($_POST['web_invoice_paypal_address'])) update_option('web_invoice_paypal_address', $_POST['web_invoice_paypal_address']);
 	if(isset($_POST['web_invoice_paypal_only_button'])) update_option('web_invoice_paypal_only_button', $_POST['web_invoice_paypal_only_button']);
 	if(isset($_POST['web_invoice_paypal_sandbox'])) update_option('web_invoice_paypal_sandbox', $_POST['web_invoice_paypal_sandbox']);
 
 	// Payflow
+	if(isset($_POST['web_invoice_payflow_button'])) update_option('web_invoice_payflow_button', $_POST['web_invoice_payflow_button']);
 	if(isset($_POST['web_invoice_payflow_login'])) update_option('web_invoice_payflow_login', $_POST['web_invoice_payflow_login']);
 	if(isset($_POST['web_invoice_payflow_partner'])) update_option('web_invoice_payflow_partner', $_POST['web_invoice_payflow_partner']);
 	if(isset($_POST['web_invoice_payflow_only_button'])) update_option('web_invoice_payflow_only_button', $_POST['web_invoice_payflow_only_button']);
@@ -2473,6 +2511,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_other_details'])) update_option('web_invoice_other_details', $_POST['web_invoice_other_details']);
 	
 	// Moneybookers
+	if(isset($_POST['web_invoice_moneybookers_button'])) update_option('web_invoice_moneybookers_button', $_POST['web_invoice_moneybookers_button']);
 	if(isset($_POST['web_invoice_moneybookers_address'])) update_option('web_invoice_moneybookers_address', $_POST['web_invoice_moneybookers_address']);
 	if(isset($_POST['web_invoice_moneybookers_recurring_address'])) update_option('web_invoice_moneybookers_recurring_address', $_POST['web_invoice_moneybookers_recurring_address']);
 	if(isset($_POST['web_invoice_moneybookers_merchant'])) update_option('web_invoice_moneybookers_merchant', $_POST['web_invoice_moneybookers_merchant']);
@@ -2480,6 +2519,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_moneybookers_ip'])) update_option('web_invoice_moneybookers_ip', $_POST['web_invoice_moneybookers_ip']);
 
 	// AlertPay
+	if(isset($_POST['web_invoice_alertpay_button'])) update_option('web_invoice_alertpay_button', $_POST['web_invoice_alertpay_button']);
 	if(isset($_POST['web_invoice_alertpay_address'])) update_option('web_invoice_alertpay_address', $_POST['web_invoice_alertpay_address']);
 	if(isset($_POST['web_invoice_alertpay_merchant'])) update_option('web_invoice_alertpay_merchant', $_POST['web_invoice_alertpay_merchant']);
 	if(isset($_POST['web_invoice_alertpay_secret'])) update_option('web_invoice_alertpay_secret', $_POST['web_invoice_alertpay_secret']);
@@ -2487,11 +2527,13 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_alertpay_ip'])) update_option('web_invoice_alertpay_ip', $_POST['web_invoice_alertpay_ip']);
 	
 	// 2CO
+	if(isset($_POST['web_invoice_2co_button'])) update_option('web_invoice_2co_button', $_POST['web_invoice_2co_button']);
 	if(isset($_POST['web_invoice_2co_sid'])) update_option('web_invoice_2co_sid', $_POST['web_invoice_2co_sid']);
 	if(isset($_POST['web_invoice_2co_secret_word'])) update_option('web_invoice_2co_secret_word', $_POST['web_invoice_2co_secret_word']);
 	if(isset($_POST['web_invoice_2co_demo_mode'])) update_option('web_invoice_2co_demo_mode', $_POST['web_invoice_2co_demo_mode']);
 	
 	// Google Checkout
+	if(isset($_POST['web_invoice_google_checkout_button'])) update_option('web_invoice_google_checkout_button', $_POST['web_invoice_google_checkout_button']);
 	if(isset($_POST['web_invoice_google_checkout_env'])) update_option('web_invoice_google_checkout_env', $_POST['web_invoice_google_checkout_env']);
 	if(isset($_POST['web_invoice_google_checkout_merchant_id'])) update_option('web_invoice_google_checkout_merchant_id', $_POST['web_invoice_google_checkout_merchant_id']);
 	if(isset($_POST['web_invoice_google_checkout_level2'])) update_option('web_invoice_google_checkout_level2', $_POST['web_invoice_google_checkout_level2']);
@@ -2499,6 +2541,7 @@ function web_invoice_process_settings() {
 	if(isset($_POST['web_invoice_google_checkout_tax_state'])) update_option('web_invoice_google_checkout_tax_state', $_POST['web_invoice_google_checkout_tax_state']);
 	
 	// Sage Pay
+	if(isset($_POST['web_invoice_sagepay_button'])) update_option('web_invoice_sagepay_button', $_POST['web_invoice_sagepay_button']);
 	if(isset($_POST['web_invoice_sagepay_env'])) update_option('web_invoice_sagepay_env', $_POST['web_invoice_sagepay_env']);
 	if(isset($_POST['web_invoice_sagepay_vendor_name'])) update_option('web_invoice_sagepay_vendor_name', $_POST['web_invoice_sagepay_vendor_name']);
 	if(isset($_POST['web_invoice_sagepay_vendor_key'])) update_option('web_invoice_sagepay_vendor_key', $_POST['web_invoice_sagepay_vendor_key']);
@@ -2515,6 +2558,8 @@ function web_invoice_process_email_templates() {
 	if(isset($_POST['web_invoice_email_send_invoice_content'])) update_option('web_invoice_email_send_invoice_content', $_POST['web_invoice_email_send_invoice_content']);
 	if(isset($_POST['web_invoice_email_send_reminder_subject'])) update_option('web_invoice_email_send_reminder_subject', $_POST['web_invoice_email_send_reminder_subject']);
 	if(isset($_POST['web_invoice_email_send_reminder_content'])) update_option('web_invoice_email_send_reminder_content', $_POST['web_invoice_email_send_reminder_content']);
+	if(isset($_POST['web_invoice_email_send_reminder_pre_due_subject'])) update_option('web_invoice_email_send_reminder_pre_due_subject', $_POST['web_invoice_email_send_reminder_pre_due_subject']);
+	if(isset($_POST['web_invoice_email_send_reminder_pre_due_content'])) update_option('web_invoice_email_send_reminder_pre_due_content', $_POST['web_invoice_email_send_reminder_pre_due_content']);
 	if(isset($_POST['web_invoice_email_send_receipt_subject'])) update_option('web_invoice_email_send_receipt_subject', $_POST['web_invoice_email_send_receipt_subject']);
 	if(isset($_POST['web_invoice_email_send_receipt_content'])) update_option('web_invoice_email_send_receipt_content', $_POST['web_invoice_email_send_receipt_content']);
 
