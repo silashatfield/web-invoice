@@ -763,6 +763,10 @@ function web_invoice_send_email_receipt($invoice_id) {
 
 	$message = web_invoice_show_receipt_email($invoice_id);
 	$subject = strip_tags(preg_replace_callback('/(%([a-z_]+))/', 'web_invoice_email_apply_variables', get_option('web_invoice_email_send_receipt_subject')));
+<<<<<<< HEAD
+=======
+
+>>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 	if(wp_mail($invoice_info->recipient('email_address'), $subject, $message, $headers))
 	{ web_invoice_update_log($invoice_id,'contact','Receipt eMailed'); }
 
@@ -1035,11 +1039,20 @@ function web_invoice_send_email($invoice_array, $reminder = false)
 
 			$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
 			
+<<<<<<< HEAD
 			//$attachments = array(web_invoice_pdf_file($invoice_id));
 			if(wp_mail($profileuser->user_email, $subject, $message, $headers)) //, $attachments))
 			{
 				$counter++; // Success in sending quantified.
 				//unlink($attachments[0]);
+=======
+			$attachments = array(web_invoice_pdf_file($invoice_id));
+
+			if(wp_mail($profileuser->user_email, $subject, $message, $headers, $attachments))
+			{
+				$counter++; // Success in sending quantified.
+				unlink($attachments[0]);
+>>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 				web_invoice_update_log($invoice_id,'contact','Invoice eMailed'); //make sent entry
 				web_invoice_update_invoice_meta($invoice_id, "sent_date", date("Y-m-d", time()));
 			}
@@ -1067,11 +1080,19 @@ function web_invoice_send_email($invoice_array, $reminder = false)
 
 		$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
 
+<<<<<<< HEAD
 		//$attachments = array(web_invoice_pdf_file($invoice_id));
 		
 		if(wp_mail($profileuser->user_email, $subject, $message, $headers)) //, $attachments))
 		{
 			//unlink($attachments[0]);
+=======
+		$attachments = array(web_invoice_pdf_file($invoice_id));
+		
+		if(wp_mail($profileuser->user_email, $subject, $message, $headers, $attachments))
+		{
+			unlink($attachments[0]);
+>>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 			web_invoice_update_invoice_meta($invoice_id, "sent_date", date("Y-m-d", time()));
 			web_invoice_update_log($invoice_id,'contact','Invoice eMailed'); return "Web invoice sent successfully."; 
 		} else { 
