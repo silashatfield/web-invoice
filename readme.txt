@@ -1,4 +1,4 @@
-=== Web-Invoice ===
+=== Web Invoice v2===
 Contributors: silas hatfield
 Tags: bill, moneybookers, google checkout, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
@@ -28,6 +28,6 @@ This is a fork from the original web-invoice by mohanjith
 
 = 2.2.0 =
 * Tested some functionality with Wordpress 4.1
-* Fixed the errors after installing
+* Fixed the errors after installing and creating a new invoice
 * Fixed the footer text in the middle of the screen
-* Removed invoice attachments so it will work with RoundCube
+* Removed invoice attachments in emails so it will work with RoundCube

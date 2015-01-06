@@ -1,16 +1,14 @@
 <?php
 /*
- Plugin Name: Web Invoice
- Plugin URI: 
- Description: Send itemized web invoices directly to your clients.  Credit card payments may be accepted via Authorize.net, MerchantPlus NaviGate, Moneybookers, AlertPay, Google Checkout or PayPal account. Recurring billing is also available via Authorize.net's ARB, Moneybookers, Google Checkout and PayPal. Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
+ Plugin Name: Web Invoice v2
+ Plugin URI: http://doxpress.com/plugins
+ Description: Visit <a href="admin.php?page=web_invoice_settings">Web Invoice Settings Page</a> to setup.
  Author: Silas Hatfield
  Version: 2.2.0
  Author URI: http://silashatfield.com
- Text Domain: web-invoice
+ Text Domain: web-invoice-v2
  Stable tag: 2.2.0
  License: GPL
-
- Copyright 2011  S H Mohanjith (email : moha@mohanjith.net)
  */
 
 /*
