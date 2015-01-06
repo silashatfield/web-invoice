@@ -1078,7 +1078,8 @@ if(get_option('web_invoice_business_name') == '') 		echo "<tr><th colspan=\"2\">
 </div>
 <?php } else { ?> <?php }?> <br class="cb" />
 
-<?php } ?> <?php
+<?php } ?><?php
+
 }
 
 function web_invoice_show_email_templates()

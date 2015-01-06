@@ -185,6 +185,7 @@ if ( $php_version_check )
 		echo "<div id=\"message\" class='error' ><p>".$this->message."</p></div>";
 	    }
 	    echo $Web_Invoice_Decider->display();
+		echo '<div style="clear:both;"></div>';
 	}
 	
 	function favorites($actions)
