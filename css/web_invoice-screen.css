@@ -40,11 +40,7 @@
 #invoice_page input {
 	width: 235px;
 	border: 0;
-<<<<<<< HEAD
 	background: #FFF;
-=======
-	background: #EFEFEF;
->>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 	padding: 7px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -57,11 +53,7 @@
 #invoice_page #country, #invoice_page #COUNTRY, #invoice_page #COUNTRYTOSHIP, #invoice_page #shipto_country {
 	width: 235px;
 	border: 0;
-<<<<<<< HEAD
 	background: #FFF;
-=======
-	background: #EFEFEF;
->>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 	padding: 7px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -114,11 +106,7 @@
 #invoice_page #state {
 	width: 235px;
 	border: 0;
-<<<<<<< HEAD
 	background: #FFF;
-=======
-	background: #EFEFEF;
->>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 	padding: 7px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -127,11 +115,7 @@
 #invoice_page #exp_month,#invoice_page #exp_year {
 	width: 70px;
 	border: 0;
-<<<<<<< HEAD
 	background: #FFF;
-=======
-	background: #EFEFEF;
->>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 	padding: 7px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;

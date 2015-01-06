@@ -50,11 +50,7 @@ class Web_Invoice_Paypal {
 	
 	function processRequest($ip, $request) {
 		$req = 'cmd=_notify-validate';
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 		$post_values = "";
 		$cart = array();
 		foreach ($request as $key => $value) {
@@ -141,10 +137,7 @@ class Web_Invoice_Paypal {
 						if ($this->test_ipn == 1) {
 							if (get_option('web_invoice_paypal_sandbox') == 'True') {
 								$this->_logFailure('Test payment');
-<<<<<<< HEAD
 								web_invoice_mark_as_paid($this->invoice->id);
-=======
->>>>>>> ddf6f4658b0d065ac839541f0265a235b4991026
 							}
 						} else {
 							$this->_logSuccess('Paid');
