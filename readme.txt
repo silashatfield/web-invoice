@@ -1,4 +1,4 @@
-=== Web Invoice - Invoicing and billing for WordPress ===
+=== Web-Invoice ===
 Contributors: silas hatfield
 Tags: bill, moneybookers, google checkout, alertpay, paypal, invoice, pay, online payment, send invoice, bill clients, authorize.net, credit cards, recurring billing, ARB
 Requires at least: 2.6
